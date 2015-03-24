@@ -1,4 +1,5 @@
 from django.db import models
+from django.models import User
 
 class Student(models.Model):
 	user = models.OneToOneField(User)
@@ -47,4 +48,3 @@ class Documents(models.Model):
 	documents_url = models.CharField(blank=True)
 	upvotes = models.IntegerField(blank=True)
 	owner = models.OneToOneField(Student)
-	
