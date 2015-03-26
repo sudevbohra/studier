@@ -32,6 +32,11 @@ def home(request):
     user_id = request.user.id
     return render(request, 'socialnetwork/index.html', {'user_id' : user_id})
 
+
+@login_required
+def map(request):
+    return render(request, "socialnetwork/map.html", {})
+
 @transaction.atomic
 def register(request):
     context = {}

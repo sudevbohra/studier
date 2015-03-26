@@ -14,4 +14,6 @@ urlpatterns = patterns('',
     url(r'^socialnetwork/edit/$', 'socialnetwork.views.edit', name='edit'),
     url(r'^socialnetwork/profile/(?P<id>\d+)$', 'socialnetwork.views.profile', name='profile'),
     url(r'^socialnetwork/logout/$', 'django.contrib.auth.views.logout_then_login', name='logout'),
+    # url(r'^socialnetwork/edit/$', 'socialnetwork.views.edit', name='edit'),
+    # url(r'^socialnetwork/profile/(?P<user>\w+)$', 'socialnetwork.views.profile', name='profile'),
 )
