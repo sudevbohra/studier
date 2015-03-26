@@ -1,10 +1,10 @@
 from django.db import models
-from django.models import User
+from django.contrib.auth.models import User
 
 class Student(models.Model):
 	user = models.OneToOneField(User)
 	#How to do list of courses?
-	courses = models.ManyToManyField(Classroom, related_name='course', symmetrical='True')
+	#courses = models.ManyToManyField(Classroom, related_name='course', symmetrical='True')
 	school = models.CharField(blank=True, max_length=430)
 	major = models.CharField(blank=True, max_length=430)
 	interests = models.CharField(blank=True, max_length=430)
@@ -17,10 +17,24 @@ class Student(models.Model):
 	def __unicode__(self):
 		return 'Student(id=' + str(self.id) + ')'
 
+class Comment(models.Model):
+	question = models.CharField(blank=True, max_length=150)
+	answer = models.CharField(blank=True, max_length=150)
+	upvotes = models.IntegerField(blank=True)
+
+class Documents(models.Model):
+	documents_url = models.CharField(blank=True, max_length=150)
+	upvotes = models.IntegerField(blank=True)
+	owner = models.OneToOneField(Student)
+
+class Classroom(models.Model):
+	comments = models.ManyToManyField(Comment)
+	students = models.ManyToManyField(Student)
+	documents = models.ManyToManyField(Documents)
 
 class StudyGroup(models.Model):
     owner = models.OneToOneField(Student)
-    members = models.ManyToManyField(Student)
+    members = models.ManyToManyField(Student, related_name='member')
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     active = models.BooleanField()
@@ -34,17 +48,3 @@ class StudyGroup(models.Model):
     def __unicode__(self):
 		return 'StudyGroup(id=' + str(self.id) + ", owner=" + str(self.owner) + ')'
 
-class Classroom(models.Model):
-	comments = models.ManyToManyField(Comment)
-	students = models.ManyToManyField(Student)
-	documents = models.ManyToManyField(Documents)
-
-class Comment(models.Model):
-	question = models.CharField(blank=True, max_length=150)
-	answer = models.CharField(blank=True, max_length=150)
-	upvotes = models.IntegerField(blank=True)
-
-class Documents(models.Model):
-	documents_url = models.CharField(blank=True)
-	upvotes = models.IntegerField(blank=True)
-	owner = models.OneToOneField(Student)
