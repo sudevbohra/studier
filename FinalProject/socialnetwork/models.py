@@ -11,9 +11,10 @@ class Student(models.Model):
 	linkedin = models.CharField(blank=True, max_length=430)
 	friends = models.ManyToManyField('self', related_name='follows', symmetrical='False')
 	picture_url = models.CharField(blank=True, max_length=256)
-	answer_rating = models.IntegerField(blank=True)
-	collab_rating = models.IntegerField(blank=True)
+	answer_rating = models.IntegerField(blank=True, null=True)
+	collab_rating = models.IntegerField(blank=True, null=True)
 	endorsements = models.CharField(blank=True, max_length=430)
+	age = models.IntegerField(blank=True) 
 	def __unicode__(self):
 		return 'Student(id=' + str(self.id) + ')'
 
@@ -37,7 +38,7 @@ class StudyGroup(models.Model):
     members = models.ManyToManyField(Student, related_name='member')
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
-    active = models.BooleanField()
+    active = models.BooleanField(default=True)
     course = models.CharField(max_length = 10)
     topic = models.CharField(max_length=100)
     description = models.CharField(max_length=255)
