@@ -51,6 +51,10 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'FinalProject.urls'
 
+# Used by the authentication system for URL required for login
+LOGIN_URL = '/socialnetwork/login'
+LOGIN_REDIRECT_URL = '/socialnetwork/'
+
 WSGI_APPLICATION = 'FinalProject.wsgi.application'
 
 
