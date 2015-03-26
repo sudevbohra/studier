@@ -55,6 +55,7 @@
         </div><!--/.nav-collapse -->
       </div>
     </nav>
+
 <style>
       #map-canvas {
         width: 200vh;
@@ -67,8 +68,10 @@
     </style>
     <script src="https://maps.googleapis.com/maps/api/js"></script>
     <script>
+
+
   function initialize() {
-    var mapCanvas = document.getElementById('map-canvas');
+  var mapCanvas = document.getElementById('map-canvas');
     var mapOptions = {
       center: new google.maps.LatLng(40.4430939,-79.942309),
       zoom: 17,
@@ -87,38 +90,39 @@
     ]
   }
 ]);
+  // Try HTML5 geolocation
+  document.getElementById("location").onclick = function() {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var pos = new google.maps.LatLng(position.coords.latitude,
+                                       position.coords.longitude);
+
+      var marker = new google.maps.Marker({
+      position: pos,
+      map: map,
+      icon:'http://cdn-img.easyicon.net/png/40/4058.png'
+    });
+
+     
+    }, function() {
+      handleNoGeolocation(true);
+    });
   }
+}
+
   google.maps.event.addDomListener(window, 'load', initialize);
 </script>
 <div id="map-canvas"></div>
+<div>
+<a href="#" style="position: fixed; bottom: 30px; right: 30px;" class="btn btn-info btn-sm  "><span class="glyphicon glyphicon-record" id = "location" aria-hidden="true"></span></a>
+</div>
     <!-- jQuery -->
     <script src="static/js/jquery.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="static/js/bootstrap.min.js"></script>
-    <script src="http://mymaplist.com/js/vendor/TweenLite.min.js"></script>
     <!-- Menu Toggle Script -->
-    <script>
-    /**
- * parallax.js
- * @Author original @msurguy (tw) -> http://bootsnipp.com/snippets/featured/parallax-login-form
- * @Tested on FF && CH
- * @Reworked by @kaptenn_com (tw)
- * @package PARALLAX LOGIN.
- */
 
-        $(document).ready(function() {
-            $(document).mousemove(function(event) {
-                TweenLite.to($("body"), 
-                .5, {
-                    css: {
-                        backgroundPosition: "" + parseInt(event.pageX / 8) + "px " + parseInt(event.pageY / '12') + "px, " + parseInt(event.pageX / '15') + "px " + parseInt(event.pageY / '15') + "px, " + parseInt(event.pageX / '30') + "px " + parseInt(event.pageY / '30') + "px",
-                        "background-position": parseInt(event.pageX / 8) + "px " + parseInt(event.pageY / 12) + "px, " + parseInt(event.pageX / 15) + "px " + parseInt(event.pageY / 15) + "px, " + parseInt(event.pageX / 30) + "px " + parseInt(event.pageY / 30) + "px"
-                    }
-                })
-            })
-        })
-    </script>
+    
 
 </body>
 

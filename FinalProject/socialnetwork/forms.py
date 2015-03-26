@@ -9,12 +9,13 @@ class RegistrationForm(forms.Form):
     school = forms.CharField(max_length=20)
     major = forms.CharField(max_length=40)
     email = forms.CharField(max_length = 30)
-    password1 = forms.CharField(max_length = 200, 
+    password1 = forms.CharField(max_length = 200,
                                  label='Password', 
                                  widget = forms.PasswordInput())
     password2 = forms.CharField(max_length = 200, 
                                  label='Confirm password',  
                                  widget = forms.PasswordInput())
+    school = forms.CharField(max_length=150)
 
 
     # Customizes form validation for properties that apply to more
