@@ -26,7 +26,7 @@ from django.http import HttpResponse
 
 # Create your views here.
 
-@login_required
+#login_required
 def home(request):
     # Sets up list of just the logged-in user's (request.user's) items
     return render(request, 'socialnetwork/index.html', {})

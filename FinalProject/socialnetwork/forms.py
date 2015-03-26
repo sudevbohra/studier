@@ -50,7 +50,7 @@ class EditForm(forms.ModelForm):
     school = forms.CharField(max_length=20)
     major = forms.CharField(max_length=40)
     class Meta:
-        model = Profile
+        model = Student
         exclude = ('user', 'interests', 'linkedin', 'friends', 'picture_url', 'answer_rating', 'collab_rating', 'endorsements')
 
     def clean_picture(self):
