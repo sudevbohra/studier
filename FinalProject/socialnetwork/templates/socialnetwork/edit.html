@@ -5,16 +5,14 @@
 
 {% block panel %}
 
-<form method="post" action="{% url 'register' %}" class="form-signin">
+<form method="post" action="{% url 'edit' %}" class="form-signin">
 <table style="margin-right:auto;
   margin-left:auto; ">
 		{{ form.first_name|addcss:"form-control, placeholder:first name" }}
 		{{ form.last_name|addcss:"form-control, placeholder:last name" }}
-		{{ form.email|addcss:"form-control, placeholder:email" }}
 		{{ form.school|addcss:"form-control, placeholder:school" }}
 		{{ form.major|addcss:"form-control, placeholder:major" }}
-		{{ form.password1|addcss:"form-control, placeholder:password,type:password" }}
-		{{ form.password2|addcss:"form-control, placeholder:confirm password,type:password" }}
+		{{ form.major|addcss:"form-control, placeholder:major" }}
 		{{% csrf_token %}
 		<input type='submit' name='submitPost' value='Submit' >
 {% endblock %}
