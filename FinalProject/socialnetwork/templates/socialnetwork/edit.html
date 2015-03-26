@@ -15,6 +15,6 @@
 		{{ form.major|addcss:"form-control, placeholder:major" }}
 		{{ form.password1|addcss:"form-control, placeholder:password,type:password" }}
 		{{ form.password2|addcss:"form-control, placeholder:confirm password,type:password" }}
+		{{% csrf_token %}
 		<input type='submit' name='submitPost' value='Submit' >
-		{% csrf_token %}
 {% endblock %}
