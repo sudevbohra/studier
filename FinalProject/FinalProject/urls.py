@@ -8,4 +8,6 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', 'socialnetwork.views.home', name='home'),
+    url(r'^socialnetwork/login$', 'django.contrib.auth.views.login', {'template_name':'socialnetwork/login.html'}, name='login'),
+    url(r'^socialnetwork/register$', 'socialnetwork.views.register', name='register'),
 )
