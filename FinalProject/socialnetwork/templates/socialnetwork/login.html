@@ -73,7 +73,8 @@
                                         {{ form.username|addcss:"form-control, placeholder:username" }}
                                         {{ form.password|addcss:"form-control, placeholder:password,type:password" }}
                                         <input class="btn btn-lg btn-success btn-block" type="submit" id="login" value="Login">
-                                        <input class="btn btn-lg btn-info btn-block" action="{% url 'register' %}" value="Register">
+
+                                        <a href="{% url 'register' %}" class="btn btn-lg btn-info btn-block">Don't Have an Account?</a>  
                                         {% csrf_token %}
                                     </fieldset>
                                 </form>

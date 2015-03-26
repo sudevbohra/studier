@@ -54,7 +54,7 @@ class EditForm(forms.ModelForm):
     major = forms.CharField(max_length=40)
     class Meta:
         model = Student
-        exclude = ('user', 'interests', 'linkedin', 'friends', 'picture_url', 'answer_rating', 'collab_rating', 'endorsements')
+        exclude = ('user', 'interests', 'linkedin', 'friends', 'picture_url', 'answer_rating', 'collab_rating', 'endorsements', 'age')
 
     def clean_picture(self):
         picture = self.cleaned_data['picture']

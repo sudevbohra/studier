@@ -15,8 +15,8 @@
     <link href="https://bootswatch.com/flatly/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="static/css/login.css" rel="stylesheet">
-    <link href="static/css/profile.css" rel="stylesheet">
+    <link href="/static/css/login.css" rel="stylesheet">
+    <link href="/static/css/profile.css" rel="stylesheet">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -66,11 +66,15 @@
                     <div class="image-cropper">
                     <img src="http://abcnews.go.com/images/WNT/140930_wn_gates_16x9_992.jpg" name="aboutme"  border="0">
                   </div></a>
-                    <h3 class="media-heading">Bill Gates <small>USA</small></h3>
+                    <h3 class="media-heading">{{full_name}}<small>USA</small></h3>
                     <div class="rating">
                     <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
                     </div>
                     </center>
+                    <hr>
+                    <span><strong>School: {{school}}</strong></span>
+                    <hr>
+                    <span><strong>Major: {{major}}</strong></span>
                     <hr>
                     <span><strong>Skills: </strong></span>
                         <span class="label label-warning">HTML5/CSS/JavaScript</span>
@@ -111,10 +115,10 @@
             </div>
         </div>
     <!-- jQuery -->
-    <script src="static/js/jquery.js"></script>
+    <script src="/static/js/jquery.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="static/js/bootstrap.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
     <script src="http://mymaplist.com/js/vendor/TweenLite.min.js"></script>
     <!-- Menu Toggle Script -->
     

@@ -13,7 +13,7 @@ from django.contrib.auth import login, authenticate
 from django.db import transaction
 
 from socialnetwork.models import *
-from socialnetwork.forms import RegistrationForm
+from socialnetwork.forms import RegistrationForm, EditForm
 
 # Used to generate a one-time-use token to verify a user's email address
 from django.contrib.auth.tokens import default_token_generator
@@ -26,34 +26,11 @@ from django.http import HttpResponse
 
 # Create your views here.
 
-#login_required
+@login_required
 def home(request):
     # Sets up list of just the logged-in user's (request.user's) items
-    return render(request, 'socialnetwork/index.html', {})
-
-@transaction.atomic
-def login_profile(request):
-    context = {}
-    errors = []
-    if request.method == 'GET':
-        context["form"] = LoginForm()
-        return render(request, 'socialnetwork/login.html', context)
-
-    form = LoginForm(request.POST)
-    context['form'] = form
-
-    if not form.is_valid():
-        return render(request, 'socialnetwork/login.html', context)
-
-    new_user = authenticate(username=form.cleaned_data['username'], \
-                            password=form.cleaned_data['password'])
-
-    if(new_user == None):
-        errors.append("Password entered is incorrect")
-        context["errors"] = errors
-        return render(request, 'socialnetwork/login.html', context)
-    login(request, new_user)
-    return redirect(reverse('home'))
+    user_id = request.user.id
+    return render(request, 'socialnetwork/index.html', {'user_id' : user_id})
 
 @transaction.atomic
 def register(request):
@@ -115,3 +92,56 @@ def register(request):
     login(request, new_user)
 
     return render(request, 'socialnetwork/index.html', context)
+
+@login_required
+def profile(request, id):
+	user = get_object_or_404(User, id=id)
+	full_name = user.get_full_name()
+	student = Student.objects.get(user=user)
+	school = student.school
+	major = student.major
+	return render(request, 'socialnetwork/profile.html', {'full_name' : full_name, 'student' : student, 'school' : school, 'major' : major})
+
+@login_required
+@transaction.atomic
+def edit(request):
+    try:
+        if request.method == 'GET':
+            profile = Student.objects.get(user=request.user)
+            form = EditForm()
+            context = { 'profile': profile, 'form': form }
+            return render(request, 'socialnetwork/edit.html', context)
+    
+        profile = Student.objects.get(user=request.user)
+        form = EditForm(request.POST, request.FILES, instance=profile)
+        #print form
+        if not form.is_valid():
+           context = { 'profile': profile, 'form': form }
+           return render(request, 'socialnetwork/edit.html', context)
+        profile = form.save()
+        print form.cleaned_data
+
+        # Update first and last name of the User
+        user = request.user
+        user.first_name = form.cleaned_data['first_name']
+        user.last_name = form.cleaned_data['last_name']
+        user.save()
+
+        # form = EditForm(instance=entry)
+        context = {
+            'message': 'Profile updated.',
+            'profile':   profile,
+            'form':    form,
+        }
+        #return render(request, 'socialnetwork/profile.html', context)
+        return redirect('/socialnetwork/profile/' + str(request.user.id))
+    except Student.DoesNotExist:
+        context = { 'message': 'Record with id={0} does not exist'.format(id) }
+        return render(request, 'socialnetwork/edit.html', context)
+
+@login_required
+def map(request):
+    # Sets up list of just the logged-in user's (request.user's) items
+    user_id = request.user.id
+    return render(request, 'socialnetwork/map.html', {'user_id' : user_id})
+
