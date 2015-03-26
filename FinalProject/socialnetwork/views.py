@@ -32,6 +32,30 @@ def home(request):
     return render(request, 'socialnetwork/index.html', {})
 
 @transaction.atomic
+def login_profile(request):
+    context = {}
+    errors = []
+    if request.method == 'GET':
+        context["form"] = LoginForm()
+        return render(request, 'socialnetwork/login.html', context)
+
+    form = LoginForm(request.POST)
+    context['form'] = form
+
+    if not form.is_valid():
+        return render(request, 'socialnetwork/login.html', context)
+
+    new_user = authenticate(username=form.cleaned_data['username'], \
+                            password=form.cleaned_data['password'])
+
+    if(new_user == None):
+        errors.append("Password entered is incorrect")
+        context["errors"] = errors
+        return render(request, 'socialnetwork/login.html', context)
+    login(request, new_user)
+    return redirect(reverse('home'))
+
+@transaction.atomic
 def register(request):
     context = {}
 
@@ -62,8 +86,8 @@ def register(request):
     new_user.save()
 
     
-    new_user = authenticate(username=request.POST['email'], \
-                            password=request.POST['password1'])
+    new_user = authenticate(username=form.cleaned_data['email'], \
+                            password=form.cleaned_data['password1'])
     
     new_profile = Student(user=new_user, age=0,
                         school=form.cleaned_data['school'],
