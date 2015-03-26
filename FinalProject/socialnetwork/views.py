@@ -91,7 +91,8 @@ def register(request):
     # Logs in the new user
     login(request, new_user)
 
-    return render(request, 'socialnetwork/index.html', context)
+    # return render(request, 'socialnetwork/index.html', context)
+    return redirect(reverse('home'))
 
 @login_required
 def profile(request, id):
