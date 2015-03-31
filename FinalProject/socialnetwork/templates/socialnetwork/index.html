@@ -53,6 +53,7 @@
           <input type="text" name="course_id" class="form-control" placeholder="eg. 36-225">
         </div>
         <button type="submit" class="btn btn-info">+ Course</button>
+        {% csrf_token %}
       </form>
           <ul class="nav navbar-nav navbar-right">
             <li><a href="{% url 'profile' user_id %}" class="btn btn-warning">Me</a></li>

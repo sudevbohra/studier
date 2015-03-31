@@ -154,24 +154,30 @@ def map(request):
 @login_required
 @transaction.atomic
 def add_class(request):
-	student = Student.objects.get(user = request.user)
-	if not 'post' in request.POST or not request.POST['post']:
-    	errors.append('You must enter an item to add.')
-    else:
-    	if not (Classroom.objecst.filter(name=request.POST['course_id']).exists):
-			Classroom.create(request.POST['course_id'])
-		classObj = Classroom.objects.select_for_update().get(name=request.POST['course_id'])
-    	student = Student.objects.get(user=request.user)
-    	classObj.students.add(student)
-    	classObj.save()
-    return redirect(reverse('home'))
+	try:
+		student = Student.objects.get(user=request.user)
+		classObj = Classroom.objects.get(name=request.POST['course_id']).students.add(student)
+		return redirect(reverse('home'))
+	except Classroom.DoesNotExist:
+		new_class = Classroom(name=request.POST['course_id'])
+		new_class.save()
+		new_class.students.add(student)
+		return redirect(reverse('home'))
+	# if not (Classroom.objects.filter(name=request.POST['course_id']).count):
+	# 	new_class = Classroom(name=request.POST['course_id'])
+	# 	new_class.save()
+	# 	new_class.students.add(student)
+	# 	return redirect(reverse('home'))
+	# student = Student.objects.get(user=request.user)
+	# classObj = Classroom.objects.get(name=request.POST['course_id']).students.add(student)
+	# return redirect(reverse('home'))
 
 
 @login_required
 @transaction.atomic
 def remove_class(request, name):
 	student = Student.objects.get(user = request.user)
-	classObj = Classroom.objects.select_for_update().get(name=name)
+	classObj = Classroom.objects.get(name=name)
 	classObj.students.remove(student)
 	classObj.save()
 	return redirect(reverse('home'))

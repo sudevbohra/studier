@@ -18,10 +18,10 @@ class Student(models.Model):
 		return 'Student(id=' + str(self.id) + ')'
 
 class Comment(models.Model):
-	text = models.CharField(max_length=160)
-	student = models.ForeignKey(Student)
-	date = models.DateTimeField(auto_now_add=True)
-	upvotes = models.IntegerField(blank=True)
+	text = models.CharField(max_length=160, null=True)
+	student = models.ForeignKey(Student, null=True)
+	date = models.DateTimeField(blank=True, auto_now_add=True, null=True)
+	upvotes = models.IntegerField(blank=True, default=0)
 	def __unicode__(self):
 		return self.text
 	def natural_key(self):
@@ -50,9 +50,7 @@ class Classroom(models.Model):
 	posts = models.ManyToManyField(Post)
 	students = models.ManyToManyField(Student, related_name='classes', symmetrical='True')
 	documents = models.ManyToManyField(Documents)
-	def create(self, name):
-		self.create(name = name)
-
+	
 class StudyGroup(models.Model):
     owner = models.OneToOneField(Student)
     members = models.ManyToManyField(Student, related_name='member')
