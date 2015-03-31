@@ -28,6 +28,7 @@ class Comment(models.Model):
 		return(self.text, self.date, self.username)
 
 class Post(models.Model):
+	location = models.CharField(blank=True, max_length=40)
 	text = models.CharField(max_length=160)
 	student = models.ForeignKey(Student)
 	date = models.DateTimeField(auto_now_add=True)
