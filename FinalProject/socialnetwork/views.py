@@ -160,3 +160,11 @@ def add_class(request, name):
 	classObj.students.add(student)
 	classObj.save()
 	return redirect(reverse('home'))
+
+@login_required
+def remove_class(request, name):
+	student = Student.objects.get(user = request.user)
+	classObj = Classroom.objects.select_for_update().get(name=name)
+	classObj.students.remove(student)
+	classObj.save()
+	return redirect(reverse('home'))
