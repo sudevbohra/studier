@@ -18,9 +18,25 @@ class Student(models.Model):
 		return 'Student(id=' + str(self.id) + ')'
 
 class Comment(models.Model):
-	question = models.CharField(blank=True, max_length=150)
-	answer = models.CharField(blank=True, max_length=150)
+	text = models.CharField(max_length=160)
+	student = models.ForeignKey(Student)
+	date = models.DateTimeField(auto_now_add=True)
 	upvotes = models.IntegerField(blank=True)
+	def __unicode__(self):
+		return self.text
+	def natural_key(self):
+		return(self.text, self.date, self.username)
+
+class Post(models.Model):
+	text = models.CharField(max_length=160)
+	student = models.ForeignKey(Student)
+	date = models.DateTimeField(auto_now_add=True)
+	comments = models.ManyToManyField(Comment)
+	upvotes = models.IntegerField(blank=True)
+	def __unicode__(self):
+		return self.text
+	def natural_key(self):
+		return(self.user, self.id)
 
 class Documents(models.Model):
 	name = models.CharField(blank=True, max_length=40)
@@ -30,7 +46,7 @@ class Documents(models.Model):
 
 class Classroom(models.Model):
 	name = models.CharField(blank=True, max_length=40)
-	comments = models.ManyToManyField(Comment)
+	posts = models.ManyToManyField(Post)
 	students = models.ManyToManyField(Student, related_name='classes', symmetrical='True')
 	documents = models.ManyToManyField(Documents)
 	def create(self, name):
