@@ -44,15 +44,22 @@
             <li class="active"><a href="#menu-toggle" id="menu-toggle">15-122</a></li>
             <li><a href="#menu-toggle" id="menu-toggle">36-225</a></li>
             <li><a href="#menu-toggle" id="menu-toggle">37-226</a></li>
-            <li><a href="#about">About</a></li>
+            <li ><a id = "add-class" href="#add-class"><span class="glyphicon glyphicon-plus"></span></a></li>
             
 
           </ul>
+          <form id = "class" hidden = "true" class="navbar-form navbar-left" action = "{% url 'add_class' %}" method = "post">
+        <div class="form-group">
+          <input type="text" name="course_id" class="form-control" placeholder="eg. 36-225">
+        </div>
+        <button type="submit" class="btn btn-info">+ Course</button>
+      </form>
           <ul class="nav navbar-nav navbar-right">
             <li><a href="{% url 'profile' user_id %}" class="btn btn-warning">Me</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>
           </ul>
         </div><!--/.nav-collapse -->
+
       </div>
     </nav>
     <div id="wrapper">
@@ -180,6 +187,19 @@
     $("#menu-toggle").click(function(e) {
         e.preventDefault();
         $("#wrapper").toggleClass("toggled");
+    });
+
+    
+
+    var addClassHTML="";
+    addClassHTML += "<div class=\"form-group\">";
+    addClassHTML += "    <input name=\"search\" id=\"search\"\/>";
+    addClassHTML += "    <button class=\"btn btn-warning btn-xs\">button<\/button>";
+    addClassHTML += "<\/div>";
+
+    $("#add-class").click(function(e) {
+        $("#add-class").hide(100);
+        $('#class').show(500);
     });
     </script>
 
