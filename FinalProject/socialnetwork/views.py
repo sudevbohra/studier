@@ -151,3 +151,10 @@ def map(request):
     user_id = request.user.id
     return render(request, 'socialnetwork/map.html', {'user_id' : user_id})
 
+@login_required
+def add_class(request, name):
+	student = Student.objects.get(user = request.user)
+	classObj = Class.objects.select_for_update().get(name = name)
+	classObj.students.add(student)
+	classObj.save()
+	return redirect(reverse('home'))

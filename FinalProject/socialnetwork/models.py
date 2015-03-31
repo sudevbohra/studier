@@ -3,8 +3,7 @@ from django.contrib.auth.models import User
 
 class Student(models.Model):
 	user = models.OneToOneField(User)
-	#How to do list of courses?
-	#courses = models.ManyToManyField(Classroom, related_name='course', symmetrical='True')
+	# classes = models.ManyToManyField(Classroom, related_name='class', symmetrical='True')
 	school = models.CharField(blank=True, max_length=430)
 	major = models.CharField(blank=True, max_length=430)
 	interests = models.CharField(blank=True, max_length=430)
@@ -24,13 +23,15 @@ class Comment(models.Model):
 	upvotes = models.IntegerField(blank=True)
 
 class Documents(models.Model):
+	name = models.CharField(blank=True, max_length=40)
 	documents_url = models.CharField(blank=True, max_length=150)
 	upvotes = models.IntegerField(blank=True)
 	owner = models.OneToOneField(Student)
 
 class Classroom(models.Model):
+	name = models.CharField(blank=True, max_length=40)
 	comments = models.ManyToManyField(Comment)
-	students = models.ManyToManyField(Student)
+	students = models.ManyToManyField(Student, related_name='classes', symmetrical='True')
 	documents = models.ManyToManyField(Documents)
 
 class StudyGroup(models.Model):
