@@ -153,14 +153,19 @@ def map(request):
 
 @login_required
 @transaction.atomic
-def add_class(request, name):
+def add_class(request):
 	student = Student.objects.get(user = request.user)
-	if not (Classroom.objecst.filter(name=name).exists):
-		Classroom.create(name)
-	classObj = Classroom.objects.select_for_update().get(name=name)
-	classObj.students.add(student)
-	classObj.save()
-	return redirect(reverse('home'))
+	if not 'post' in request.POST or not request.POST['post']:
+    	errors.append('You must enter an item to add.')
+    else:
+    	if not (Classroom.objecst.filter(name=request.POST['course_id']).exists):
+			Classroom.create(request.POST['course_id'])
+		classObj = Classroom.objects.select_for_update().get(name=request.POST['course_id'])
+    	student = Student.objects.get(user=request.user)
+    	classObj.students.add(student)
+    	classObj.save()
+    return redirect(reverse('home'))
+
 
 @login_required
 @transaction.atomic
