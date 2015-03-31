@@ -154,7 +154,9 @@ def map(request):
 @login_required
 def add_class(request, name):
 	student = Student.objects.get(user = request.user)
-	classObj = Class.objects.select_for_update().get(name = name)
+	if not (Classroom.objecst.filter(name=name).exists):
+		Classroom.create(name)
+	classObj = Classroom.objects.select_for_update().get(name=name)
 	classObj.students.add(student)
 	classObj.save()
 	return redirect(reverse('home'))

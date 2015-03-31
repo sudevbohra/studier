@@ -33,6 +33,8 @@ class Classroom(models.Model):
 	comments = models.ManyToManyField(Comment)
 	students = models.ManyToManyField(Student, related_name='classes', symmetrical='True')
 	documents = models.ManyToManyField(Documents)
+	def create(self, name):
+		self.create(name = name)
 
 class StudyGroup(models.Model):
     owner = models.OneToOneField(Student)
