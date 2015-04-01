@@ -30,7 +30,10 @@ from django.http import HttpResponse
 def home(request):
     # Sets up list of just the logged-in user's (request.user's) items
     user_id = request.user.id
-    return render(request, 'socialnetwork/index.html', {'user_id' : user_id})
+
+    # For now we'll use 15437
+    current_class = "15437"
+    return render(request, 'socialnetwork/index.html', {'user_id' : user_id, 'current_class' : current_class})
 
 
 @login_required
@@ -185,18 +188,21 @@ def remove_class(request, name):
 @login_required
 @transaction.atomic
 def add_post(request, name):
+	errors = []
 	# Creates a new item if it is present as a parameter in the request
-    if not 'post' in request.POST or not request.POST['post']:
-    	errors.append('You must enter an item to add.')
-    else:
-    	student = Student.objects.get(user=request.user)
-    	new_post = Post(text=request.POST['post'], student=student, upvotes=0, location=name)
-    	new_post.save()
-    return redirect(reverse('home'))
+	if not 'post' in request.POST or not request.POST['post']:
+		errors.append('You must enter an item to add.')
+		print "FUCK"
+	else:
+		student = Student.objects.get(user=request.user)
+		new_post = Post(text=request.POST['post'], student=student, upvotes=0, location=name)
+		new_post.save()
+	return redirect(reverse('home'))
 
 @login_required
 @transaction.atomic
 def add_comment(request, id):
+	errors = []
 	if not 'item' in request.POST or not request.POST['item']:
 		errors.append('You must enter an item to add.')
 	else:
