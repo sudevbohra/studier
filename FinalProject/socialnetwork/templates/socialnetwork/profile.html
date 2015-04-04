@@ -1,128 +1,72 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "socialnetwork/base.html" %}
 
-<head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>Simple Sidebar - Start Bootstrap Template</title>
-
-    <!-- Bootstrap Core CSS -->
-    <link href="https://bootswatch.com/flatly/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom CSS -->
-    <link href="/static/css/login.css" rel="stylesheet">
-    <link href="/static/css/profile.css" rel="stylesheet">
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-</head>
-
-<body style="background: url(http://subtlepatterns.com/patterns/gplaypattern.png);">
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" style="color:rgba(242,156,16,1);" href="#"><b>studier</b></a>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li><a href="#">Map</a></li>
-            <li><a href="#menu-toggle" id="menu-toggle">15-122</a></li>
-            <li><a href="#menu-toggle" id="menu-toggle">36-225</a></li>
-            <li><a href="#menu-toggle" id="menu-toggle">37-226</a></li>
-            <li><a href="#about">About</a></li>
-            
-
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="#" class="btn btn-warning">Me</a></li>
-            <li><a href="#">Logout</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
+{% block mainbody %}
 <div class="modal-dialog" style="margin-top: 100px;">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                    <h4 class="modal-title" id="myModalLabel">Bill the Hacker&Hustler</h4>
-                    </div>
-                <div class="modal-body">
-                    <center>
-                    <div class="image-cropper">
-                    <img src="http://abcnews.go.com/images/WNT/140930_wn_gates_16x9_992.jpg" name="aboutme"  border="0">
-                  </div></a>
-                    <h3 class="media-heading">{{full_name}}<small>USA</small></h3>
-                    <div class="rating">
-                    <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-                    </div>
-                    </center>
-                    <hr>
-                    <span><strong>School: {{school}}</strong></span>
-                    <hr>
-                    <span><strong>Major: {{major}}</strong></span>
-                    <hr>
-                    <span><strong>Skills: </strong></span>
-                        <span class="label label-warning">HTML5/CSS/JavaScript</span>
-                        <span class="label label-info">C/C++</span>
-                        <span class="label label-info">Python 2.7</span>
-                        <span class="label label-success">Java</span>
-                    
-                    <hr>
-                    <span><strong>Interests: </strong></span>
-                        <span class="label label-warning">Machine Learning</span>
-                        <span class="label label-info">Entrepreneurship</span>
-                        <span class="label label-info">Web Applications</span>
-                        <span class="label label-success">Distributed Systems</span>
-                    
-                    <hr>
-                    <span><strong>Endorsement: </strong></span>
-                        <span class="label label-warning">Python</span>
-                        <span class="label label-info">Project Management</span>
-                        <span class="label label-info">Photoshop</span>
-                        <span class="label label-success">Django</span>
-                    
-                    <hr>
-
-                    
-                    
-                    <p class="text-left"><strong>Bio: </strong><br>
-                        Interned at Honeywell. Founded Microsoft Inc. Richest Man.</p>
-                    <br>
-                    
-                </div>
-                <div class="modal-footer">
-                    <center>
-                    <button type="button" class="btn btn-info" data-dismiss="modal">Connect</button>
-                    <form action="/socialnetwork/edit" method="get">
-                        <button type="submit" class="btn btn-info" data-dismiss="modal" value="Edit">Edit</button>
-                    </center>
-                </div>
-            </div>
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title" id="myModalLabel">Bill the Hacker&Hustler</h4>
         </div>
-    <!-- jQuery -->
-    <script src="/static/js/jquery.js"></script>
+    <div class="modal-body">
+        <center>
+        <div class="image-cropper">
+        <img src="http://abcnews.go.com/images/WNT/140930_wn_gates_16x9_992.jpg" name="aboutme"  border="0">
+      </div></a>
+        <h3 class="media-heading">{{full_name}}<small>USA</small></h3>
+        <div class="rating">
+        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+        </div>
+        </center>
+        <hr>
+        <span><strong>School: {{school}}</strong></span>
+        <hr>
+        <span><strong>Major: {{major}}</strong></span>
+        <hr>
+        <span><strong>Skills: </strong></span>
+            <span class="label label-warning">HTML5/CSS/JavaScript</span>
+            <span class="label label-info">C/C++</span>
+            <span class="label label-info">Python 2.7</span>
+            <span class="label label-success">Java</span>
+        
+        <hr>
+        <span><strong>Interests: </strong></span>
+            <span class="label label-warning">Machine Learning</span>
+            <span class="label label-info">Entrepreneurship</span>
+            <span class="label label-info">Web Applications</span>
+            <span class="label label-success">Distributed Systems</span>
+        
+        <hr>
+        <span><strong>Endorsement: </strong></span>
+            <span class="label label-warning">Python</span>
+            <span class="label label-info">Project Management</span>
+            <span class="label label-info">Photoshop</span>
+            <span class="label label-success">Django</span>
+        
+        <hr>
 
-    <!-- Bootstrap Core JavaScript -->
-    <script src="/static/js/bootstrap.min.js"></script>
-    <script src="http://mymaplist.com/js/vendor/TweenLite.min.js"></script>
-    <!-- Menu Toggle Script -->
-    
+        
+        
+        <p class="text-left"><strong>Bio: </strong><br>
+            Interned at Honeywell. Founded Microsoft Inc. Richest Man.</p>
+        <br>
+        
+    </div>
+    <div class="modal-footer">
+        <center>
+        <button type="button" class="btn btn-info" data-dismiss="modal">Connect</button>
+        <form action="/socialnetwork/edit" method="get">
+            <button type="submit" class="btn btn-info" data-dismiss="modal" value="Edit">Edit</button>
+        </center>
+    </div>
+</div>
+{% endblock %}
 
-</body>
+{% block scripts %}
+<!-- jQuery -->
+<script src="/static/js/jquery.js"></script>
 
-</html>
+<!-- Bootstrap Core JavaScript -->
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="http://mymaplist.com/js/vendor/TweenLite.min.js"></script>
+<!-- Menu Toggle Script -->
+{% endblock %}
