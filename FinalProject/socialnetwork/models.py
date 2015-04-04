@@ -50,6 +50,9 @@ class Classroom(models.Model):
 	posts = models.ManyToManyField(Post)
 	students = models.ManyToManyField(Student, related_name='classes', symmetrical='True')
 	documents = models.ManyToManyField(Documents)
+
+	def __unicode__(self):
+		return self.name
 	
 class StudyGroup(models.Model):
     owner = models.OneToOneField(Student)

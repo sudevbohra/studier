@@ -30,10 +30,11 @@ from django.http import HttpResponse
 def home(request):
     # Sets up list of just the logged-in user's (request.user's) items
     user_id = request.user.id
-
+    student = Student.objects.get(user=request.user)
     # For now we'll use 15437
     current_class = "15437"
-    return render(request, 'socialnetwork/index.html', {'user_id' : user_id, 'current_class' : current_class})
+    print (student.classes.all())
+    return render(request, 'socialnetwork/index.html', {'user_id' : user_id, 'current_class' : current_class, "classes" : student.classes.all()})
 
 
 @login_required
