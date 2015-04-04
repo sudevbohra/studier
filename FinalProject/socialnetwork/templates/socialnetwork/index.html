@@ -41,11 +41,13 @@
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li><a href="{% url 'map' %}">Map</a></li>
-            <li class="active"><a href="#menu-toggle" id="menu-toggle">15-122</a></li>
-            <li><a href="#menu-toggle" id="menu-toggle">36-225</a></li>
-            <li><a href="#menu-toggle" id="menu-toggle">37-226</a></li>
+            {% for class in classes %}
+                <li class="active"><a href="#menu-toggle" id="menu-toggle">{{ class }}</a></li>
+                <!-- <li><a href="#menu-toggle" id="menu-toggle">36-225</a></li>
+                <li><a href="#menu-toggle" id="menu-toggle">37-226</a></li>
+                 -->
+            {% endfor %}
             <li ><a id = "add-class" href="#add-class"><span class="glyphicon glyphicon-plus"></span></a></li>
-            
 
           </ul>
           <form id = "class" hidden = "true" class="navbar-form navbar-left" action = "{% url 'add_class' %}" method = "post">
