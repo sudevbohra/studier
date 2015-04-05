@@ -36,9 +36,11 @@ def home(request):
     return render(request, 'socialnetwork/index.html', {'user_id' : user_id, 'current_class' : current_class, "classes" : student.classes.all()})
 
 @login_required
-def change_class(request, currClass):
-    posts = Classroom.objects.get(name=currClass).posts.all()
-    return render(request, 'socialnetwork/index.html', {'user_id' : user_id, 'current_class' : currClass, "classes" : student.classes.all(), "posts" : posts})
+def change_class(request, name):
+    user_id = request.user.id
+    student = Student.objects.get(user=request.user)
+    posts = Classroom.objects.get(name=name).posts.all()
+    return render(request, 'socialnetwork/index.html', {'user_id' : user_id, 'current_class' : name, "classes" : student.classes.all(), "posts" : posts})
 
 @login_required
 def map(request):
