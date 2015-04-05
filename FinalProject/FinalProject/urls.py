@@ -17,6 +17,7 @@ urlpatterns = patterns('',
     url(r'^socialnetwork/add_class$', 'socialnetwork.views.add_class', name='add_class'),
     url(r'^socialnetwork/add_post/(?P<name>\w+)$', 'socialnetwork.views.add_post', name='add_post'),
     url(r'^socialnetwork/add_comment/(?P<id>\d+)$', 'socialnetwork.views.add_comment', name='add_comment'),
+    url(r'^socialnetwork/change_class/(?P<id>\d+)$', 'socialnetwork.views.change_class', name='add_comment'),
     # url(r'^socialnetwork/edit/$', 'socialnetwork.views.edit', name='edit'),
     # url(r'^socialnetwork/profile/(?P<user>\w+)$', 'socialnetwork.views.profile', name='profile'),
 )
