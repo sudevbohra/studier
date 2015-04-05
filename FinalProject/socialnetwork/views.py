@@ -33,7 +33,6 @@ def home(request):
     student = Student.objects.get(user=request.user)
     # For now we'll use 15437
     current_class = "15437"
-    print (student.classes.all())
     return render(request, 'socialnetwork/index.html', {'user_id' : user_id, 'current_class' : current_class, "classes" : student.classes.all()})
 
 
@@ -105,12 +104,13 @@ def register(request):
 
 @login_required
 def profile(request, id):
-	user = get_object_or_404(User, id=id)
-	full_name = user.get_full_name()
-	student = Student.objects.get(user=user)
-	school = student.school
-	major = student.major
-	return render(request, 'socialnetwork/profile.html', {'full_name' : full_name, 'student' : student, 'school' : school, 'major' : major})
+    user = get_object_or_404(User, id=id)
+    full_name = user.get_full_name()
+    student = Student.objects.get(user=user)
+    school = student.school
+    major = student.major
+    user_id = request.user.id
+    return render(request, 'socialnetwork/profile.html', {'full_name' : full_name, 'student' : student, 'school' : school, 'major' : major, 'user_id' : user_id, "classes" : student.classes.all()})
 
 @login_required
 @transaction.atomic
@@ -153,7 +153,8 @@ def edit(request):
 def map(request):
     # Sets up list of just the logged-in user's (request.user's) items
     user_id = request.user.id
-    return render(request, 'socialnetwork/map.html', {'user_id' : user_id})
+    student = Student.objects.get(user=request.user)
+    return render(request, 'socialnetwork/map.html', {'user_id' : user_id, "classes" : student.classes.all()})
 
 @login_required
 @transaction.atomic

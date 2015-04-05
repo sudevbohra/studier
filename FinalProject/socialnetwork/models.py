@@ -28,12 +28,14 @@ class Comment(models.Model):
 		return(self.text, self.date, self.username)
 
 class Post(models.Model):
+	group_name = models.CharField(blank=True, max_length=40)
 	location = models.CharField(blank=True, max_length=40)
 	text = models.CharField(max_length=160)
 	student = models.ForeignKey(Student)
 	date = models.DateTimeField(auto_now_add=True)
 	comments = models.ManyToManyField(Comment)
 	upvotes = models.IntegerField(blank=True)
+
 	def __unicode__(self):
 		return self.text
 	def natural_key(self):
@@ -55,6 +57,7 @@ class Classroom(models.Model):
 		return self.name
 	
 class StudyGroup(models.Model):
+	name = models.CharField(blank=True, max_length=40)
     owner = models.OneToOneField(Student)
     members = models.ManyToManyField(Student, related_name='member')
     start_time = models.DateTimeField()
