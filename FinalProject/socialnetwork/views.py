@@ -35,6 +35,10 @@ def home(request):
     current_class = "15437"
     return render(request, 'socialnetwork/index.html', {'user_id' : user_id, 'current_class' : current_class, "classes" : student.classes.all()})
 
+@login_required
+def change_class(request, currClass):
+    posts = Classroom.objects.get(name=currClass).posts.all()
+    return render(request, 'socialnetwork/index.html', {'user_id' : user_id, 'current_class' : currClass, "classes" : student.classes.all(), "posts" : posts})
 
 @login_required
 def map(request):
