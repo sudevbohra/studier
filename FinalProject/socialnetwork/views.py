@@ -41,8 +41,11 @@ def change_class(request, name):
     student = Student.objects.get(user=request.user)
     posts = Classroom.objects.get(name=name).posts.all()
     current_class = name
-
-    return render(request, 'socialnetwork/index.html', {'current_post' : posts[:1].get(), 'current_class' : current_class, 'user_id' : user_id, 'current_class' : name, "classes" : student.classes.all(), "posts" : posts})
+    try:
+        current_post = posts[:1].get()
+    except Exception:
+        current_post = "Welcome to Classroom " + name
+    return render(request, 'socialnetwork/index.html', {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, 'current_class' : name, "classes" : student.classes.all(), "posts" : posts})
 
 @login_required
 def show_post(request, id):
