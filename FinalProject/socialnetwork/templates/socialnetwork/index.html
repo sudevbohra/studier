@@ -4,34 +4,22 @@
 <div id="wrapper">
 
     <!-- Sidebar -->
-    <!-- <div id="sidebar-wrapper" style="background: url(http://subtlepatterns.com/patterns/congruent_outline.png);">
+    <div id="sidebar-wrapper" style="background: url(http://subtlepatterns.com/patterns/congruent_outline.png);">
         <ul class="sidebar-nav">
             <li class="sidebar-brand">
                 <a href="#">
                     Studi Room 15-122
                 </a>
             </li>
-            <li>
-                <a href="#" ><span class="glyphicon glyphicon-question-sign"></span>  This is the first question</a>
-            </li>
-            <li>
-                <a href="#" ><span class="glyphicon glyphicon-question-sign"></span>  This is the second question</a>
-            </li>
-            <li>
-                <a href="#" ><span class="glyphicon glyphicon-question-sign"></span>  This is the third question</a>
-            </li>
-            <li>
-                <a href="#" ><span class="glyphicon glyphicon-file"></span>  These are some notes</a>
-            </li>
-            <li>
-                <a href="#" ><span class="glyphicon glyphicon-question-sign"></span>  More questions about life</a>
-            </li>
-            <li>
-                <a href="#" ><span class="glyphicon glyphicon-question-sign"></span>  Other questions about everything else</a>
-            </li>
+
+            {% for post in posts %}
+                <li>
+                <a href="socialnetwork/show_post/{{post.id}}" ><span class="glyphicon glyphicon-question-sign"></span>  {{post.text}}</a>
+                </li>
+            {% endfor %}
             
         </ul>
-    </div> -->
+    </div>
     <!-- /#sidebar-wrapper -->
 
     <!-- Page Content -->
