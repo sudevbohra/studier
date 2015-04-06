@@ -13,7 +13,7 @@ from django.contrib.auth import login, authenticate
 from django.db import transaction
 
 from socialnetwork.models import *
-from socialnetwork.forms import RegistrationForm, EditForm
+from socialnetwork.forms import RegistrationForm, EditForm, PostForm
 
 # Used to generate a one-time-use token to verify a user's email address
 from django.contrib.auth.tokens import default_token_generator
@@ -33,7 +33,9 @@ def home(request):
     student = Student.objects.get(user=request.user)
     # For now we'll use 15437
     current_class = "15437"
-    return render(request, 'socialnetwork/index.html', {'user_id' : user_id, 'current_class' : current_class, "classes" : student.classes.all()})
+    context = {'user_id' : user_id, 'current_class' : current_class, "classes" : student.classes.all()}
+    context['form'] = PostForm()
+    return render(request, 'socialnetwork/index.html', context)
 
 @login_required
 def change_class(request, name):
@@ -42,8 +44,13 @@ def change_class(request, name):
     posts = Classroom.objects.get(name=name).posts.all()
     current_class = name
 
-    return render(request, 'socialnetwork/index.html', {'current_post' : posts[:1].get(), 'current_class' : current_class, 'user_id' : user_id, 'current_class' : name, "classes" : student.classes.all(), "posts" : posts})
-
+    try:
+        current_post = posts[:1].get()
+    except Exception:
+        current_post = "Welcome."
+    context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, 'current_class' : name, "classes" : student.classes.all(), "posts" : posts}
+    context['form'] = PostForm()
+    return render(request, 'socialnetwork/index.html', context)
 @login_required
 def show_post(request, id):
     user_id = request.user.id
@@ -51,10 +58,10 @@ def show_post(request, id):
     current_post = Post.objects.get(id=id)
     posts = current_post.classroom.posts.all()
     current_class = current_post.classroom
-    
+    context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, "classes" : student.classes.all(), "posts" : posts}
+    context['form'] = PostForm()
 
-    return render(request, 'socialnetwork/index.html', {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, "classes" : student.classes.all(), "posts" : posts})
-
+    return render(request, 'socialnetwork/index.html', context)
 
 
 @login_required
@@ -212,17 +219,18 @@ def remove_class(request, name):
 @transaction.atomic
 def add_post(request, name):
     errors = []
-    # Creates a new item if it is present as a parameter in the request
-    if not 'post' in request.POST or not request.POST['post']:
-        errors.append('You must enter an item to add.')
-    else:
+    form = PostForm(request.POST, request.FILES)
+    if(form.is_valid()):
+        post = Post(text=form.cleaned_data['text'])
         student = Student.objects.get(user=request.user)
         classroom = Classroom.objects.get(name=name)
-        new_post = Post(classroom=classroom, text=request.POST['post'], student=student, upvotes=0, location=name)
-        new_post.save()
-
-
-	return change_class(request, name)
+        post.classroom = classroom
+        post.student = student
+        post.location = name
+        post.save()
+    else:
+        print 'FORM NOT VALID'
+    return change_class(request, name)
 
 @login_required
 @transaction.atomic

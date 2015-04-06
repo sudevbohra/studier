@@ -48,7 +48,7 @@ class Post(models.Model):
 	student = models.ForeignKey(Student)
 	date = models.DateTimeField(auto_now_add=True)
 	comments = models.ManyToManyField(Comment)
-	upvotes = models.IntegerField(blank=True)
+	upvotes = models.IntegerField(blank=True, default=0)
 	classroom = models.ForeignKey(Classroom, null=True, related_name='posts')
 
 	def __unicode__(self):

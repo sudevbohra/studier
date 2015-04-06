@@ -67,3 +67,17 @@ class EditForm(forms.ModelForm):
             raise forms.ValidationError('File too big (max size is {0} bytes)'.format(MAX_UPLOAD_SIZE))
         print picture
         return picture
+
+class PostForm(forms.Form):
+    text = forms.CharField(max_length=300, widget = forms.Textarea)
+    title = forms.CharField(max_length=300)
+    def clean(self):
+        # Calls our parent (forms.Form) .clean function, gets a dictionary
+        # of cleaned data as a result
+        cleaned_data = super(PostForm, self).clean()
+        # We must return the cleaned data we got from our parent.
+        return cleaned_data
+
+    # class Meta:
+    #     model = Post
+    #     exclude = {'group_name', 'location', 'student', 'date', 'comments', 'upvotes', 'classroom'}
