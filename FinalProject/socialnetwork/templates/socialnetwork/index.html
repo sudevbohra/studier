@@ -51,29 +51,7 @@
 
     <div class="timeline-centered">
 
-    <article class="timeline-entry">
-
-        <div class="timeline-entry-inner">
-
-            <div class="timeline-label">
-                <form action="{% url 'add_post' current_class %}" method="post">
-                    <div class="col">
-                        <div class="panel" style="background-color:#00BC8C">
-                          <div class="panel-heading">
-                            <h3 class="panel-title">New Post:</h3>
-                          </div>
-                          <div class="panel-body">
-                            <input type="text" class = "form-control" maxlength="160" name="post">
-                            <input class = "btn btn-primary btn-xs"type="submit" text="Post">
-                          </div>
-                        </div>
-                    </div>
-                  {% csrf_token %}
-                </form>
-            </div>
-        </div>
-
-    </article>
+    
 
 
     <article class="timeline-entry">
@@ -96,17 +74,44 @@
 
         <div class="timeline-entry-inner">
 
+            <div class="timeline-label">
+                <form action="{% url 'add_post' current_class %}" method="post">
+                    <div class="col">
+                        <div class="panel" style="background-color:#00BC8C">
+                          <div class="panel-heading">
+                            <h3 class="panel-title">Comment on this post</h3>
+                          </div>
+                          <div class="panel-body">
+                            <textarea style = "height:100px;" type="text" class = "form-control" maxlength="160" name="post"></textarea>
+                            <br>
+                            <input class = "btn btn-primary btn-sm"type="submit" text="Post">
+                          </div>
+                        </div>
+                    </div>
+                  {% csrf_token %}
+                </form>
+            </div>
+        </div>
+
+    </article>
+
+{% for comment in current_post.comments.all reversed %}
+    <article class="timeline-entry">
+
+        <div class="timeline-entry-inner">
+
             <div class="timeline-icon bg-secondary">
                 <i class="entypo-suitcase"></i>
             </div>
 
             <div class="timeline-label">
-                <h2><a href="#">Sudev Bohra</a> <span>gave an Answer</span></h2>
-                <p>This is real, trust me.</p>
+                <h2><a href="#">{{comment.student.user.first_name}} {{comment.student.user.last_name}}</a> <span>{{comment.date}}</span></h2>
+                <p>{{comment.text}}</p>
             </div>
         </div>
 
     </article>
+{% endfor %}
     <article class="timeline-entry">
 
         <div class="timeline-entry-inner">
