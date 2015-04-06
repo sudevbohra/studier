@@ -92,7 +92,7 @@
 
     </article>
 
-    <article class="timeline-entry">
+   <!--  <article class="timeline-entry">
 
         <div class="timeline-entry-inner">
 
@@ -124,8 +124,25 @@
             </div>
         </div>
 
+    </article> -->
+    <article class="timeline-entry begin">
+    {% if current_post.id %}
+    <div class="timeline-entry-inner">
+     <form enctype="multipart/form-data" method="POST" action="{% url 'add_comment' current_post.id %}"> 
+        {% for error in errors %}
+          <h2 class="form-password-heading">{{error}}</h2>
+        {% endfor %}   
+        <h2 class="form-signin-heading">Comment</h2>
+
+            {{ comment_form }}
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Add Comment!</button>  
+        {% csrf_token %} 
+      </form>
+    {% endif %}
     </article>
 
+    
 
     <article class="timeline-entry begin">
 

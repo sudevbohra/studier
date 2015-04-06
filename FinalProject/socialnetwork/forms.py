@@ -67,3 +67,10 @@ class EditForm(forms.ModelForm):
             raise forms.ValidationError('File too big (max size is {0} bytes)'.format(MAX_UPLOAD_SIZE))
         print picture
         return picture
+
+class CommentForm(forms.Form):
+    text = forms.CharField(max_length=300)
+    
+    def clean(self):
+        cleaned_data = super(CommentForm, self).clean()
+        return cleaned_data

@@ -13,7 +13,7 @@ from django.contrib.auth import login, authenticate
 from django.db import transaction
 
 from socialnetwork.models import *
-from socialnetwork.forms import RegistrationForm, EditForm
+from socialnetwork.forms import *
 
 # Used to generate a one-time-use token to verify a user's email address
 from django.contrib.auth.tokens import default_token_generator
@@ -33,10 +33,11 @@ def home(request):
     student = Student.objects.get(user=request.user)
     # For now we'll use 15437
     current_class = "15437"
-    return render(request, 'socialnetwork/index.html', {'user_id' : user_id, 'current_class' : current_class, "classes" : student.classes.all()})
+    comment_form = CommentForm()
+    return render(request, 'socialnetwork/index.html', {'comment_form' : comment_form, 'user_id' : user_id, 'current_class' : current_class, "classes" : student.classes.all()})
 
 @login_required
-def change_class(request, name):
+def change_class(request, name, post=None):
     user_id = request.user.id
     student = Student.objects.get(user=request.user)
     posts = Classroom.objects.get(name=name).posts.all()
@@ -45,7 +46,9 @@ def change_class(request, name):
         current_post = posts[:1].get()
     except Exception:
         current_post = "Welcome to Classroom " + name
-    return render(request, 'socialnetwork/index.html', {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, 'current_class' : name, "classes" : student.classes.all(), "posts" : posts})
+    comment_form = CommentForm()
+    return render(request, 'socialnetwork/index.html', {'comment_form' : comment_form, 'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, 'current_class' : name, "classes" : student.classes.all(), "posts" : posts})
+
 
 @login_required
 def show_post(request, id):
@@ -54,9 +57,9 @@ def show_post(request, id):
     current_post = Post.objects.get(id=id)
     posts = current_post.classroom.posts.all()
     current_class = current_post.classroom
-    
+    comment_form = CommentForm()
 
-    return render(request, 'socialnetwork/index.html', {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, "classes" : student.classes.all(), "posts" : posts})
+    return render(request, 'socialnetwork/index.html', {'comment_form' : comment_form, 'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, "classes" : student.classes.all(), "posts" : posts})
 
 
 
@@ -230,13 +233,14 @@ def add_post(request, name):
 @login_required
 @transaction.atomic
 def add_comment(request, id):
-	errors = []
-	if not 'item' in request.POST or not request.POST['item']:
-		errors.append('You must enter an item to add.')
-	else:
-		post = Post.objects.get(id=id)
-        student = Student.objects.get(user=request.user)
-        new_comment = Comment(text=request.POST['item'], student=student, upvotes=0)
-        new_comment.save()
-        post.comments.add(new_comment)
-	return redirect(reverse('home'))
+    errors = []
+    form = CommentForm(request.POST)
+    post = Post.objects.get(id=id)
+    student = Student.objects.get(user=request.user)
+    #form.cleaned_data["text"]
+    new_comment = Comment(text="kjkfd", student=student, upvotes=0)
+    new_comment.save()
+    post.comments.add(new_comment)
+    post.save()
+    class_name = post.classroom
+    return show_post(request, post.id)
