@@ -238,7 +238,8 @@ def add_comment(request, id):
     post = Post.objects.get(id=id)
     student = Student.objects.get(user=request.user)
     #form.cleaned_data["text"]
-    new_comment = Comment(text="kjkfd", student=student, upvotes=0)
+    form.is_valid()
+    new_comment = Comment(text=form.cleaned_data["text"], student=student, upvotes=0)
     new_comment.save()
     post.comments.add(new_comment)
     post.save()
