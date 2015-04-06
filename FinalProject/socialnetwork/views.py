@@ -45,6 +45,19 @@ def change_class(request, name):
     return render(request, 'socialnetwork/index.html', {'current_post' : posts[:1].get(), 'current_class' : current_class, 'user_id' : user_id, 'current_class' : name, "classes" : student.classes.all(), "posts" : posts})
 
 @login_required
+def show_post(request, id):
+    user_id = request.user.id
+    student = Student.objects.get(user=request.user)
+    current_post = Post.objects.get(id=id)
+    posts = current_post.classroom.posts.all()
+    current_class = current_post.classroom
+    
+
+    return render(request, 'socialnetwork/index.html', {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, "classes" : student.classes.all(), "posts" : posts})
+
+
+
+@login_required
 def map(request):
     return render(request, "socialnetwork/map.html", {})
 
