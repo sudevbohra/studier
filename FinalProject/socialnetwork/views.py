@@ -40,7 +40,8 @@ def change_class(request, name):
     user_id = request.user.id
     student = Student.objects.get(user=request.user)
     posts = Classroom.objects.get(name=name).posts.all()
-    return render(request, 'socialnetwork/index.html', {'user_id' : user_id, 'current_class' : name, "classes" : student.classes.all(), "posts" : posts})
+    current_class = name
+    return render(request, 'socialnetwork/index.html', {'current_class' : current_class, 'user_id' : user_id, 'current_class' : name, "classes" : student.classes.all(), "posts" : posts})
 
 @login_required
 def map(request):
@@ -200,11 +201,11 @@ def add_post(request, name):
 	# Creates a new item if it is present as a parameter in the request
 	if not 'post' in request.POST or not request.POST['post']:
 		errors.append('You must enter an item to add.')
-		print "FUCK"
 	else:
 		student = Student.objects.get(user=request.user)
 		new_post = Post(text=request.POST['post'], student=student, upvotes=0, location=name)
 		new_post.save()
+
 	return redirect(reverse('home'))
 
 @login_required
