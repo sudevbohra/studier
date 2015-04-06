@@ -4,7 +4,7 @@
 <div id="wrapper">
 
     <!-- Sidebar -->
-    <div id="sidebar-wrapper" style="background: url(http://subtlepatterns.com/patterns/congruent_outline.png);">
+    <!-- <div id="sidebar-wrapper" style="background: url(http://subtlepatterns.com/patterns/congruent_outline.png);">
         <ul class="sidebar-nav">
             <li class="sidebar-brand">
                 <a href="#">
@@ -31,7 +31,7 @@
             </li>
             
         </ul>
-    </div>
+    </div> -->
     <!-- /#sidebar-wrapper -->
 
     <!-- Page Content -->
@@ -65,6 +65,7 @@
 
     </article>
 
+
     <article class="timeline-entry">
 
         <div class="timeline-entry-inner">
@@ -74,8 +75,8 @@
             </div>
 
             <div class="timeline-label">
-                <h2><a href="#">Shashwat Srivastava</a> <span>asked a Question</span></h2>
-                <p>Is the world really round?</p>
+                <h2><a href="#">{{current_post.student.user.first_name}} {{current_post.student.user.last_name}}</a> <span>{{current_post.date}}</span></h2>
+                <p>{{current_post}}</p>
             </div>
         </div>
 
@@ -132,10 +133,10 @@
 
 {% block scripts %}
     <!-- jQuery -->
-    <script src="static/js/jquery.js"></script>
+    <script src="/static/js/jquery.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="static/js/bootstrap.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
 
     <!-- Menu Toggle Script -->
     <script>
