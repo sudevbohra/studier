@@ -1,5 +1,26 @@
 {% extends "socialnetwork/base.html" %}
 
+{% block top %}
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        <a>wow</a>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
 {% block mainbody %}
 <div id="wrapper">
 
@@ -7,9 +28,10 @@
     <div id="sidebar-wrapper" style="background: url(http://subtlepatterns.com/patterns/congruent_outline.png);">
         <ul class="sidebar-nav">
             <li class="sidebar-brand">
-                <a href="#">
-                    Studi Room 15-122
-                </a>
+                <div>
+                 Classroom {{current_class}}     <button style="position:relative; margin-left:110px; "class="btn btn-info" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-file"></span> Add Post</button>
+                </div>
+
             </li>
 
             {% for post in posts %}
@@ -42,7 +64,7 @@
                           </div>
                           <div class="panel-body">
                             <input type="text" class = "form-control" maxlength="160" name="post">
-                            <input type="submit" text="Post">
+                            <input class = "btn btn-primary btn-xs"type="submit" text="Post">
                           </div>
                         </div>
                     </div>
@@ -69,7 +91,6 @@
         </div>
 
     </article>
-
 
     <article class="timeline-entry">
 
@@ -124,7 +145,7 @@
     <script src="/static/js/jquery.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 
     <!-- Menu Toggle Script -->
     <script>
