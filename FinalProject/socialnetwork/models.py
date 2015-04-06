@@ -27,20 +27,6 @@ class Comment(models.Model):
 	def natural_key(self):
 		return(self.text, self.date, self.username)
 
-class Post(models.Model):
-	group_name = models.CharField(blank=True, max_length=40)
-	location = models.CharField(blank=True, max_length=40)
-	text = models.CharField(max_length=160)
-	student = models.ForeignKey(Student)
-	date = models.DateTimeField(auto_now_add=True)
-	comments = models.ManyToManyField(Comment)
-	upvotes = models.IntegerField(blank=True)
-
-	def __unicode__(self):
-		return self.text
-	def natural_key(self):
-		return(self.user, self.id)
-
 class Documents(models.Model):
 	name = models.CharField(blank=True, max_length=40)
 	documents_url = models.CharField(blank=True, max_length=150)
@@ -49,12 +35,27 @@ class Documents(models.Model):
 
 class Classroom(models.Model):
 	name = models.CharField(blank=True, max_length=40)
-	posts = models.ManyToManyField(Post)
 	students = models.ManyToManyField(Student, related_name='classes', symmetrical='True')
 	documents = models.ManyToManyField(Documents)
 
 	def __unicode__(self):
 		return self.name
+
+class Post(models.Model):
+	group_name = models.CharField(blank=True, max_length=40)
+	location = models.CharField(blank=True, max_length=40)
+	text = models.CharField(max_length=160)
+	student = models.ForeignKey(Student)
+	date = models.DateTimeField(auto_now_add=True)
+	comments = models.ManyToManyField(Comment)
+	upvotes = models.IntegerField(blank=True)
+	classroom = models.ForeignKey(Classroom, null=True, related_name='posts')
+
+	def __unicode__(self):
+		return self.text
+	def natural_key(self):
+		return(self.user, self.id)
+
 	
 class StudyGroup(models.Model):
 	name = models.CharField(blank=True, max_length=40)
