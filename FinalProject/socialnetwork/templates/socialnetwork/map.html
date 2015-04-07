@@ -1,10 +1,13 @@
 {% extends "socialnetwork/base.html" %}
 {% load addcss %}
 
-<!DOCTYPE html>
+
+{% block head %}
+
+{% endblock %}
+
 {% if studygroupform %}
 {% block top %}
-
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >
   <div class="modal-dialog">
     <div class="modal-content">
@@ -17,10 +20,14 @@
         <table style="margin-right:auto;
           margin-left:auto; ">
                 {{ studygroupform.name|addcss:"form-control, placeholder:group name"}}
-
-                {{ studygroupform.start_time|addcss:"form-control, placeholder:start time, id:datetime1"}}
-
-                {{ studygroupform.end_time|addcss:"form-control, placeholder:end time, id:datetime2"}}
+                
+              <div id="datetimepicker" class="input-append date">
+              {{ studygroupform.start_time|addcss:"form-control, placeholder:start time"}}
+              <span class="add-on">
+                <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+              </span>
+            </div>
+                {{ studygroupform.end_time|addcss:"form-control, placeholder:end time"}}
 
                 {{ studygroupform.course|addcss:"form-control, placeholder:course"}}
 
@@ -34,12 +41,14 @@
 
                 
         </table>
-        </form>
+        
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         <button type="submit" class="btn btn-primary">Create!</button>
       </div>
+      {% csrf_token %}
+      </form>
     </div>
   </div>
 </div>
@@ -58,7 +67,9 @@
         
       }
     </style>
+    <script src="/static/js/jquery.js"> </script>
     <script src="https://maps.googleapis.com/maps/api/js"></script>
+    <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
     <script>
 
 
@@ -129,16 +140,12 @@
 <div id="map-canvas"></div>
 <div>
  <a href="#" style="position: fixed; bottom: 30px; right: 70px;" class="btn btn-success btn-sm  " data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-plus" id = "location" aria-hidden="true"></span> Study Group</a>
-<a href="#" style="position: fixed; bottom: 30px; right: 30px;" class="btn btn-info btn-sm  " data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-record" id = "location" aria-hidden="true"></span></a>
+<a href="#" style="position: fixed; bottom: 30px; right: 30px;" class="btn btn-info btn-sm  "><span class="glyphicon glyphicon-record" id = "location" aria-hidden="true"></span></a>
 </div>
+
     <!-- jQuery -->
-    <script src="/static/js/jquery.js"> </script>
-    <script>
-     $(function () {
-                $('#datetime1').datetimepicker();
-                $('#datetime2').datetimepicker();
-            });
-     </script>
+    
+
 
     
     <!-- Menu Toggle Script -->

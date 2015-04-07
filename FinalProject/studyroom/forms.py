@@ -4,8 +4,6 @@ from studyroom.models import *
 from django.forms.widgets import SplitDateTimeWidget
 
 class StudyGroupForm(forms.ModelForm):
-	start_time=forms.SplitDateTimeField(input_time_formats=['%I:%M %p'], widget = SplitDateTimeWidget())
-  	end_time=forms.SplitDateTimeField(input_time_formats=['%I:%M %p'])
 	class Meta:
 		model = StudyGroup
 		name = models.CharField(blank=True, max_length=40)
