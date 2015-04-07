@@ -21,6 +21,8 @@ urlpatterns = patterns('',
     url(r'^socialnetwork/change_class/(?P<name>\d\d\d\d\d+)$', 'socialnetwork.views.change_class', name='change_class'),
     url(r'^socialnetwork/friend/(?P<id>\d+)$', 'socialnetwork.views.friend', name='friend'),
     url(r'^socialnetwork/unfriend/(?P<id>\d+)$', 'socialnetwork.views.unfriend', name='unfriend'),
+    url(r'^studyroom/show_modal$', 'studyroom.views.show_modal', name='show_modal'),
+    url(r'^studyroom/add_studygroup$', 'studyroom.views.add_studygroup', name='add_studygroup'),
     # url(r'^socialnetwork/edit/$', 'socialnetwork.views.edit', name='edit'),
     # url(r'^socialnetwork/profile/(?P<user>\w+)$', 'socialnetwork.views.profile', name='profile'),
 )

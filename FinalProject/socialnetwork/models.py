@@ -44,12 +44,13 @@ class Classroom(models.Model):
 class Post(models.Model):
 	group_name = models.CharField(blank=True, max_length=40)
 	location = models.CharField(blank=True, max_length=40)
-	text = models.CharField(max_length=160)
+	text = models.CharField(max_length=4000)
 	student = models.ForeignKey(Student)
 	date = models.DateTimeField(auto_now_add=True)
 	comments = models.ManyToManyField(Comment)
 	upvotes = models.IntegerField(blank=True, default=0)
 	classroom = models.ForeignKey(Classroom, null=True, related_name='posts')
+	title = models.CharField(max_length=200)
 
 	def __unicode__(self):
 		return self.text
@@ -57,20 +58,20 @@ class Post(models.Model):
 		return(self.user, self.id)
 
 	
-class StudyGroup(models.Model):
-	name = models.CharField(blank=True, max_length=40)
-	owner = models.OneToOneField(Student)
-	members = models.ManyToManyField(Student, related_name='member')
-	start_time = models.DateTimeField()
-	end_time = models.DateTimeField()
-	active = models.BooleanField(default=True)
-	course = models.CharField(max_length = 10)
-	topic = models.CharField(max_length=100)
-	description = models.CharField(max_length=255)
-	location_room = models.CharField(max_length=50)
-	location_name = models.CharField(max_length=255)
-	location_latitude = models.FloatField()
-	location_longitude  = models.FloatField()
-	def __unicode__(self):
-		return 'StudyGroup(id=' + str(self.id) + ", owner=" + str(self.owner) + ')'
+# class StudyGroup(models.Model):
+# 	name = models.CharField(blank=True, max_length=40)
+# 	owner = models.OneToOneField(Student)
+# 	members = models.ManyToManyField(Student, related_name='member')
+# 	start_time = models.DateTimeField()
+# 	end_time = models.DateTimeField()
+# 	active = models.BooleanField(default=True)
+# 	course = models.CharField(max_length = 10)
+# 	topic = models.CharField(max_length=100)
+# 	description = models.CharField(max_length=255)
+# 	location_room = models.CharField(max_length=50)
+# 	location_name = models.CharField(max_length=255)
+# 	location_latitude = models.FloatField()
+# 	location_longitude  = models.FloatField()
+# 	def __unicode__(self):
+# 		return 'StudyGroup(id=' + str(self.id) + ", owner=" + str(self.owner) + ')'
 

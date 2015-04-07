@@ -45,7 +45,7 @@
 
             {% for post in posts %}
                 <li>
-                <a href="/socialnetwork/show_post/{{post.id}}" ><span class="glyphicon glyphicon-question-sign"></span>  {{post.text}}</a>   
+                <a href="/socialnetwork/show_post/{{post.id}}" ><span class="glyphicon glyphicon-question-sign"></span>  {{post.title}}</a>   
                 </li>
             {% endfor %}
             
@@ -55,117 +55,91 @@
 
     <!-- Page Content -->
     <div id="page-content-wrapper" style="margin-top:60px">
+        <h1 style="color:black;">{{current_post.title}}</h1>
         <div class="container">
-<div class="row">
+            
 
-    <div class="timeline-centered">
+            <div class="timeline-centered">
 
-    <article class="timeline-entry">
-
-        <div class="timeline-entry-inner">
-
-            <div class="timeline-icon bg-success">
-                <i class="entypo-feather"></i>
-            </div>
-
-            <div class="timeline-label">
-                <h2><a href="#">{{current_post.student.user.first_name}} {{current_post.student.user.last_name}}</a> <span>{{current_post.date}}</span></h2>
-                <p>{{current_post}}</p>
-            </div>
-        </div>
-
-    </article>
-
-   <article class="timeline-entry">
-
-        {% for comment in current_post.comments.all reversed %}
             <article class="timeline-entry">
-
 
                 <div class="timeline-entry-inner">
 
-                    <div class="timeline-icon bg-secondary">
-                        <i class="entypo-suitcase"></i>
+                    <div class="timeline-icon bg-success">
+                        <i class="entypo-feather"></i>
                     </div>
 
                     <div class="timeline-label">
-                        <h2><a href="#">{{comment.student.user.first_name}} {{comment.student.user.last_name}}</a> <span>{{comment.date}}</span></h2>
-                        <p>{{comment.text}}</p>
+                        <h2><a href="#">{{current_post.student.user.first_name}} {{current_post.student.user.last_name}}</a> <span>{{current_post.date}}</span></h2>
+                        <p>{{current_post}}</p>
                     </div>
                 </div>
 
             </article>
-        {% endfor %}
 
-    {% if current_post.id %}
-    <article class="timeline-entry">
+           <article class="timeline-entry">
 
-        <div class="timeline-entry-inner">
+                {% for comment in current_post.comments.all reversed %}
+                    <article class="timeline-entry">
 
-            <div class="timeline-label">
-                <form action="{% url 'add_comment' current_post.id %}" method="post">
-                    <div class="col">
-                        <div class="panel" style="background-color:#00BC8C">
-                          <div class="panel-heading">
-                            <h3 class="panel-title">Comment on this post</h3>
-                          </div>
-                          <div class="panel-body">
-                            {{ comment_form.text|addcss:"form-control, placeholder:Comment" }}
 
-                            <button class="btn btn-lg btn-primary btn-block" type="submit">Add Comment!</button>  
-                            
-                          </div>
+                        <div class="timeline-entry-inner">
+
+                            <div class="timeline-icon bg-secondary">
+                                <i class="entypo-suitcase"></i>
+                            </div>
+
+                            <div class="timeline-label">
+                                <h2><a href="#">{{comment.student.user.first_name}} {{comment.student.user.last_name}}</a> <span>{{comment.date}}</span></h2>
+                                <p>{{comment.text}}</p>
+                            </div>
                         </div>
+
+                    </article>
+                {% endfor %}
+
+            {% if current_post.id %}
+            <article class="timeline-entry">
+
+                <div class="timeline-entry-inner">
+
+                    <div class="timeline-label">
+                        <form action="{% url 'add_comment' current_post.id %}" method="post">
+                            <div class="col">
+                                <div class="panel" style="background-color:#00BC8C">
+                                  <div class="panel-heading">
+                                    <h3 class="panel-title">Comment on this post</h3>
+                                  </div>
+                                  <div class="panel-body">
+                                    {{ comment_form.text|addcss:"form-control, placeholder:Comment" }}
+
+                                    <button class="btn btn-lg btn-primary btn-block" type="submit">Add Comment!</button>  
+                                    
+                                  </div>
+                                </div>
+                            </div>
+                          {% csrf_token %}
+                        </form>
                     </div>
-                  {% csrf_token %}
-                </form>
-            </div>
-        </div>
+                </div>
 
-    </article>
-    {% endif %}
+            </article>
+            {% endif %}
 
-    
+            
 
-    <article class="timeline-entry begin">
+            <article class="timeline-entry begin">
 
-        <div class="timeline-entry-inner">
-            <a href="#">
-            <div class="timeline-icon" style="-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg);">
-                <i class="entypo-flight"></i>+
-            </div></a>
+                <div class="timeline-entry-inner">
+                    <a href="#">
+                    <div class="timeline-icon" style="-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg);">
+                        <i class="entypo-flight"></i>+
+                    </div></a>
 
-        </div>
+                </div>
 
-    </article>
+            </article>
 {% endblock %}
 
-{% block scripts %}
-    <!-- jQuery -->
-    <script src="/static/js/jquery.js"></script>
 
-    <!-- Bootstrap Core JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-
-    <!-- Menu Toggle Script -->
-    <script>
-    $("#menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
-    });
-
-    
-
-    var addClassHTML="";
-    addClassHTML += "<div class=\"form-group\">";
-    addClassHTML += "    <input name=\"search\" id=\"search\"\/>";
-    addClassHTML += "    <button class=\"btn btn-warning btn-xs\">button<\/button>";
-    addClassHTML += "<\/div>";
-
-    $("#add-class").click(function(e) {
-        $("#add-class").hide(100);
-        $('#class').show(500);
-    });
-    </script>
-{% endblock %}
 
