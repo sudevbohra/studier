@@ -28,14 +28,21 @@ from django.http import HttpResponse
 
 def show_modal(request):
 	studyRoomForm = StudyGroupForm()
-	return render(request, 'socialnetwork/map.html', {'studygroupform' : studyRoomForm})
+	user_id = request.user.id
+	student = Student.objects.get(user=request.user)
+	context = {}
+	context["user_id"] = user_id
+	context["student"] = student
+	context['studygroupform'] = studyRoomForm
+	context['classes'] = student.classes.all()
+	return render(request, 'socialnetwork/map.html', context)
 
-def add_studyroom(request):
+def add_studygroup(request):
 	studygroupform = StudyGroupForm(request.POST)
 	user = request.user
 	student = Student.objects.get(user=user)
 	studygroupform.isValid()
-	studygroup = StudyGroup(name=user.first_name,
+	studygroup = StudyGroup(name=studygroupform.cleaned_data['name'],
 							owner=student,
 							start_time=studygroupform.cleaned_data['start_time'],
 							end_time= studygroupform.cleaned_data['end_time'],

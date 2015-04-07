@@ -14,6 +14,7 @@ from django.db import transaction
 
 from socialnetwork.models import *
 from socialnetwork.forms import *
+from studyroom.forms import *
 
 # Used to generate a one-time-use token to verify a user's email address
 from django.contrib.auth.tokens import default_token_generator
@@ -35,6 +36,7 @@ def home(request):
     context["user_id"] = user_id
     context["student"] = student
     context["classes"] = student.classes.all()
+    context['studygroupform'] = StudyGroupForm()
     # # For now we'll use 15437
     # current_class = "15437"
     # context = {'user_id' : user_id, 'current_class' : current_class, "classes" : student.classes.all()}

@@ -2,13 +2,15 @@ from django.db import models
 
 from django.contrib.auth.models import User
 from socialnetwork.models import *
+from studyroom.widget import *
+
 
 class StudyGroup(models.Model):
 	name = models.CharField(blank=True, max_length=40)
 	owner = models.OneToOneField(Student)
 	members = models.ManyToManyField(Student, related_name='member')
-	start_time = models.DateTimeField()
-	end_time = models.DateTimeField()
+	start_time = models.DateTimeField(widget=SplitSelectDateTimeWidget())
+	end_time = models.DateTimeField(widget=SplitSelectDateTimeWidget())
 	active = models.BooleanField(default=True)
 	course = models.CharField(max_length = 10)
 	topic = models.CharField(max_length=100)
