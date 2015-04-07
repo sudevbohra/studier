@@ -143,21 +143,28 @@ def profile(request, id):
 @login_required
 @transaction.atomic
 def edit(request):
+    print "TEST"
+    context = {}
+    context['user_id'] = request.user.id
+    context['classes'] = Student.objects.get(user=request.user).classes.all()
+    profile = Student.objects.get(user=request.user)
+    form = EditForm()
     try:
         if request.method == 'GET':
-            profile = Student.objects.get(user=request.user)
-            form = EditForm()
-            context = { 'profile': profile, 'form': form }
+            context['profile'] = profile
+            context['form'] = EditForm()
+            print "in GET"
             return render(request, 'socialnetwork/edit.html', context)
-    
-        profile = Student.objects.get(user=request.user)
+            
+        context['profile'] = Student.objects.get(user=request.user)
         form = EditForm(request.POST, request.FILES, instance=profile)
+        context['form'] = form
         #print form
         if not form.is_valid():
-           context = { 'profile': profile, 'form': form }
-           return render(request, 'socialnetwork/edit.html', context)
+            print "NOT VALID"
+            context['form'] = EditForm()
+            return render(request, 'socialnetwork/edit.html', context)
         profile = form.save()
-        print form.cleaned_data
 
         # Update first and last name of the User
         user = request.user
@@ -167,14 +174,19 @@ def edit(request):
         
 
         # form = EditForm(instance=entry)
-        context = {
-            'message': 'Profile updated.',
-            'profile':   profile,
-            'form':    form,
-        }
+        context['message'] = 'Profile updated.'
+        context['profile'] = profile
+        context['form'] = form
+        context['first_name'] = user.first_name
+        context['last_name'] = user.last_name
+        context['user_id'] = request.user.id
+        context['classes'] = Student.objects.get(user=request.user).classes.all()
+        
         #return render(request, 'socialnetwork/profile.html', context)
+
         return redirect('/socialnetwork/profile/' + str(request.user.id))
     except Student.DoesNotExist:
+        print 'FUCK'
         context = { 'message': 'Record with id={0} does not exist'.format(id) }
         return render(request, 'socialnetwork/edit.html', context)
 

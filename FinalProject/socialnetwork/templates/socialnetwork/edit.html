@@ -1,17 +1,44 @@
-{% extends "socialnetwork/login.html" %}
+{% extends "socialnetwork/base.html" %}
 
 {% load addcss %}
 
-
-{% block panel %}
-
-<form method="post" action="{% url 'edit' %}" class="form-signin">
-<table style="margin-right:auto;
-  margin-left:auto; ">
-		{{ form.first_name|addcss:"form-control, placeholder:first name" }}
+{% block mainbody %}
+<div class="modal-dialog" style="margin-top: 100px;">
+<div class="modal-content" style="background-color: rgba(243, 156, 18, 0.8);width: 100%;margin-right: auto;margin-left: auto;">
+	<form method="post" action="{% url 'edit' %}" class="form-signin">
+    <div class="modal-body">
+        <center>
+        <div class="image-cropper" style="width: 500px;height: 300px;border-radius: 5%;">
+        <img src="http://abcnews.go.com/images/WNT/140930_wn_gates_16x9_992.jpg" name="aboutme"  border="0">
+      </div></a>
+        {{ form.first_name|addcss:"form-control, placeholder:first name" }}
 		{{ form.last_name|addcss:"form-control, placeholder:last name" }}
-		{{ form.school|addcss:"form-control, placeholder:school" }}
-		{{ form.major|addcss:"form-control, placeholder:major" }}
-		{% csrf_token %}
-		<input type='submit' name='submitPost' value='Submit' >
+        </center>
+        <hr>
+        {{ form.school|addcss:"form-control, placeholder:school" }}
+        <hr>
+        {{ form.major|addcss:"form-control, placeholder:major" }}
+        <hr>
+        <span><strong>Classes: </strong></span>
+            {% for class in classes %}
+            <span class="label label-info">{{class}}</span>
+            {% endfor %}
+    </div>
+    <div class="modal-footer">
+        <center>
+        <button type="submit" class="btn btn-info" data-dismiss="modal" value="Edit">Done Editing</button>
+        </center>
+    </div>
+    {% csrf_token %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- jQuery -->
+<script src="/static/js/jquery.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="http://mymaplist.com/js/vendor/TweenLite.min.js"></script>
+<!-- Menu Toggle Script -->
 {% endblock %}

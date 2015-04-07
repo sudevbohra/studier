@@ -27,13 +27,14 @@
         <form action="{% url 'unfriend' prof_id %}" method="get">
             <button type="submit" class="btn btn-danger" data-dismiss="modal">Unfriend</button>
         </form>
-        {% else %}
-        <form action="{% url 'friend' prof_id %}" method="get">
-            <button type="submit" class="btn btn-primary" data-dismiss="modal">Add Friend</button>
-        </form>
-        {% endif %}
+        {% elif is_student %}
         <form action="/socialnetwork/edit" method="get">
             <button type="submit" class="btn btn-info" data-dismiss="modal" value="Edit">Edit</button>
+        {% else %}
+        <form action="{% url 'friend' prof_id %}" method="get">
+            <button type="submit" class="btn btn-primary" style="background-color: #00BC8C;border-color: #00BC8C;"data-dismiss="modal">Add Friend</button>
+        </form>
+        {% endif %}
         </center>
     </div>
 </div>

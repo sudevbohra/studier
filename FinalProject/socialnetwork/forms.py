@@ -48,25 +48,29 @@ class RegistrationForm(forms.Form):
         return username
 
 class EditForm(forms.ModelForm):
-    first_name = forms.CharField(max_length=20)
-    last_name  = forms.CharField(max_length=20)
-    school = forms.CharField(max_length=20)
-    major = forms.CharField(max_length=40)
+    first_name = forms.CharField(max_length=20, required=False, widget=forms.TextInput(attrs={'placeholder': 'Search'}))
+    last_name  = forms.CharField(max_length=20, required=False)
+    school = forms.CharField(max_length=20, required=False)
+    major = forms.CharField(max_length=40, required=False)
     class Meta:
         model = Student
         exclude = ('user', 'interests', 'linkedin', 'friends', 'picture_url', 'answer_rating', 'collab_rating', 'endorsements', 'age')
 
-    def clean_picture(self):
-        picture = self.cleaned_data['picture']
-        print picture
-        if not picture:
-            return None
-        # if not picture.content_type or not picture.content_type.startswith('jpg'):
-        #     raise forms.ValidationError('File type is not image')
-        if picture.size > MAX_UPLOAD_SIZE:
-            raise forms.ValidationError('File too big (max size is {0} bytes)'.format(MAX_UPLOAD_SIZE))
-        print picture
-        return picture
+    # def clean_picture(self):
+    #     picture = self.cleaned_data['picture']
+    #     print picture
+    #     if not picture:
+    #         return None
+    #     # if not picture.content_type or not picture.content_type.startswith('jpg'):
+    #     #     raise forms.ValidationError('File type is not image')
+    #     if picture.size > MAX_UPLOAD_SIZE:
+    #         raise forms.ValidationError('File too big (max size is {0} bytes)'.format(MAX_UPLOAD_SIZE))
+    #     print picture
+    #     return picture
+
+    def clean(self):
+        cleaned_data = super(EditForm, self).clean()
+        return cleaned_data
 
 class PostForm(forms.Form):
     text = forms.CharField(max_length=300, widget = forms.Textarea)
