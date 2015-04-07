@@ -28,6 +28,11 @@
 {% endblock %}
 
 {% block mainbody %}
+<style>
+   p {
+    font-size:20px;
+   } 
+</style>    
 <div id="wrapper">
 
     <!-- Sidebar -->
@@ -76,7 +81,7 @@
 
            <article class="timeline-entry">
 
-                {% for comment in current_post.comments.all reversed %}
+                {% for comment in current_post.comments.all %}
                     <article class="timeline-entry">
 
 
@@ -96,7 +101,7 @@
                 {% endfor %}
 
             {% if current_post.id %}
-            <article class="timeline-entry">
+            <article class="timeline-entry" id = "comment-box" hidden= true>
 
                 <div class="timeline-entry-inner">
 
@@ -108,8 +113,8 @@
                                     <h3 class="panel-title">Comment on this post</h3>
                                   </div>
                                   <div class="panel-body">
-                                    {{ comment_form.text|addcss:"form-control, placeholder:Comment" }}
-
+                                    {{ comment_form.text|addcss:"form-control, placeholder:Comment, id:comment-text-box" }}
+                                    <br>
                                     <button class="btn btn-lg btn-primary btn-block" type="submit">Add Comment!</button>  
                                     
                                   </div>
@@ -128,15 +133,25 @@
             <article class="timeline-entry begin">
 
                 <div class="timeline-entry-inner">
-                    <a href="#">
-                    <div class="timeline-icon" style="-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg);">
-                        <i class="entypo-flight"></i>+
+                    <a href="#add-comment" id = "add-comment">
+                    <div class="timeline-icon bg-info" style="">+
+                        <span class="glyphicon glyphicon-comment" style="font-size: 1.4em"></span>
+                        <i class="entypo-flight"></i>
                     </div></a>
 
                 </div>
 
             </article>
+
+
 {% endblock %}
 
+{% block in_scripts %}
+   
+    $("#add-comment").click(function(e) {
+        $('#comment-box').toggle(500);
+        $('#comment-text-box').focus();
+    });
 
+{% endblock %}
 

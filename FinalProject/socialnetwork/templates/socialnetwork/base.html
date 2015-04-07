@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Simple Sidebar - Start Bootstrap Template</title>
+    <title>studier</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="https://bootswatch.com/darkly/bootstrap.min.css" rel="stylesheet">
@@ -57,7 +57,7 @@
           </ul>
           <form id = "class" hidden = "true" class="navbar-form navbar-left" action = "{% url 'add_class' %}" method = "post">
             <div class="form-group">
-              <input type="text" name="course_id" class="form-control" placeholder="eg. 36-225">
+              <input type="text" name="course_id" class="form-control" placeholder="eg. 36225 or 15112">
             </div>
             <button type="submit" class="btn btn-info">+ Course</button>
             {% csrf_token %}
@@ -86,16 +86,19 @@
 
     </div>
     <!-- /#wrapper -->
-{% block scripts %}
-{% endblock %}
-{% block top %}
+    {% block top %}
 {% endblock %}
 
+
+{% block scripts %}
+{% endblock %}
 <!-- jQuery -->
 <script src="/static/js/jquery.js"></script>
 
 <!-- Bootstrap Core JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+
 
 <!-- Menu Toggle Script -->
 <script>
@@ -116,7 +119,12 @@ $("#add-class").click(function(e) {
     $("#add-class").hide(100);
     $('#class').show(500);
 });
+
+
+{% block in_scripts %}
+{% endblock %}
 </script>
+
 
 </body>
 

@@ -86,7 +86,8 @@
     var mapOptions = {
       center: center,
       zoom: 17,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      streetViewControl: false
     }
     var map = new google.maps.Map(mapCanvas, mapOptions);
     data.map = map; 
@@ -111,7 +112,7 @@
       title:"New Study Group Location"
     });
   var infowindow = new google.maps.InfoWindow({
-           content: "<h3 class='navbar-brand' style='color:black;'>Drag This Marker To Location</h3>"
+           content: "<div style='background: #ed1e79;'><h3 class='navbar-brand' style='color:black;'>Click or Drag To Location</h3></div>", noSuppress: true
          });
   infowindow.open(map,data.markerSelect);
 
@@ -133,10 +134,34 @@
   google.maps.event.addListener(data.markerSelect, 'click', function() {
     map.setCenter(data.markerSelect.getPosition());
   });
+
+  google.maps.event.addListener(map, 'click', function(event) {
+            data.markerSelect.setPosition(event.latLng);
+        });
   // Try HTML5 geolocation
   $('#location').click();
 }
 
+function fixInfoWindow() {
+    // Here we redefine the set() method.
+    // If it is called for map option, we hide the InfoWindow, if "noSuppress"  
+    // option is not true. As Google Maps does not know about this option,  
+    // its InfoWindows will not be opened.
+
+    var set = google.maps.InfoWindow.prototype.set;
+
+    google.maps.InfoWindow.prototype.set = function (key, val) {
+        if (key === 'map' && ! this.get('noSuppress')) {
+            console.warn('This InfoWindow is suppressed.');
+            console.log('To enable it, set "noSuppress" option to true.');
+            return;
+        }
+
+        set.apply(this, arguments);
+    }
+}
+
+  fixInfoWindow();
   google.maps.event.addDomListener(window, 'load', initialize);
 
   
