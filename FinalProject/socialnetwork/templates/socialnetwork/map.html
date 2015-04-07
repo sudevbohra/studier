@@ -1,6 +1,30 @@
 {% extends "socialnetwork/base.html" %}
 <!DOCTYPE html>
+{% if studygroupform %}
+{% block top %}
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Write a post</h4>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="" class="form-signin">
+        <table style="margin-right:auto;
+          margin-left:auto; ">
+                {{ studygroupform }}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Post!</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
 
+{% endif %}
 {% block scripts %}
 <style>
       #map-canvas {
@@ -35,6 +59,27 @@
       { saturation: 99 }
     ]
   }
+
+  $.ajax({
+        url: "/studyroom/get_studyrooms" + "/" + postID,
+        dataType : "json",
+        success: function( items ) {
+            // Removes the old to-do list items
+            
+            // $("li").remove();
+
+            // // Adds each new todo-list item to the list
+            for (i = 0; i < items.length; i++){
+                var marker = new google.maps.Marker({
+                  position: new google.maps.LatLng(items[i].fields['location_latitude'],items[i].fields['location_longitude'])
+                  map: map,
+                  icon:'http://cdn-img.easyicon.net/png/40/4058.png'
+                });
+            }
+            
+        }
+    });
+
 ]);
   // Try HTML5 geolocation
   document.getElementById("location").onclick = function() {
