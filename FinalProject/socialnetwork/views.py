@@ -13,7 +13,7 @@ from django.contrib.auth import login, authenticate
 from django.db import transaction
 
 from socialnetwork.models import *
-from socialnetwork.forms import RegistrationForm, EditForm, PostForm
+from socialnetwork.forms import *
 
 # Used to generate a one-time-use token to verify a user's email address
 from django.contrib.auth.tokens import default_token_generator
@@ -35,22 +35,24 @@ def home(request):
     current_class = "15437"
     context = {'user_id' : user_id, 'current_class' : current_class, "classes" : student.classes.all()}
     context['form'] = PostForm()
+    context['comment_form'] = CommentForm()
     return render(request, 'socialnetwork/index.html', context)
 
 @login_required
-def change_class(request, name):
+def change_class(request, name, post=None):
     user_id = request.user.id
     student = Student.objects.get(user=request.user)
     posts = Classroom.objects.get(name=name).posts.all()
     current_class = name
-
     try:
         current_post = posts[:1].get()
     except Exception:
         current_post = "Welcome."
     context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, 'current_class' : name, "classes" : student.classes.all(), "posts" : posts}
     context['form'] = PostForm()
+    context['comment_form'] = CommentForm()
     return render(request, 'socialnetwork/index.html', context)
+
 @login_required
 def show_post(request, id):
     user_id = request.user.id
@@ -60,7 +62,7 @@ def show_post(request, id):
     current_class = current_post.classroom
     context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, "classes" : student.classes.all(), "posts" : posts}
     context['form'] = PostForm()
-
+    context['comment_form'] = CommentForm()
     return render(request, 'socialnetwork/index.html', context)
 
 
@@ -235,13 +237,15 @@ def add_post(request, name):
 @login_required
 @transaction.atomic
 def add_comment(request, id):
-	errors = []
-	if not 'item' in request.POST or not request.POST['item']:
-		errors.append('You must enter an item to add.')
-	else:
-		post = Post.objects.get(id=id)
-        student = Student.objects.get(user=request.user)
-        new_comment = Comment(text=request.POST['item'], student=student, upvotes=0)
-        new_comment.save()
-        post.comments.add(new_comment)
-	return redirect(reverse('home'))
+    errors = []
+    form = CommentForm(request.POST)
+    post = Post.objects.get(id=id)
+    student = Student.objects.get(user=request.user)
+    #form.cleaned_data["text"]
+    form.is_valid()
+    new_comment = Comment(text=form.cleaned_data["text"], student=student, upvotes=0)
+    new_comment.save()
+    post.comments.add(new_comment)
+    post.save()
+    class_name = post.classroom
+    return show_post(request, post.id)

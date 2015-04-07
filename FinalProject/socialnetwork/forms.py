@@ -81,3 +81,11 @@ class PostForm(forms.Form):
     # class Meta:
     #     model = Post
     #     exclude = {'group_name', 'location', 'student', 'date', 'comments', 'upvotes', 'classroom'}
+
+class CommentForm(forms.Form):
+    text = forms.CharField(max_length=300)
+    
+    def clean(self):
+        cleaned_data = super(CommentForm, self).clean()
+        return cleaned_data
+
