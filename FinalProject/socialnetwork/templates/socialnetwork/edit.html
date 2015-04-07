@@ -12,6 +12,6 @@
 		{{ form.last_name|addcss:"form-control, placeholder:last name" }}
 		{{ form.school|addcss:"form-control, placeholder:school" }}
 		{{ form.major|addcss:"form-control, placeholder:major" }}
-		{{% csrf_token %}
+		{% csrf_token %}
 		<input type='submit' name='submitPost' value='Submit' >
 {% endblock %}

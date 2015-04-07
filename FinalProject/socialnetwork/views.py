@@ -99,8 +99,6 @@ def register(request):
     # Mark the user as inactive to prevent login before email confirmation.
     new_user.is_active = True
     new_user.save()
-
-    
     new_user = authenticate(username=form.cleaned_data['email'], \
                             password=form.cleaned_data['password1'])
     
@@ -108,23 +106,6 @@ def register(request):
                         school=form.cleaned_data['school'],
                         major=form.cleaned_data['major'])
     new_profile.save()
-
-#     # Generate a one-time use token and an email message body
-#     token = default_token_generator.make_token(new_user)
-
-#     email_body = """
-# Welcome to Social Network!  Please click the link below to
-# verify your email address and complete the registration of your account:
-#   http://%s%s
-# """ % (request.get_host(), 
-#        reverse('confirm', args=(new_user.username, token)))
-
-#     send_mail(subject="Verify your email address",
-#               message= email_body,
-#               from_email="psrivast@andrew.cmu.edu",
-#               recipient_list=[new_user.email])
-
-#     context['email'] = form.cleaned_data['email']
 
     # Logs in the new user
     login(request, new_user)
@@ -134,13 +115,23 @@ def register(request):
 
 @login_required
 def profile(request, id):
+    context={}
     user = get_object_or_404(User, id=id)
-    full_name = user.get_full_name()
-    student = Student.objects.get(user=user)
-    school = student.school
-    major = student.major
-    user_id = request.user.id
-    return render(request, 'socialnetwork/profile.html', {'full_name' : full_name, 'student' : student, 'school' : school, 'major' : major, 'user_id' : user_id, "classes" : student.classes.all()})
+    context['full_name'] = user.get_full_name()
+    context['student'] = student = Student.objects.get(user=request.user)
+    prof_student = Student.objects.get(id=id)
+    context['prof_student'] = prof_student
+    context['school'] = prof_student.school
+    context['major'] = prof_student.major
+    context['user_id'] = request.user.id
+    context['prof_id'] = user.id
+    context['prof_classes'] = prof_student.classes.all()
+    context['is_student'] = (prof_student.id == id)
+    friends = prof_student.friends
+    context['is_friend'] = (student in friends.all())
+    context['prof_classes'] = prof_student.classes.all()
+    context['classes'] = student.classes.all()
+    return render(request, 'socialnetwork/profile.html', context)
 
 @login_required
 @transaction.atomic
@@ -249,3 +240,23 @@ def add_comment(request, id):
     post.save()
     class_name = post.classroom
     return show_post(request, post.id)
+
+@login_required
+@transaction.atomic
+def friend(request, id):
+    user = get_object_or_404(User, id=id)
+    student = Student.objects.get(user=request.user)
+    prof_student = Student.objects.select_for_update().get(user=user)
+    prof_student.friends.add(student)
+    prof_student.save()
+    return redirect('/socialnetwork/profile/' + str(user.id))
+    
+@login_required
+@transaction.atomic
+def unfriend(request, id):
+    user = get_object_or_404(User, id=id)
+    student = Student.objects.get(user=request.user)
+    prof_student = Student.objects.select_for_update().get(user=user)
+    prof_student.friends.remove(student)
+    prof_student.save()
+    return redirect('/socialnetwork/profile/' + str(user.id))

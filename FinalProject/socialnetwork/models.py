@@ -8,7 +8,7 @@ class Student(models.Model):
 	major = models.CharField(blank=True, max_length=430)
 	interests = models.CharField(blank=True, max_length=430)
 	linkedin = models.CharField(blank=True, max_length=430)
-	friends = models.ManyToManyField('self', related_name='follows', symmetrical='False')
+	friends = models.ManyToManyField('self', related_name='friends', symmetrical='True')
 	picture_url = models.CharField(blank=True, max_length=256)
 	answer_rating = models.IntegerField(blank=True, null=True)
 	collab_rating = models.IntegerField(blank=True, null=True)

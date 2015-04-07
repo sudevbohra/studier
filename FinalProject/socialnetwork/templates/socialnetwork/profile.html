@@ -2,58 +2,36 @@
 
 {% block mainbody %}
 <div class="modal-dialog" style="margin-top: 100px;">
-<div class="modal-content">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-        <h4 class="modal-title" id="myModalLabel">Bill the Hacker&Hustler</h4>
-        </div>
+<div class="modal-content" style="background-color: rgba(243, 156, 18, 0.8);width: 100%;margin-right: auto;margin-left: auto;">
+
     <div class="modal-body">
         <center>
-        <div class="image-cropper">
+        <div class="image-cropper" style="width: 500px;height: 300px;border-radius: 5%;">
         <img src="http://abcnews.go.com/images/WNT/140930_wn_gates_16x9_992.jpg" name="aboutme"  border="0">
       </div></a>
-        <h3 class="media-heading">{{full_name}}<small>USA</small></h3>
-        <div class="rating">
-        <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
-        </div>
+        <h3 class="media-heading">{{full_name}}</h3>
         </center>
         <hr>
         <span><strong>School: {{school}}</strong></span>
         <hr>
         <span><strong>Major: {{major}}</strong></span>
         <hr>
-        <span><strong>Skills: </strong></span>
-            <span class="label label-warning">HTML5/CSS/JavaScript</span>
-            <span class="label label-info">C/C++</span>
-            <span class="label label-info">Python 2.7</span>
-            <span class="label label-success">Java</span>
-        
-        <hr>
-        <span><strong>Interests: </strong></span>
-            <span class="label label-warning">Machine Learning</span>
-            <span class="label label-info">Entrepreneurship</span>
-            <span class="label label-info">Web Applications</span>
-            <span class="label label-success">Distributed Systems</span>
-        
-        <hr>
-        <span><strong>Endorsement: </strong></span>
-            <span class="label label-warning">Python</span>
-            <span class="label label-info">Project Management</span>
-            <span class="label label-info">Photoshop</span>
-            <span class="label label-success">Django</span>
-        
-        <hr>
-
-        
-        
-        <p class="text-left"><strong>Bio: </strong><br>
-            Interned at Honeywell. Founded Microsoft Inc. Richest Man.</p>
-        <br>
-        
+        <span><strong>Classes: </strong></span>
+            {% for class in prof_classes %}
+            <span class="label label-info">{{class}}</span>
+            {% endfor %}
     </div>
     <div class="modal-footer">
         <center>
-        <button type="button" class="btn btn-info" data-dismiss="modal">Connect</button>
+        {% if is_friend %}
+        <form action="{% url 'unfriend' prof_id %}" method="get">
+            <button type="submit" class="btn btn-danger" data-dismiss="modal">Unfriend</button>
+        </form>
+        {% else %}
+        <form action="{% url 'friend' prof_id %}" method="get">
+            <button type="submit" class="btn btn-primary" data-dismiss="modal">Add Friend</button>
+        </form>
+        {% endif %}
         <form action="/socialnetwork/edit" method="get">
             <button type="submit" class="btn btn-info" data-dismiss="modal" value="Edit">Edit</button>
         </center>
