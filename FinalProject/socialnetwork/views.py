@@ -34,6 +34,7 @@ def home(request):
     context = {}
     context["user_id"] = user_id
     context["student"] = student
+    context["classes"] = student.classes.all()
     # # For now we'll use 15437
     # current_class = "15437"
     # context = {'user_id' : user_id, 'current_class' : current_class, "classes" : student.classes.all()}
@@ -51,7 +52,7 @@ def change_class(request, name, post=None):
     try:
         current_post = posts[:1].get()
     except Exception:
-        current_post = "Welcome."
+        current_post = "Welcome to the Classroom " #+ name + ". This is a place of learning. Life is short."
     context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, 'current_class' : name, "classes" : student.classes.all(), "posts" : posts}
     context['form'] = PostForm()
     context['comment_form'] = CommentForm()
@@ -228,13 +229,14 @@ def add_post(request, name):
     errors = []
     form = PostForm(request.POST, request.FILES)
     if(form.is_valid()):
-        post = Post(text=form.cleaned_data['text'])
+        post = Post(text=form.cleaned_data['text'], title=form.cleaned_data['title'])
         student = Student.objects.get(user=request.user)
         classroom = Classroom.objects.get(name=name)
         post.classroom = classroom
         post.student = student
         post.location = name
         post.save()
+        return show_post(request, post.id)
     else:
         print 'FORM NOT VALID'
     return change_class(request, name)

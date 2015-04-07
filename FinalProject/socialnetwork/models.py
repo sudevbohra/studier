@@ -44,12 +44,13 @@ class Classroom(models.Model):
 class Post(models.Model):
 	group_name = models.CharField(blank=True, max_length=40)
 	location = models.CharField(blank=True, max_length=40)
-	text = models.CharField(max_length=160)
+	text = models.CharField(max_length=4000)
 	student = models.ForeignKey(Student)
 	date = models.DateTimeField(auto_now_add=True)
 	comments = models.ManyToManyField(Comment)
 	upvotes = models.IntegerField(blank=True, default=0)
 	classroom = models.ForeignKey(Classroom, null=True, related_name='posts')
+	title = models.CharField(max_length=200)
 
 	def __unicode__(self):
 		return self.text

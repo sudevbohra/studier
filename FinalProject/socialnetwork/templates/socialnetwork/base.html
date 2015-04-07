@@ -86,7 +86,35 @@
 {% block scripts %}
 {% endblock %}
 {% block top %}
-    {% endblock %}
+{% endblock %}
+
+<!-- jQuery -->
+<script src="/static/js/jquery.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+<!-- Menu Toggle Script -->
+<script>
+// $("#menu-toggle").click(function(e) {
+//     e.preventDefault();
+//     $("#wrapper").toggleClass("toggled");
+// });
+
+
+
+var addClassHTML="";
+addClassHTML += "<div class=\"form-group\">";
+addClassHTML += "    <input name=\"search\" id=\"search\"\/>";
+addClassHTML += "    <button class=\"btn btn-warning btn-xs\">button<\/button>";
+addClassHTML += "<\/div>";
+  
+$("#add-class").click(function(e) {
+    $("#add-class").hide(100);
+    $('#class').show(500);
+});
+</script>
+
 </body>
 
 </html>
