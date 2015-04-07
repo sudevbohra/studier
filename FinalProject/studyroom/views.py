@@ -41,7 +41,7 @@ def add_studygroup(request):
 	studygroupform = StudyGroupForm(request.POST)
 	user = request.user
 	student = Student.objects.get(user=user)
-	studygroupform.isValid()
+	studygroupform.is_valid()
 	studygroup = StudyGroup(name=studygroupform.cleaned_data['name'],
 							owner=student,
 							start_time=studygroupform.cleaned_data['start_time'],
