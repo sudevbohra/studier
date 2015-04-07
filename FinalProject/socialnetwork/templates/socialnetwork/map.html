@@ -1,27 +1,40 @@
 {% extends "socialnetwork/base.html" %}
+{% load addcss %}
+
 <!DOCTYPE html>
 {% if studygroupform %}
 {% block top %}
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Write a post</h4>
+        <h4 class="modal-title" id="myModalLabel">Make a New StudyGroup</h4>
       </div>
       <div class="modal-body">
-        <form method="post" action="" class="form-signin">
+        <form method="post" action="{% url 'add_studygroup' %}" class="form-signin">
         <table style="margin-right:auto;
           margin-left:auto; ">
-                {{ studygroupform }}
+                {{ studygroupform.name|addcss:"form-control, placeholder:Name of Group"}}
+                {{ studygroupform.start_time|addcss:"form-control, placeholder:Start Time of Group"}}
+                {{ studygroupform.end_time|addcss:"form-control, placeholder:End Time of Group"}}
+                {{ studygroupform.course|addcss:"form-control, placeholder:course"}}
+                {{ studygroupform.topic|addcss:"form-control, placeholder:topic"}}
+                {{ studygroupform.description|addcss:"form-control, placeholder:description"}}
+                {{ studygroupform.location_room|addcss:"form-control, placeholder:Room Location"}}
+                {{ studygroupform.location_name|addcss:"form-control, placeholder:Location Name"}}
+        </table>
+        </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Post!</button>
+        <button type="submit" class="btn btn-primary">Create!</button>
       </div>
     </div>
   </div>
 </div>
+
 {% endblock %}
 
 {% endif %}
@@ -60,25 +73,25 @@
     ]
   }
 
-  $.ajax({
-        url: "/studyroom/get_studyrooms" + "/" + postID,
-        dataType : "json",
-        success: function( items ) {
-            // Removes the old to-do list items
+  // $.ajax({
+  //       url: "/studyroom/get_studyrooms" + "/" + postID,
+  //       dataType : "json",
+  //       success: function( items ) {
+  //           // Removes the old to-do list items
             
-            // $("li").remove();
+  //           // $("li").remove();
 
-            // // Adds each new todo-list item to the list
-            for (i = 0; i < items.length; i++){
-                var marker = new google.maps.Marker({
-                  position: new google.maps.LatLng(items[i].fields['location_latitude'],items[i].fields['location_longitude'])
-                  map: map,
-                  icon:'http://cdn-img.easyicon.net/png/40/4058.png'
-                });
-            }
+  //           // // Adds each new todo-list item to the list
+  //           for (i = 0; i < items.length; i++){
+  //               var marker = new google.maps.Marker({
+  //                 position: new google.maps.LatLng(items[i].fields['location_latitude'],items[i].fields['location_longitude'])
+  //                 map: map,
+  //                 icon:'http://cdn-img.easyicon.net/png/40/4058.png'
+  //               });
+  //           }
             
-        }
-    });
+  //       }
+  //   });
 
 ]);
   // Try HTML5 geolocation
@@ -104,12 +117,12 @@
 </script>
 <div id="map-canvas"></div>
 <div>
-<a href="#" style="position: fixed; bottom: 30px; right: 30px;" class="btn btn-info btn-sm  "><span class="glyphicon glyphicon-record" id = "location" aria-hidden="true"></span></a>
+ <a href="#" style="position: fixed; bottom: 30px; right: 70px;" class="btn btn-success btn-sm  " data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-plus" id = "location" aria-hidden="true"></span> Study Group</a>
+<a href="#" style="position: fixed; bottom: 30px; right: 30px;" class="btn btn-info btn-sm  " data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-record" id = "location" aria-hidden="true"></span></a>
 </div>
     <!-- jQuery -->
-    <script src="static/js/jquery.js"></script>
+    <script src="/static/js/jquery.js"></script>
 
-    <!-- Bootstrap Core JavaScript -->
-    <script src="static/js/bootstrap.min.js"></script>
+    
     <!-- Menu Toggle Script -->
 {% endblock %}
