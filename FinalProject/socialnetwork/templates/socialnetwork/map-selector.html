@@ -52,16 +52,17 @@
     </div>
   </div>
 </div>
-
+<div id="map-canvas"></div>
+<div>
+<a href="#" style="position: fixed; bottom: 30px; right: 272px;" class="btn btn-default btn-sm  "><span class="glyphicon glyphicon-question-sign" id = "finish-study-group" aria-hidden="true"></span> Undecided Location</a>
+ <a href="#" style="position: fixed; bottom: 30px; right: 70px;" class="btn btn-warning btn-sm  " data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-check" id = "finish-study-group" aria-hidden="true"></span> Finish Creating Study Group</a>
+ 
+<a href="#" style="position: fixed; bottom: 30px; right: 30px;" class="btn btn-info btn-sm  " id = "location"><span class="glyphicon glyphicon-record"  aria-hidden="true"></span></a>
+</div>
 {% endblock %}
 
 {% endif %}
 {% block scripts %}
-<div id="map-canvas"></div>
-<div>
- <a href="#" style="position: fixed; bottom: 30px; right: 70px;" class="btn btn-success btn-sm  " data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-plus" id = "study-group" aria-hidden="true"></span> Study Group</a>
-<a href="#" style="position: fixed; bottom: 30px; right: 30px;" class="btn btn-info btn-sm  "><span class="glyphicon glyphicon-record" id = "location" aria-hidden="true"></span></a>
-</div>
 <style>
       #map-canvas {
         width: 200vh;
@@ -78,17 +79,19 @@
     <script>
 
 
-
+  var data = {};
   function initialize() {
   var mapCanvas = document.getElementById('map-canvas');
+  var center = new google.maps.LatLng(40.4430939,-79.942309);
     var mapOptions = {
-      center: new google.maps.LatLng(40.4430939,-79.942309),
+      center: center,
       zoom: 17,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     }
     var map = new google.maps.Map(mapCanvas, mapOptions);
+    data.map = map; 
     map.set('styles', [
-        
+     
   {
     featureType: 'poi.school',
     elementType: 'geometry',
@@ -99,29 +102,44 @@
     ]
   }
 
-  
-
 ]);
-  // Try HTML5 geolocation
+  data.markerSelect = new google.maps.Marker({
+      position: center,
+      map: map,
+      icon:'http://cdn-img.easyicon.net/png/40/4058.png',
+      draggable:true,
+      title:"New Study Group Location"
+    });
+  var infowindow = new google.maps.InfoWindow({
+           content: "<h3 class='navbar-brand' style='color:black;'>Drag This Marker To Location</h3>"
+         });
+  infowindow.open(map,data.markerSelect);
+
   document.getElementById("location").onclick = function() {
+    $('#location').attr('class','btn btn-danger btn-sm');
     navigator.geolocation.getCurrentPosition(function(position) {
       var pos = new google.maps.LatLng(position.coords.latitude,
                                        position.coords.longitude);
 
-      var marker = new google.maps.Marker({
-      position: pos,
-      map: map,
-      icon:'http://cdn-img.easyicon.net/png/40/4058.png'
-    });
+      data.markerSelect.setPosition(pos);
 
      
     }, function() {
       handleNoGeolocation(true);
     });
-  };
+    $('#location').attr('class','btn btn-info btn-sm');
+  }
+
+  google.maps.event.addListener(data.markerSelect, 'click', function() {
+    map.setCenter(data.markerSelect.getPosition());
+  });
+  // Try HTML5 geolocation
+  $('#location').click();
 }
 
   google.maps.event.addDomListener(window, 'load', initialize);
+
+  
 
 </script>
 
