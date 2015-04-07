@@ -61,11 +61,12 @@
             <button type="submit" class="btn btn-info">+ Course</button>
             {% csrf_token %}
           </form>
+          {% if user_id %}
           <ul class="nav navbar-nav navbar-right">
             <li><a href="{% url 'profile' user_id %}" class="btn btn-warning">Me</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>
           </ul>
-          
+          {% endif %}
         </div><!--/.nav-collapse -->
 
       </div>
