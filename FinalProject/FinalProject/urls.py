@@ -23,6 +23,9 @@ urlpatterns = patterns('',
     url(r'^socialnetwork/unfriend/(?P<id>\d+)$', 'socialnetwork.views.unfriend', name='unfriend'),
     url(r'^studyroom/show_modal$', 'studyroom.views.show_modal', name='show_modal'),
     url(r'^studyroom/add_studygroup$', 'studyroom.views.add_studygroup', name='add_studygroup'),
+    url(r'^studyroom/get_studygroups/(?P<user_id>\d+)$', 'studyroom.views.get_studygroups', name='get_studygroups'),
+    url(r'^studyroom/set_map_studygroup$', 'studyroom.views.set_map_studygroup', name='set_map_studygroup'),
+
     # url(r'^socialnetwork/edit/$', 'socialnetwork.views.edit', name='edit'),
     # url(r'^socialnetwork/profile/(?P<user>\w+)$', 'socialnetwork.views.profile', name='profile'),
 )

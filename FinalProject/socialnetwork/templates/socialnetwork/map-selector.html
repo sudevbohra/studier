@@ -6,7 +6,6 @@
 
 {% endblock %}
 
-{% if studygroupform %}
 {% block top %}
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >
   <div class="modal-dialog">
@@ -19,25 +18,9 @@
         <form method="post" action="{% url 'add_studygroup' %}" class="form-signin">
         <table style="margin-right:auto;
           margin-left:auto; ">
-                {{ studygroupform.name|addcss:"form-control, placeholder:group name"}}
-                
-              <div id="datetimepicker" class="input-append date">
-              {{ studygroupform.start_time|addcss:"form-control, placeholder:start time"}}
-              <span class="add-on">
-                <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-              </span>
-            </div>
-                {{ studygroupform.end_time|addcss:"form-control, placeholder:end time"}}
 
-                {{ studygroupform.course|addcss:"form-control, placeholder:course"}}
-
-                {{ studygroupform.topic|addcss:"form-control, placeholder:topic"}}
-
-                {{ studygroupform.description|addcss:"form-control, placeholder:description"}}
-
-                {{ studygroupform.location_name|addcss:"form-control, placeholder:Building Name"}}
-
-                {{ studygroupform.location_room|addcss:"form-control, placeholder:Room or Location"}}
+              {{ studygroupform.as_table}}
+               
 
                 
         </table>
@@ -52,16 +35,16 @@
     </div>
   </div>
 </div>
+
 <div id="map-canvas"></div>
-<div>
-<a href="#" style="position: fixed; bottom: 30px; right: 272px;" class="btn btn-default btn-sm  "><span class="glyphicon glyphicon-question-sign" id = "finish-study-group" aria-hidden="true"></span> Undecided Location</a>
- <a href="#" style="position: fixed; bottom: 30px; right: 70px;" class="btn btn-warning btn-sm  " data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-check" id = "finish-study-group" aria-hidden="true"></span> Finish Creating Study Group</a>
+<a href="#" style="position: fixed; bottom: 30px; right: 272px;" class="btn btn-default btn-sm  "><span class="glyphicon glyphicon-question-sign" id = "undecided-location" aria-hidden="true"></span> Undecided Location</a>
+ <a href="#" id = "finish-study-group" style="position: fixed; bottom: 30px; right: 70px;" class="btn btn-warning btn-sm  "><span class="glyphicon glyphicon-check"  aria-hidden="true"></span> Finish Creating Study Group</a>
  
 <a href="#" style="position: fixed; bottom: 30px; right: 30px;" class="btn btn-info btn-sm  " id = "location"><span class="glyphicon glyphicon-record"  aria-hidden="true"></span></a>
 </div>
+
 {% endblock %}
 
-{% endif %}
 {% block scripts %}
 <style>
       #map-canvas {
@@ -73,6 +56,7 @@
         
       }
     </style>
+
     <script src="/static/js/jquery.js"> </script>
     <script src="https://maps.googleapis.com/maps/api/js"></script>
     <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
@@ -130,6 +114,26 @@
     });
     $('#location').attr('class','btn btn-info btn-sm');
   }
+
+  document.getElementById("finish-study-group").onclick = function() {
+    var pos = data.markerSelect.getPosition();
+    var csrftoken = document.getElementsByName("csrfmiddlewaretoken")[0].defaultValue;
+    $.ajax({
+        url: "{% url 'set_map_studygroup' %}",
+        type:'post',
+        dataType : "json",
+        data: {csrfmiddlewaretoken: csrftoken, lat:pos.k, lng:pos.D, id:{{studygroup_id}} },
+        success: function( items ) {
+            
+            console.log('success');
+            $('.navbar-brand')[0].click();
+        }, error: function (items) {
+            $('.navbar-brand')[0].click();
+        }
+            
+    });
+  }
+
 
   google.maps.event.addListener(data.markerSelect, 'click', function() {
     map.setCenter(data.markerSelect.getPosition());
