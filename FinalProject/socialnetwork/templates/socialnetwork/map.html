@@ -122,7 +122,26 @@
     });
 
 }
+function fixInfoWindow() {
+    // Here we redefine the set() method.
+    // If it is called for map option, we hide the InfoWindow, if "noSuppress"  
+    // option is not true. As Google Maps does not know about this option,  
+    // its InfoWindows will not be opened.
 
+    var set = google.maps.InfoWindow.prototype.set;
+
+    google.maps.InfoWindow.prototype.set = function (key, val) {
+        if (key === 'map' && ! this.get('noSuppress')) {
+            console.warn('This InfoWindow is suppressed.');
+            console.log('To enable it, set "noSuppress" option to true.');
+            return;
+        }
+
+        set.apply(this, arguments);
+    }
+}
+
+  fixInfoWindow();
   google.maps.event.addDomListener(window, 'load', initialize);
 
 </script>
