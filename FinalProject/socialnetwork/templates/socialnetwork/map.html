@@ -57,7 +57,7 @@
     <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
     <script>
 
-
+  var data = {};
   function initialize() {
   var mapCanvas = document.getElementById('map-canvas');
     var mapOptions = {
@@ -110,11 +110,27 @@
             console.log('success');
             // // Adds each new todo-list item to the list
             for (i = 0; i < items.length; i++){
+                
+
+                var infowindow = new google.maps.InfoWindow({
+                    content: "<b style = 'color:black;'>" + items[i].fields['name'] + "</b>" +"<p style = 'color:black;'>" + items[i].fields['description'] + "</p>" + "<p style = 'color:blue;'>" + 'Owned by ' + items[i].fields['owner'] + "</p>", noSuppress:false
+                });
+
+
                 var marker = new google.maps.Marker({
                   position: new google.maps.LatLng(items[i].fields['location_latitude'],items[i].fields['location_longitude']),
                   map: map,
                   //icon:'http://cdn-img.easyicon.net/png/40/4058.png',
-                  title: items[i].fields['name']
+                  title: items[i].fields['name'],
+                  infowindow: infowindow
+                });
+                data.open = null;
+                google.maps.event.addListener(marker, 'click', function() {
+                  if (data.open != null) {
+                    data.open.close();
+                  }
+                  this.infowindow.open(map,this);
+                  data.open = this.infowindow;
                 });
             }
             
@@ -141,7 +157,7 @@ function fixInfoWindow() {
     }
 }
 
-  fixInfoWindow();
+  //fixInfoWindow();
   google.maps.event.addDomListener(window, 'load', initialize);
 
 </script>
