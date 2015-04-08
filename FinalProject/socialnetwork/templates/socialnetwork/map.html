@@ -19,14 +19,12 @@
         <form method="post" action="{% url 'add_studygroup' %}" class="form-signin">
         <table style="margin-right:auto;
           margin-left:auto; ">
-                {{ studygroupform.name|addcss:"form-control, placeholder:group name"}}
+
+              {{ studygroupform.as_table}}
+                <!-- {{ studygroupform.name|addcss:"form-control, placeholder:group name"}}
                 
-              <div id="datetimepicker" class="input-append date">
               {{ studygroupform.start_time|addcss:"form-control, placeholder:start time"}}
-              <span class="add-on">
-                <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
-              </span>
-            </div>
+
                 {{ studygroupform.end_time|addcss:"form-control, placeholder:end time"}}
 
                 {{ studygroupform.course|addcss:"form-control, placeholder:course"}}
@@ -37,7 +35,7 @@
 
                 {{ studygroupform.location_name|addcss:"form-control, placeholder:Building Name"}}
 
-                {{ studygroupform.location_room|addcss:"form-control, placeholder:Room or Location"}}
+                {{ studygroupform.location_room|addcss:"form-control, placeholder:Room or Location"}} -->
 
                 
         </table>
