@@ -44,14 +44,15 @@ def add_studygroup(request):
 	studygroupform.is_valid()
 	studygroup = StudyGroup(name=studygroupform.cleaned_data['name'],
 							owner=student,
-							start_time=studygroupform.cleaned_data['start_time'],
-							end_time= studygroupform.cleaned_data['end_time'],
+							#start_time=studygroupform.cleaned_data['start_time'],
+							#end_time= studygroupform.cleaned_data['end_time'],
 							active=True,
 							course=studygroupform.cleaned_data['course'],
 							topic=studygroupform.cleaned_data['topic'],
 							description=studygroupform.cleaned_data['description'],
 							location_room=studygroupform.cleaned_data['location_room'],
 							location_name=studygroupform.cleaned_data['location_name'])
+	studygroup.members.add(student)
 	studygroup.save()
 	return redirect(reverse('home'))
 # Create your views here.

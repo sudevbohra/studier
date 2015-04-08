@@ -19,13 +19,11 @@
         <form method="post" action="{% url 'add_studygroup' %}" class="form-signin">
         <table style="margin-right:auto;
           margin-left:auto; ">
-
-              {{ studygroupform.as_table}}
-                <!-- {{ studygroupform.name|addcss:"form-control, placeholder:group name"}}
+                {{ studygroupform.name|addcss:"form-control, placeholder:group name"}}
                 
-              {{ studygroupform.start_time|addcss:"form-control, placeholder:start time"}}
+              <!-- {{ studygroupform.start_time|addcss:"form-control, placeholder:start time"}}
 
-                {{ studygroupform.end_time|addcss:"form-control, placeholder:end time"}}
+                {{ studygroupform.end_time|addcss:"form-control, placeholder:end time"}} -->
 
                 {{ studygroupform.course|addcss:"form-control, placeholder:course"}}
 
@@ -35,7 +33,7 @@
 
                 {{ studygroupform.location_name|addcss:"form-control, placeholder:Building Name"}}
 
-                {{ studygroupform.location_room|addcss:"form-control, placeholder:Room or Location"}} -->
+                {{ studygroupform.location_room|addcss:"form-control, placeholder:Room or Location"}}
 
                 
         </table>
@@ -120,25 +118,7 @@
 }
 
   google.maps.event.addDomListener(window, 'load', initialize);
-// $.ajax({
-  //       url: "/studyroom/get_studyrooms" + "/" + userID,
-  //       dataType : "json",
-  //       success: function( items ) {
-  //           // Removes the old to-do list items
-            
-  //           // $("li").remove();
 
-  //           // // Adds each new todo-list item to the list
-  //           for (i = 0; i < items.length; i++){
-  //               var marker = new google.maps.Marker({
-  //                 position: new google.maps.LatLng(items[i].fields['location_latitude'],items[i].fields['location_longitude'])
-  //                 map: map,
-  //                 icon:'http://cdn-img.easyicon.net/png/40/4058.png'
-  //               });
-  //           }
-            
-  //       }
-  //   });
 </script>
 
 
