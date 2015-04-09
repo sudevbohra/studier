@@ -7,7 +7,7 @@ from socialnetwork.models import *
 
 class StudyGroup(models.Model):
 	name = models.CharField(blank=True, max_length=40)
-	owner = models.ForeignKey(Student)
+	owner = models.ForeignKey(Student, related_name="studygroups")
 	members = models.ManyToManyField(Student, related_name='member')
 	start_time = models.DateTimeField(auto_now_add=True)
 	end_time = models.DateTimeField(auto_now_add=True)
