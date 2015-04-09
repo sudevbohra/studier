@@ -18,6 +18,7 @@ class StudyGroupForm(forms.ModelForm):
 		model = StudyGroup
 		name = models.CharField(blank=True, max_length=40)
 		exclude = ['location_latitude', 'location_longitude', 'owner', 'members', 'active']
+
 	def clean(self):
 		cleaned_data = super(StudyGroupForm, self).clean()
 		return cleaned_data

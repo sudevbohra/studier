@@ -28,7 +28,7 @@ from django.http import HttpResponse
 import json
 
 @login_required
-def show_modal(request):
+def show_modal(request, error=None):
 	studyRoomForm = StudyGroupForm()
 	user_id = request.user.id
 	student = Student.objects.get(user=request.user)
@@ -37,6 +37,8 @@ def show_modal(request):
 	context["student"] = student
 	context['studygroupform'] = studyRoomForm
 	context['classes'] = student.classes.all()
+	if error != None:
+		context["error"] = error
 	return render(request, 'socialnetwork/map.html', context)
 
 @login_required
@@ -64,6 +66,8 @@ def add_studygroup(request):
 	user = request.user
 	student = Student.objects.get(user=user)
 	studygroupform.is_valid()
+	if studygroupform.cleaned_data["course"] not in student.classes.all():
+		return show_modal(request, "You are not in that class")
 	studygroup = StudyGroup(name=studygroupform.cleaned_data['name'],
 							owner=student,
 							active=True,

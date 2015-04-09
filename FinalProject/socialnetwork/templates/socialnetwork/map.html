@@ -8,6 +8,15 @@
 
 {% if studygroupform %}
 {% block top %}
+  <script>
+    function myFunction() {
+      alert("You are not in this class");
+    }
+  </script>
+{% if error %}
+<script type="text/javascript"> myFunction();</script>
+  myFunction()
+{% endif %}
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >
   <div class="modal-dialog">
     <div class="modal-content">
