@@ -16,10 +16,16 @@
    <!-- Bootstrap Core CSS -->
     <script src="/static/js/jquery.js"></script>
 
+    <!-- Bootstrap Core JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    {% if studygroupform %}
+      <script type="text/javascript" src="/static/js/bootstrap-datetimepicker.min.js"></script>
+    {% endif %}
 
     <link href="https://bootswatch.com/darkly/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
+    <link href="/static/css/bootstrap-datetimepicker.min.css">
     <link href="/static/css/simple-sidebar.css" rel="stylesheet">
     <link href="/static/css/question-answer.css" rel="stylesheet">
     <link href="/static/css/login.css" rel="stylesheet">
@@ -100,10 +106,7 @@
 {% block scripts %}
 {% endblock %}
 <!-- jQuery -->
-<script src="/static/js/jquery.js"></script>
 
-<!-- Bootstrap Core JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 
 
 
