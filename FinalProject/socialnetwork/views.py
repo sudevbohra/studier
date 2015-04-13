@@ -15,6 +15,7 @@ from django.db import transaction
 from socialnetwork.models import *
 from socialnetwork.forms import *
 from studyroom.forms import *
+from socialnetwork.s3 import s3_upload, s3_delete
 
 # Used to generate a one-time-use token to verify a user's email address
 from django.contrib.auth.tokens import default_token_generator
@@ -138,6 +139,7 @@ def profile(request, id):
     context['is_friend'] = (student in friends.all())
     context['prof_classes'] = prof_student.classes.all()
     context['classes'] = student.classes.all()
+    context['picture_url'] = student.picture_url
     return render(request, 'socialnetwork/profile.html', context)
 
 @login_required
@@ -147,6 +149,7 @@ def edit(request):
     context = {}
     context['user_id'] = request.user.id
     context['classes'] = Student.objects.get(user=request.user).classes.all()
+    context['picture_url'] = Student.objects.get(user=request.user).picture_url
     profile = Student.objects.get(user=request.user)
     form = EditForm()
     try:
@@ -164,12 +167,26 @@ def edit(request):
             print "NOT VALID"
             context['form'] = EditForm()
             return render(request, 'socialnetwork/edit.html', context)
-        profile = form.save()
+        #profile = form.save()
 
         # Update first and last name of the User
         user = request.user
-        user.first_name = form.cleaned_data['first_name']
-        user.last_name = form.cleaned_data['last_name']
+        if form.cleaned_data['first_name']:
+            user.first_name = form.cleaned_data['first_name']
+        if form.cleaned_data['last_name']:
+            user.last_name = form.cleaned_data['last_name']
+        student = Student.objects.get(user=user)
+        if form.cleaned_data['school']:
+            student.school = form.cleaned_data['school']
+        if form.cleaned_data['major']:
+            student.major = form.cleaned_data['major']
+        
+        if form.cleaned_data['picture']:
+            url = s3_upload(form.cleaned_data['picture'], student.id)
+            print url
+            student.picture_url = url
+            student.save()
+        student.save()
         user.save()
         
 
@@ -181,7 +198,7 @@ def edit(request):
         context['last_name'] = user.last_name
         context['user_id'] = request.user.id
         context['classes'] = Student.objects.get(user=request.user).classes.all()
-        
+        context['picture_url'] = student.picture_url
         #return render(request, 'socialnetwork/profile.html', context)
 
         return redirect('/socialnetwork/profile/' + str(request.user.id))

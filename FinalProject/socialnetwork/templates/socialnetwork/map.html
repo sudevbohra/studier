@@ -8,31 +8,15 @@
 
 {% if studygroupform %}
 {% block top %}
-  <script>
-    function myFunction() {
-      alert("You are not in this class");
-    }
-  </script>
+<script>
+  function myFunction() {
+    alert("You are not in this class");
+  }
+</script>
 {% if error %}
 <script type="text/javascript"> myFunction();</script>
   myFunction()
 {% endif %}
-<div class="well">
-  <div id="datetimepicker1" class="input-append date">
-    <input data-format="dd/MM/yyyy hh:mm:ss" type="text"></input>
-    <span class="add-on">
-      <i data-time-icon="icon-time" data-date-icon="icon-calendar">
-      </i>
-    </span>
-  </div>
-</div>
-<script type="text/javascript">
-   $(document).ready(function() {
-    $('#datetimepicker1').datetimepicker({
-      language: 'pt-BR'
-    });
-  });
-</script>
 
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >
@@ -46,24 +30,34 @@
         <form method="post" action="{% url 'add_studygroup' %}" class="form-signin">
         <table style="margin-right:auto;
           margin-left:auto; ">
-              {{ studygroupform.as_table}}  
+              {{ studygroupform.name|addcss:"form-control, placeholder:Name"}}  
+              {{ studygroupform.course|addcss:"form-control, placeholder:Course"}} 
+              {{ studygroupform.topic|addcss:"form-control, placeholder:Topic"}} 
+              {{ studygroupform.description|addcss:"form-control, placeholder:Description"}} 
+              {{ studygroupform.location_room|addcss:"form-control, placeholder:Room"}} 
+              {{ studygroupform.location_name|addcss:"form-control, placeholder:Location Name"}} 
+
+              <div class="well">
+                <div id="datetimepicker2" class="input-append">
+                  <input data-format="MM/dd/yyyy HH:mm:ss PP" name="datetime" type="text"></input>
+                  <span class="add-on">
+                    <i data-time-icon="icon-time" data-date-icon="icon-calendar">
+                    </i>
+                  </span>
+                </div>
+              </div>
+              <script type="text/javascript">
+                $(function() {
+                  $('#datetimepicker2').datetimepicker({
+                    language: 'en',
+                    pick12HourFormat: true
+                  });
+                });
+              </script>
+
         </table>
-        <div class="well">
-          <div id="datetimepicker1" class="input-append date">
-            <input data-format="dd/MM/yyyy hh:mm:ss" type="text"></input>
-            <span class="add-on">
-              <i data-time-icon="icon-time" data-date-icon="icon-calendar">
-              </i>
-            </span>
-          </div>
-        </div>
-        <script type="text/javascript">
-           $(document).ready(function() {
-            $('#datetimepicker1').datetimepicker({
-              language: 'pt-BR'
-            });
-          });
-        </script>
+
+        
         
       </div>
       <div class="modal-footer">
@@ -95,9 +89,8 @@
         
       }
     </style>
-    <script src="/static/js/jquery.js"> </script>
     <script src="https://maps.googleapis.com/maps/api/js"></script>
-    <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+    
     <script>
 
   var data = {};

@@ -2,6 +2,7 @@ from django import forms
 
 from django.contrib.auth.models import User
 from models import *
+MAX_UPLOAD_SIZE = 2500000
 
 class RegistrationForm(forms.Form):
     first_name = forms.CharField(max_length=20)
@@ -52,25 +53,27 @@ class EditForm(forms.ModelForm):
     last_name  = forms.CharField(max_length=20, required=False)
     school = forms.CharField(max_length=20, required=False)
     major = forms.CharField(max_length=40, required=False)
+    picture = forms.FileField(required=False, label='Change picture')
     class Meta:
         model = Student
         exclude = ('user', 'interests', 'linkedin', 'friends', 'picture_url', 'answer_rating', 'collab_rating', 'endorsements', 'age')
 
-    # def clean_picture(self):
-    #     picture = self.cleaned_data['picture']
-    #     print picture
-    #     if not picture:
-    #         return None
-    #     # if not picture.content_type or not picture.content_type.startswith('jpg'):
-    #     #     raise forms.ValidationError('File type is not image')
-    #     if picture.size > MAX_UPLOAD_SIZE:
-    #         raise forms.ValidationError('File too big (max size is {0} bytes)'.format(MAX_UPLOAD_SIZE))
-    #     print picture
-    #     return picture
-
     def clean(self):
         cleaned_data = super(EditForm, self).clean()
         return cleaned_data
+
+    def save(self, commit=True):
+        return super(EditForm, self).save(commit=commit)
+
+    def clean_picture(self):
+        picture = self.cleaned_data['picture']
+        if not picture:
+            return None
+        # if not picture.content_type or not picture.content_type.startswith('image'):
+        #     raise forms.ValidationError('File type is not image')
+        if picture.size > MAX_UPLOAD_SIZE:
+            raise forms.ValidationError('File too big (max size is {0} bytes)'.format(MAX_UPLOAD_SIZE))
+        return picture
 
 class PostForm(forms.Form):
     text = forms.CharField(max_length=300, widget = forms.Textarea)

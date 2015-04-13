@@ -14,6 +14,7 @@ class Student(models.Model):
 	collab_rating = models.IntegerField(blank=True, null=True)
 	endorsements = models.CharField(blank=True, max_length=430)
 	age = models.IntegerField(blank=True) 
+	picture_url   = models.CharField(blank=True, max_length=256, default="https://s3-us-west-2.amazonaws.com/final-project-webapps/gates.jpg")
 	def __unicode__(self):
 		return 'Student(id=' + str(self.id) + ')'
 

@@ -74,6 +74,9 @@ def add_studygroup(request):
 		return show_modal(request, "You are not in that class")
 	if student not in course.students.all():
 		return show_modal(request, "You are not in that class")
+	if 'datetime' not in request.POST:
+		return show_modal(request, "Please enter a time and date")
+	print request.POST['datetime']
 	studygroup = StudyGroup(name=studygroupform.cleaned_data['name'],
 							owner=student,
 							active=True,
