@@ -56,10 +56,18 @@ def change_class(request, name, post=None):
         current_post = posts[:1].get()
     except Exception:
         current_post = "Welcome to the Classroom " #+ name + ". This is a place of learning. Life is short."
-    context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, 'current_class' : name, "classes" : student.classes.all(), "posts" : posts}
-    context['form'] = PostForm()
-    context['comment_form'] = CommentForm()
-    return render(request, 'socialnetwork/index.html', context)
+    # context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, 'current_class' : name, "classes" : student.classes.all(), "posts" : posts}
+    # context['form'] = PostForm()
+    # context['comment_form'] = CommentForm()
+    return show_post(request, current_post.id)
+
+
+@login_required
+def upvotePost(request, id, upvote):
+    post = Post.objects.get(id=id)
+    post.upvotes += int(upvote)
+    post.save()
+    return show_post(request, id)
 
 @login_required
 def show_post(request, id):
@@ -261,6 +269,7 @@ def add_post(request, name):
         post.classroom = classroom
         post.student = student
         post.location = name
+        post.upvotes = 0
         if form.cleaned_data['attachment']:
             post.save()
             url = s3_upload(form.cleaned_data['attachment'], post.id)
