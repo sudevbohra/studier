@@ -14,7 +14,7 @@ class Student(models.Model):
 	collab_rating = models.IntegerField(blank=True, null=True)
 	endorsements = models.CharField(blank=True, max_length=430)
 	age = models.IntegerField(blank=True) 
-	picture_url   = models.CharField(blank=True, max_length=256, default="https://s3-us-west-2.amazonaws.com/final-project-webapps/gates.jpg")
+	picture_url = models.CharField(blank=True, max_length=256, default="https://s3-us-west-2.amazonaws.com/final-project-webapps/gates.jpg")
 	def __unicode__(self):
 		return 'Student(id=' + str(self.id) + ')'
 
@@ -52,7 +52,8 @@ class Post(models.Model):
 	upvotes = models.IntegerField(blank=True, default=0)
 	classroom = models.ForeignKey(Classroom, null=True, related_name='posts')
 	title = models.CharField(max_length=200)
-
+	attachment_url = models.CharField(blank=True, max_length=256)
+	attachment_name = models.CharField(blank=True, max_length=200)
 	def __unicode__(self):
 		return self.text
 	def natural_key(self):

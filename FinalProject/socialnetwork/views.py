@@ -71,6 +71,10 @@ def show_post(request, id):
     context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, "classes" : student.classes.all(), "posts" : posts}
     context['form'] = PostForm()
     context['comment_form'] = CommentForm()
+    if current_post.attachment_url:
+        context['attachment_url'] = current_post.attachment_url
+        context['attachment_name'] = current_post.attachment_name
+        print current_post.attachment_url
     return render(request, 'socialnetwork/index.html', context)
 
 
@@ -183,7 +187,6 @@ def edit(request):
         
         if form.cleaned_data['picture']:
             url = s3_upload(form.cleaned_data['picture'], student.id)
-            print url
             student.picture_url = url
             student.save()
         student.save()
@@ -258,6 +261,14 @@ def add_post(request, name):
         post.classroom = classroom
         post.student = student
         post.location = name
+        if form.cleaned_data['attachment']:
+            post.save()
+            url = s3_upload(form.cleaned_data['attachment'], post.id)
+            post.attachment_url = url
+            if form.cleaned_data['attachment_name']:
+                post.attachment_name = form.cleaned_data['attachment_name']
+            else:
+                post.attachment_name = post.title
         post.save()
         return show_post(request, post.id)
     else:

@@ -78,6 +78,8 @@ class EditForm(forms.ModelForm):
 class PostForm(forms.Form):
     text = forms.CharField(max_length=300, widget = forms.Textarea)
     title = forms.CharField(max_length=300)
+    attachment = forms.FileField(required=False, label="Attachment")
+    attachment_name = forms.CharField(max_length=200)
     def clean(self):
         # Calls our parent (forms.Form) .clean function, gets a dictionary
         # of cleaned data as a result
@@ -85,6 +87,13 @@ class PostForm(forms.Form):
         # We must return the cleaned data we got from our parent.
         return cleaned_data
 
+    def clean_attachment(self):
+        attachment = self.cleaned_data['attachment']
+        if not attachment:
+            return None
+        if attachment.size > MAX_UPLOAD_SIZE:
+            raise forms.ValidationError('File too big (max size is {0} bytes)'.format(MAX_UPLOAD_SIZE))
+        return attachment
     # class Meta:
     #     model = Post
     #     exclude = {'group_name', 'location', 'student', 'date', 'comments', 'upvotes', 'classroom'}
