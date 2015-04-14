@@ -152,7 +152,7 @@ def profile(request, id):
     context['is_friend'] = (student in friends.all())
     context['prof_classes'] = prof_student.classes.all()
     context['classes'] = student.classes.all()
-    context['picture_url'] = student.picture_url
+    context['picture_url'] = prof_student.picture_url
     return render(request, 'socialnetwork/profile.html', context)
 
 @login_required
