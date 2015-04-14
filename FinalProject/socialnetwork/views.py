@@ -15,6 +15,7 @@ from django.db import transaction
 from socialnetwork.models import *
 from socialnetwork.forms import *
 from studyroom.forms import *
+from socialnetwork.s3 import s3_upload, s3_delete
 
 # Used to generate a one-time-use token to verify a user's email address
 from django.contrib.auth.tokens import default_token_generator
@@ -55,10 +56,18 @@ def change_class(request, name, post=None):
         current_post = posts[:1].get()
     except Exception:
         current_post = "Welcome to the Classroom " #+ name + ". This is a place of learning. Life is short."
-    context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, 'current_class' : name, "classes" : student.classes.all(), "posts" : posts}
-    context['form'] = PostForm()
-    context['comment_form'] = CommentForm()
-    return render(request, 'socialnetwork/index.html', context)
+    # context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, 'current_class' : name, "classes" : student.classes.all(), "posts" : posts}
+    # context['form'] = PostForm()
+    # context['comment_form'] = CommentForm()
+    return show_post(request, current_post.id)
+
+
+@login_required
+def upvotePost(request, id, upvote):
+    post = Post.objects.get(id=id)
+    post.upvotes += int(upvote)
+    post.save()
+    return show_post(request, id)
 
 @login_required
 def show_post(request, id):
@@ -70,6 +79,10 @@ def show_post(request, id):
     context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, "classes" : student.classes.all(), "posts" : posts}
     context['form'] = PostForm()
     context['comment_form'] = CommentForm()
+    if current_post.attachment_url:
+        context['attachment_url'] = current_post.attachment_url
+        context['attachment_name'] = current_post.attachment_name
+        print current_post.attachment_url
     return render(request, 'socialnetwork/index.html', context)
 
 
@@ -138,15 +151,16 @@ def profile(request, id):
     context['is_friend'] = (student in friends.all())
     context['prof_classes'] = prof_student.classes.all()
     context['classes'] = student.classes.all()
+    context['picture_url'] = student.picture_url
     return render(request, 'socialnetwork/profile.html', context)
 
 @login_required
 @transaction.atomic
 def edit(request):
-    print "TEST"
     context = {}
     context['user_id'] = request.user.id
     context['classes'] = Student.objects.get(user=request.user).classes.all()
+    context['picture_url'] = Student.objects.get(user=request.user).picture_url
     profile = Student.objects.get(user=request.user)
     form = EditForm()
     try:
@@ -164,12 +178,25 @@ def edit(request):
             print "NOT VALID"
             context['form'] = EditForm()
             return render(request, 'socialnetwork/edit.html', context)
-        profile = form.save()
+        #profile = form.save()
 
         # Update first and last name of the User
         user = request.user
-        user.first_name = form.cleaned_data['first_name']
-        user.last_name = form.cleaned_data['last_name']
+        if form.cleaned_data['first_name']:
+            user.first_name = form.cleaned_data['first_name']
+        if form.cleaned_data['last_name']:
+            user.last_name = form.cleaned_data['last_name']
+        student = Student.objects.get(user=user)
+        if form.cleaned_data['school']:
+            student.school = form.cleaned_data['school']
+        if form.cleaned_data['major']:
+            student.major = form.cleaned_data['major']
+        
+        if form.cleaned_data['picture']:
+            url = s3_upload(form.cleaned_data['picture'], student.id)
+            student.picture_url = url
+            student.save()
+        student.save()
         user.save()
         
 
@@ -181,7 +208,7 @@ def edit(request):
         context['last_name'] = user.last_name
         context['user_id'] = request.user.id
         context['classes'] = Student.objects.get(user=request.user).classes.all()
-        
+        context['picture_url'] = student.picture_url
         #return render(request, 'socialnetwork/profile.html', context)
 
         return redirect('/socialnetwork/profile/' + str(request.user.id))
@@ -193,6 +220,7 @@ def edit(request):
 @login_required
 def map(request):
     # Sets up list of just the logged-in user's (request.user's) items
+    return home(request)
     user_id = request.user.id
     student = Student.objects.get(user=request.user)
     return render(request, 'socialnetwork/map.html', {'user_id' : user_id, "classes" : student.classes.all()})
@@ -208,7 +236,15 @@ def add_class(request):
     except Classroom.DoesNotExist:
         new_class = Classroom(name=request.POST['course_id'])
         new_class.save()
+        student = Student.objects.get(user=request.user)
         new_class.students.add(student)
+        instructions = "Welome to the Class. No Posts exist yet. Add some posts using the button on the left!"
+        post = Post(text=instructions, title="Instructions")
+        post.classroom = new_class
+        post.student = student
+        post.upvotes = 0
+        post.save()
+        new_class.save()
         return change_class(request, new_class)
 	# if not (Classroom.objects.filter(name=request.POST['course_id']).count):
 	# 	new_class = Classroom(name=request.POST['course_id'])
@@ -241,6 +277,15 @@ def add_post(request, name):
         post.classroom = classroom
         post.student = student
         post.location = name
+        post.upvotes = 0
+        if form.cleaned_data['attachment']:
+            post.save()
+            url = s3_upload(form.cleaned_data['attachment'], post.id)
+            post.attachment_url = url
+            if form.cleaned_data['attachment_name']:
+                post.attachment_name = form.cleaned_data['attachment_name']
+            else:
+                post.attachment_name = post.title
         post.save()
         return show_post(request, post.id)
     else:

@@ -66,8 +66,17 @@ def add_studygroup(request):
 	user = request.user
 	student = Student.objects.get(user=user)
 	studygroupform.is_valid()
-	if studygroupform.cleaned_data["course"] not in student.classes.all():
+	try:
+		course = Classroom.objects.get(name=studygroupform.cleaned_data["course"])
+	except Classroom.DoesNotExist:
+		course = None
+	if course == None: 
 		return show_modal(request, "You are not in that class")
+	if student not in course.students.all():
+		return show_modal(request, "You are not in that class")
+	if 'datetime' not in request.POST:
+		return show_modal(request, "Please enter a time and date")
+	print request.POST['datetime']
 	studygroup = StudyGroup(name=studygroupform.cleaned_data['name'],
 							owner=student,
 							active=True,
