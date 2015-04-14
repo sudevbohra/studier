@@ -79,7 +79,7 @@ class PostForm(forms.Form):
     text = forms.CharField(max_length=300, widget = forms.Textarea)
     title = forms.CharField(max_length=300)
     attachment = forms.FileField(required=False, label="Attachment")
-    attachment_name = forms.CharField(max_length=200)
+    attachment_name = forms.CharField(max_length=200, required=False)
     def clean(self):
         # Calls our parent (forms.Form) .clean function, gets a dictionary
         # of cleaned data as a result

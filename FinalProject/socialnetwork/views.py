@@ -279,15 +279,15 @@ def add_post(request, name):
         post.student = student
         post.location = name
         post.upvotes = 0
+        post.save()
         if form.cleaned_data['attachment']:
-            post.save()
             url = s3_upload(form.cleaned_data['attachment'], post.id)
             post.attachment_url = url
             if form.cleaned_data['attachment_name']:
                 post.attachment_name = form.cleaned_data['attachment_name']
             else:
                 post.attachment_name = post.title
-        post.save()
+            post.save()
         return show_post(request, post.id)
     else:
         print 'FORM NOT VALID'
