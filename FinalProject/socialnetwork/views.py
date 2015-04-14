@@ -157,7 +157,6 @@ def profile(request, id):
 @login_required
 @transaction.atomic
 def edit(request):
-    print "TEST"
     context = {}
     context['user_id'] = request.user.id
     context['classes'] = Student.objects.get(user=request.user).classes.all()
@@ -221,6 +220,7 @@ def edit(request):
 @login_required
 def map(request):
     # Sets up list of just the logged-in user's (request.user's) items
+    return home(request)
     user_id = request.user.id
     student = Student.objects.get(user=request.user)
     return render(request, 'socialnetwork/map.html', {'user_id' : user_id, "classes" : student.classes.all()})
@@ -236,7 +236,15 @@ def add_class(request):
     except Classroom.DoesNotExist:
         new_class = Classroom(name=request.POST['course_id'])
         new_class.save()
+        student = Student.objects.get(user=request.user)
         new_class.students.add(student)
+        instructions = "Welome to the Class. No Posts exist yet. Add some posts using the button on the left!"
+        post = Post(text=instructions, title="Instructions")
+        post.classroom = new_class
+        post.student = student
+        post.upvotes = 0
+        post.save()
+        new_class.save()
         return change_class(request, new_class)
 	# if not (Classroom.objects.filter(name=request.POST['course_id']).count):
 	# 	new_class = Classroom(name=request.POST['course_id'])
