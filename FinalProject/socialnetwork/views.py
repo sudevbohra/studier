@@ -79,6 +79,7 @@ def show_post(request, id):
     context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, "classes" : student.classes.all(), "posts" : posts}
     context['form'] = PostForm()
     context['comment_form'] = CommentForm()
+    context['students'] = current_class.students
     if current_post.attachment_url:
         context['attachment_url'] = current_post.attachment_url
         context['attachment_name'] = current_post.attachment_name

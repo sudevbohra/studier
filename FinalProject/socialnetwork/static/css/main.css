@@ -1,0 +1,23 @@
+#image{
+	white-space:nowrap;
+}
+
+.picture-container {
+    height: 100px;
+    width: 100%;
+	white-space: nowrap;
+    overflow-x: scroll;
+    overflow-y: hidden;
+}
+.profile-image {
+    position: relative;
+    display: inline-block;
+    width: 20%;
+    height: 100%;
+    margin: 4px 4px;
+    vertical-align: bottom;
+    background-position: top left;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-radius: 40px;
+}
