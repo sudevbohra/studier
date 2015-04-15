@@ -203,10 +203,11 @@ def edit(request):
             return render(request, 'socialnetwork/edit.html', context)
             
         context['profile'] = Student.objects.get(user=request.user)
-        form = EditForm(request.POST, request.FILES, instance=profile)
+        form = EditForm(request.POST, request.FILES)
         context['form'] = form
         #print form
         if not form.is_valid():
+            print form.errors
             print "NOT VALID"
             context['form'] = EditForm()
             return render(request, 'socialnetwork/edit.html', context)

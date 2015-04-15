@@ -56,7 +56,7 @@ class EditForm(forms.ModelForm):
     picture = forms.FileField(required=False, label='Change picture')
     class Meta:
         model = Student
-        exclude = ('user', 'interests', 'linkedin', 'friends', 'picture_url', 'answer_rating', 'collab_rating', 'endorsements', 'age')
+        exclude = ('user', 'interests', 'linkedin', 'friends', 'picture_url', 'answer_rating', 'collab_rating', 'endorsements', 'age', 'notifications')
 
     def clean(self):
         cleaned_data = super(EditForm, self).clean()
