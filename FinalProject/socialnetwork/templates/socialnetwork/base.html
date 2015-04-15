@@ -86,7 +86,11 @@
               <li> <a href="{% url 'remove_class' current_class %}">Leave Class</a></li>
             {% endif %}
             {% if current_studygroup %}
-              <li> <a href="{% url 'add_person_studygroup' current_studygroup.id %}">Add Studygroup</a></li>
+              {% if in_studygroup %}
+                <li> <a href="{% url 'remove_person_studygroup' current_studygroup.id %}">Leave Studygroup</a></li>
+              {% else %}
+                <li> <a href="{% url 'add_person_studygroup' current_studygroup.id %}">Add Studygroup</a></li>
+              {% endif %}
             {% endif %}
             <li><a href="{% url 'profile' user_id %}" class="btn btn-warning">Me</a></li>
             <li data-toggle="modal" data-toggle="modal" data-target="#notificationsModal"><a href="#">Notifications</a></li>

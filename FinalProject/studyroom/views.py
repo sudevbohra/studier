@@ -179,10 +179,16 @@ def show_post_studygroup(request, id):
 	current_post = Post.objects.get(id=id)
 	posts = current_post.studygroup.posts.order_by('-date')
 	current_studygroup = current_post.studygroup
+	if student in current_studygroup.members.all():
+		in_studygroup = True
+	else:
+		in_studygroup = False
 	context = {'current_post' : current_post, 'current_studygroup' : current_studygroup, 'user_id' : user_id, "classes" : student.classes.all(), "posts" : posts}
 	context['form'] = PostForm()
+	context['in_studygroup'] = in_studygroup
 	context['comment_form'] = CommentForm()
 	context['students'] = current_studygroup.members
+	print current_studygroup.id
 	if current_post.attachment_url:
 		context['attachment_url'] = current_post.attachment_url
 		context['attachment_name'] = current_post.attachment_name
@@ -202,6 +208,15 @@ def change_studygroup(request, id):
     # context['form'] = PostForm()
     # context['comment_form'] = CommentForm()
     return show_post_studygroup(request, current_post.id )
+
+@login_required
+@transaction.atomic
+def remove_person_studygroup(request, id):
+    student = Student.objects.get(user = request.user)
+    studygroup = StudyGroup.objects.get(id=id)
+    studygroup.members.remove(student)
+    studygroup.save()
+    return home(request)
 
 @login_required
 @transaction.atomic
