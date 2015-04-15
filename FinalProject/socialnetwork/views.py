@@ -359,3 +359,12 @@ def notify(request, id, notif_text, notif_link):
     prof_student = Student.objects.select_for_update().get(user=user)
     prof_student.notifications.add(new_notification)
     return
+
+@login_required
+@transaction.atomic
+def clear_notifications(request):
+    print "TRUUUU"
+    student = Student.objects.get(user=request.user)
+    student.notifications.all().delete()
+        
+    return HttpResponse()

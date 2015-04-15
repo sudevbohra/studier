@@ -83,7 +83,7 @@
           {% if user_id %}
           <ul class="nav navbar-nav navbar-right">
             <li><a href="{% url 'profile' user_id %}" class="btn btn-warning">Me</a></li>
-            <li data-toggle="modal" data-toggle="modal" data-target="#notificationsModal"><a href="#">Notifications</a></li>
+            <li data-toggle="modal" data-toggle="modal" data-target="#notificationsModal"><a href="#" id="clear-notifications">Notifications</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>
           </ul>
           {% endif %}
@@ -112,7 +112,6 @@
     <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel">Notifications</h4>
       </div>
       <div class="modal-body">
@@ -142,6 +141,8 @@
 
 {% block scripts %}
 {% endblock %}
+
+
 <!-- jQuery -->
 
 
@@ -149,6 +150,16 @@
 
 <!-- Menu Toggle Script -->
 <script>
+document.getElementById("clear-notifications").onclick = 
+  function() {
+    var csrftoken = document.getElementsByName("csrfmiddlewaretoken")[0].defaultValue;
+    $.ajax({
+        url: "{% url 'clear_notifications' %}",
+        type:'post',
+        dataType : "json",
+        data: {csrfmiddlewaretoken: csrftoken},
+    });
+  }
 // $("#menu-toggle").click(function(e) {
 //     e.preventDefault();
 //     $("#wrapper").toggleClass("toggled");
