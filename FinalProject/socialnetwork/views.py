@@ -321,6 +321,12 @@ def add_comment(request, id):
     post.comments.add(new_comment)
     post.save()
     class_name = post.classroom
+
+    # Notification function
+    notif_text = request.user.get_full_name() + "commented on your post"
+    notif_lint = 'socialnetwork/show_post/' + str(post.id)
+    notify(request, id, notif_text, notif_link)
+
     return show_post(request, post.id)
 
 @login_required
