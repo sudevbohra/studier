@@ -150,7 +150,7 @@
                 
 
                 var infowindow = new google.maps.InfoWindow({
-                    content: "<b style = 'color:black;'>" + items[i].fields['course'] + ": " + items[i].fields['name'] + "</b>" +"<p style = 'color:black;'>" + items[i].fields['description'] + "</p>" + "<p style = 'color:blue;'>" + 'Owned by ' + items[i].fields['owner'] + "</p>", noSuppress:true
+                    content: "<a href ={% url 'change_studygroup' items[i].pk %} <b style = 'color:black;'>" + items[i].fields['course'] + ": " + items[i].fields['name'] + "</b>" +"<p style = 'color:black;'>" + items[i].fields['description'] + "</p>" + "<p style = 'color:blue;'>" + 'Owned by ' + items[i].fields['owner'] + "</p></a>", noSuppress:true
                 });
 
 
