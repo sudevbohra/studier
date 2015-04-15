@@ -73,9 +73,25 @@ def change_class(request, name):
 
 
 @login_required
+@transaction.atomic
 def upvotePost(request, id, upvote):
+
     post = Post.objects.get(id=id)
-    post.upvotes += int(upvote)
+    print post.upvoters.all()
+    student = Student.objects.get(user=request.user)
+    if (student not in post.upvoters.all()) and int(upvote) == 1:
+        post.upvoters.add(student)
+        post.upvotes += int(upvote)
+    elif student not in post.downvoters.all() and int(upvote) == -1:        
+        post.downvoters.add(student)
+        post.upvotes += int(upvote)
+    elif student in post.upvoters.all() and int(upvote) == -1:
+        post.upvoters.remove(student)
+        post.upvotes += int(upvote)
+    elif student in post.downvoters.all() and int(upvote) == 1:
+        post.downvoters.remove(student)
+        post.upvotes += int(upvote)
+    
     post.save()
     return show_post(request, id)
 

@@ -26,7 +26,10 @@ urlpatterns = patterns('',
     url(r'^studyroom/get_studygroups/(?P<user_id>\d+)$', 'studyroom.views.get_studygroups', name='get_studygroups'),
     url(r'^studyroom/set_map_studygroup$', 'studyroom.views.set_map_studygroup', name='set_map_studygroup'),
     url(r'^studyroom/addPostUpvote/(?P<id>\d+)/(?P<upvote>\-?\d+)$', 'socialnetwork.views.upvotePost', name='addPostUpvote'),
-
+    url(r'^studyroom/change_studygroup/(?P<id>\d+)$', 'studyroom.views.change_studygroup', name='change_studygroup'),
+    url(r'^studyroom/add_post_studygroup/(?P<id>\d+)$', 'studyroom.views.add_post_studygroup', name='add_post_studygroup'),
+    url(r'^studyroom/show_post_studygroup/(?P<id>\d+)$', 'studyroom.views.show_post_studygroup', name='show_post_studygroup'),
+    url(r'^studyroom/addPostUpvoteStudygroup/(?P<id>\d+)/(?P<upvote>\-?\d+)$', 'studyroom.views.upvotePostStudygroup', name='addPostUpvoteStudyGroup'),
     # url(r'^socialnetwork/edit/$', 'socialnetwork.views.edit', name='edit'),
     # url(r'^socialnetwork/profile/(?P<user>\w+)$', 'socialnetwork.views.profile', name='profile'),
 )

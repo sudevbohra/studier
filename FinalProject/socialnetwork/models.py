@@ -80,6 +80,8 @@ class Post(models.Model):
 	title = models.CharField(max_length=200)
 	attachment_url = models.CharField(blank=True, max_length=256)
 	attachment_name = models.CharField(blank=True, max_length=200)
+	upvoters = models.ManyToManyField(Student, related_name="upvoted")
+	downvoters = models.ManyToManyField(Student, related_name="downvoted")
 	def __unicode__(self):
 		return self.text
 	def natural_key(self):
