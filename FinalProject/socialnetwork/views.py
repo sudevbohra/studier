@@ -28,16 +28,26 @@ from django.http import HttpResponse
 
 # Create your views here.
 
+def get_default_context(request):
+    user_id = request.user.id
+    student = Student.objects.get(user=request.user)
+    context = {}
+    context['notifications'] = student.notifications
+    context['classes'] = student.classes.all()
+    return context
+
 @login_required
 def home(request):
     # # Sets up list of just the logged-in user's (request.user's) items
     user_id = request.user.id
     student = Student.objects.get(user=request.user)
-    context = {}
+    context = get_default_context(request)
     context["user_id"] = user_id
     context["student"] = student
     context["classes"] = student.classes.all()
     context['studygroupform'] = StudyGroupForm()
+    context['notifications'] = student.notifications
+    print "JUST ADDED NOTIFICATIONS"
     # # For now we'll use 15437
     # current_class = "15437"
     # context = {'user_id' : user_id, 'current_class' : current_class, "classes" : student.classes.all()}
@@ -76,7 +86,12 @@ def show_post(request, id):
     current_post = Post.objects.get(id=id)
     posts = current_post.classroom.posts.all()
     current_class = current_post.classroom
-    context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, "classes" : student.classes.all(), "posts" : posts}
+    context = get_default_context(request)
+    context['current_post'] = current_post
+    context['current_class'] = current_class
+    context['user_id'] = user_id
+    context['posts'] = posts
+    # context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, "classes" : student.classes.all(), "posts" : posts}
     context['form'] = PostForm()
     context['comment_form'] = CommentForm()
     context['students'] = current_class.students
@@ -136,7 +151,7 @@ def register(request):
 
 @login_required
 def profile(request, id):
-    context={}
+    context=get_default_context(request)
     user = get_object_or_404(User, id=id)
     context['full_name'] = user.get_full_name()
     student = Student.objects.get(user=request.user)
@@ -152,7 +167,6 @@ def profile(request, id):
     friends = prof_student.friends
     context['is_friend'] = (student in friends.all())
     context['prof_classes'] = prof_student.classes.all()
-    context['classes'] = student.classes.all()
     context['picture_url'] = prof_student.picture_url
     context['my_friends'] = student.friends
     return render(request, 'socialnetwork/profile.html', context)
@@ -160,9 +174,8 @@ def profile(request, id):
 @login_required
 @transaction.atomic
 def edit(request):
-    context = {}
+    context = get_default_context(request)
     context['user_id'] = request.user.id
-    context['classes'] = Student.objects.get(user=request.user).classes.all()
     context['picture_url'] = Student.objects.get(user=request.user).picture_url
     profile = Student.objects.get(user=request.user)
     form = EditForm()
@@ -226,7 +239,7 @@ def map(request):
     return home(request)
     user_id = request.user.id
     student = Student.objects.get(user=request.user)
-    return render(request, 'socialnetwork/map.html', {'user_id' : user_id, "classes" : student.classes.all()})
+    return render(request, 'socialnetwork/map.html', {'user_id' : user_id, "classes" : student.classes.all(), "notifications" : student.notifications})
 
 @login_required
 @transaction.atomic
@@ -322,7 +335,7 @@ def friend(request, id):
 
     #Notification function
     notif_text = request.user.get_full_name() + " has friended you!"
-    notif_link = "{% url \'profile\' " + str(id) + " %}"
+    notif_link = '/socialnetwork/profile/' + str(request.user.id)
     notify(request, id, notif_text, notif_link)
     return redirect('/socialnetwork/profile/' + str(user.id))
     
@@ -340,7 +353,6 @@ def unfriend(request, id):
 @login_required
 @transaction.atomic
 def notify(request, id, notif_text, notif_link):
-    print "IN NOTIFICATONS"
     picture_url = Student.objects.get(user=request.user).picture_url
     new_notification = Notification(text=notif_text, link=notif_link, picture_url=picture_url)
     new_notification.save()

@@ -117,17 +117,20 @@
       </div>
       <div class="modal-body">
         <ul class="media-list">
-          <a href="#">
+          {% if notifications %}
+          {% for notif in notifications.all %}
+          <a href={{notif.link}}>
               <li class="media">
                 <div class="media-left">
-                    <img class="media-object" src="..." alt="...">
+                    <img class="media-object" src={{notif.picture_url}}>
                 </div>
                 <div class="media-body">
-                  <h4 class="media-heading">Media heading</h4>
+                  <h4 class="media-heading">{{notif.text}}</h4>
                 </div>
               </li>
           </a>
-
+          {% endfor %}
+          {% endif %}
         </ul>
       </div>
       <div class="modal-footer">
