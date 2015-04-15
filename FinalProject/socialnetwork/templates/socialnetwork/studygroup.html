@@ -9,7 +9,7 @@
         <h4 class="modal-title" id="myModalLabel">Write a post</h4>
       </div>
       <div class="modal-body">
-        <form method="post" enctype="multipart/form-data" action="{% url 'add_post' current_class %}" class="form-signin">
+        <form method="post" enctype="multipart/form-data" action="{% url 'add_post_studygroup' current_studygroup %}" class="form-signin">
         <table style="margin-right:auto;
           margin-left:auto; ">
                 {{ form.title|addcss:"form-control, placeholder: Title" }}
@@ -64,7 +64,7 @@
 
             {% for post in posts %}
                 <li>
-                <a href="/socialnetwork/show_post/{{post.id}}" ><span class="glyphicon glyphicon-question-sign"></span>  {{post.title}}</a>   
+                <a href="/socialnetwork/show_post_studygroup/{{post.id}}" ><span class="glyphicon glyphicon-question-sign"></span>  {{post.title}}</a>   
                 </li>
             {% endfor %}
             
