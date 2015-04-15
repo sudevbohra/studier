@@ -277,7 +277,6 @@ def add_post(request, name):
         classroom = Classroom.objects.get(name=name)
         post.classroom = classroom
         post.student = student
-        post.location = name
         post.upvotes = 0
         post.save()
         if form.cleaned_data['attachment']:
