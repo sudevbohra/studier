@@ -139,7 +139,8 @@ def profile(request, id):
     context={}
     user = get_object_or_404(User, id=id)
     context['full_name'] = user.get_full_name()
-    context['student'] = student = Student.objects.get(user=request.user)
+    student = Student.objects.get(user=request.user)
+    context['student'] = student
     prof_student = Student.objects.get(id=id)
     context['prof_student'] = prof_student
     context['school'] = prof_student.school
@@ -153,6 +154,7 @@ def profile(request, id):
     context['prof_classes'] = prof_student.classes.all()
     context['classes'] = student.classes.all()
     context['picture_url'] = prof_student.picture_url
+    context['my_friends'] = student.friends
     return render(request, 'socialnetwork/profile.html', context)
 
 @login_required

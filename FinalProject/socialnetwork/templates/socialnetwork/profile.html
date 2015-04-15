@@ -20,6 +20,27 @@
             {% for class in prof_classes %}
             <span class="label label-info">{{class}}</span>
             {% endfor %}
+        {% if is_student %}
+        <hr>
+        <span>
+            <strong>Friends: </strong>
+            <div class="row-fluid">
+                <div class="col-lg-12 col-md-12 ">
+                    <div class="picture-container">
+                        {% for stu in my_friends.all %}
+                        <a href="{% url 'profile' stu.id %}"><div class="profile-image" style="background-image: url({{stu.picture_url}})"></div>
+                        </a>
+                        {% endfor %}
+                        <!-- <div id="image">
+                            {% for stu in students.all %}
+                            <img src="{{stu.picture_url}}" border="0">
+                            {% endfor %}
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </span>
+        {% endif %}
     </div>
     <div class="modal-footer">
         <center>
