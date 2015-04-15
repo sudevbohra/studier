@@ -47,7 +47,7 @@ def home(request):
     return render(request, "socialnetwork/map.html", context)
 
 @login_required
-def change_class(request, name, post=None):
+def change_class(request, name):
     user_id = request.user.id
     student = Student.objects.get(user=request.user)
     posts = Classroom.objects.get(name=name).posts.all()

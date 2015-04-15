@@ -27,6 +27,7 @@ from django.core import serializers
 from django.http import HttpResponse
 import json
 
+
 @login_required
 def show_modal(request, error=None):
 	studyRoomForm = StudyGroupForm()
@@ -85,6 +86,12 @@ def add_studygroup(request):
 							description=studygroupform.cleaned_data['description'],
 							location_room=studygroupform.cleaned_data['location_room'],
 							location_name=studygroupform.cleaned_data['location_name'])
+	instructions = "Welome to the Class. No Posts exist yet. Add some posts using the button on the left!"
+	post = Post(text=instructions, title="Instructions")
+	post.studygroup = studygroup
+	post.student = student
+	post.upvotes = 0
+	post.save()
 	studygroup.save()
 	return map_studygroups(request, studygroup.id)
 # Create your views here.
@@ -112,14 +119,14 @@ def get_studygroups(request, user_id):
 
 @login_required
 @transaction.atomic
-def add_post(request, name):
+def add_post_studygroup(request, name):
 	errors = []
-	form = PostForm(request.POST, request.FILES)
+	form = StudyGroupPostForm(request.POST, request.FILES)
 	if(form.is_valid()):
 		post = Post(text=form.cleaned_data['text'], title=form.cleaned_data['title'])
 		student = Student.objects.get(user=request.user)
-		classroom = Classroom.objects.get(name=name)
-			post.classroom = classroom
+		studygroup = StudyGroup.objects.get(name=name)
+		post.studygroup = studygroup
 		post.student = student
 		post.location = name
 		post.upvotes = 0
@@ -132,17 +139,17 @@ def add_post(request, name):
 		    else:
 		    	post.attachment_name = post.title
 		    post.save()
-	return show_post(request, post.id)
+	return show_post_studygroup(request, post.id)
 	else:
 		print 'FORM NOT VALID'
-	return change_class(request, name)
+	return change_studygroup(request, name)
 
 @login_required
-def show_post(request, id):
+def show_post_studygroup(request, id):
 	user_id = request.user.id
 	student = Student.objects.get(user=request.user)
 	current_post = Post.objects.get(id=id)
-	posts = current_post.classroom.posts.all()
+	posts = current_post.studygroup.posts.all()
 	current_class = current_post.classroom
 	context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, "classes" : student.classes.all(), "posts" : posts}
 	context['form'] = PostForm()
@@ -154,4 +161,18 @@ def show_post(request, id):
 		print current_post.attachment_url
 	return render(request, 'socialnetwork/studygroup.html', context)
 
+@login_required
+def change_studygroup(request, name):
+    user_id = request.user.id
+    student = Student.objects.get(user=request.user)
+    posts = StudyGroup.objects.get(name=name).posts.all()
+    current_class = name
+    try:
+        current_post = posts[:1].get()
+    except Exception:
+        current_post = "Welcome to the Classroom " #+ name + ". This is a place of learning. Life is short."
+    # context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, 'current_class' : name, "classes" : student.classes.all(), "posts" : posts}
+    # context['form'] = PostForm()
+    # context['comment_form'] = CommentForm()
+    return show_post_studygroup(request, current_post.id)
 
