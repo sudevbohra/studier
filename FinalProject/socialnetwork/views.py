@@ -49,7 +49,6 @@ def home(request):
     context["classes"] = student.classes.all()
     context['studygroupform'] = StudyGroupForm()
     context['notifications'] = student.notifications
-    print "JUST ADDED NOTIFICATIONS"
     # # For now we'll use 15437
     # current_class = "15437"
     # context = {'user_id' : user_id, 'current_class' : current_class, "classes" : student.classes.all()}
@@ -206,10 +205,11 @@ def edit(request):
             return render(request, 'socialnetwork/edit.html', context)
             
         context['profile'] = Student.objects.get(user=request.user)
-        form = EditForm(request.POST, request.FILES, instance=profile)
+        form = EditForm(request.POST, request.FILES)
         context['form'] = form
         #print form
         if not form.is_valid():
+            print form.errors
             print "NOT VALID"
             context['form'] = EditForm()
             return render(request, 'socialnetwork/edit.html', context)
