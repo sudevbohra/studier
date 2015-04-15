@@ -114,6 +114,8 @@ def add_studygroup(request):
 							location_room=studygroupform.cleaned_data['location_room'],
 							location_name=studygroupform.cleaned_data['location_name'])
 	studygroup.save()
+	studygroup.members.add(student)
+	studygroup.save()
 	instructions = "Welome to the Class. No Posts exist yet. Add some posts using the button on the left!"
 	post = Post(text=instructions, title="Instructions")
 	
@@ -200,6 +202,15 @@ def change_studygroup(request, id):
     # context['form'] = PostForm()
     # context['comment_form'] = CommentForm()
     return show_post_studygroup(request, current_post.id )
+
+@login_required
+@transaction.atomic
+def add_person_studygroup(request, id):
+    student = Student.objects.get(user = request.user)
+    studygroup = StudyGroup.objects.get(id=id)
+    studygroup.members.add(student)
+    studygroup.save()
+    return change_studygroup(request, studygroup.id)
 
 @login_required
 def home(request):

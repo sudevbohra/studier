@@ -105,6 +105,7 @@ def show_post(request, id):
     context = get_default_context(request)
     context['current_post'] = current_post
     context['current_class'] = current_class
+    print current_class
     context['user_id'] = user_id
     context['posts'] = posts
     # context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, "classes" : student.classes.all(), "posts" : posts}
@@ -291,11 +292,11 @@ def add_class(request):
 @login_required
 @transaction.atomic
 def remove_class(request, name):
-	student = Student.objects.get(user = request.user)
-	classObj = Classroom.objects.get(name=name)
-	classObj.students.remove(student)
-	classObj.save()
-	return redirect(reverse('home'))
+    student = Student.objects.get(user = request.user)
+    classObj = Classroom.objects.get(name=name)
+    classObj.students.remove(student)
+    classObj.save()
+    return map(request)
 
 @login_required
 @transaction.atomic
