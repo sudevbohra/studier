@@ -9,12 +9,14 @@
         <h4 class="modal-title" id="myModalLabel">Write a post</h4>
       </div>
       <div class="modal-body">
-        <form method="post" action="{% url 'add_post' current_class %}" class="form-signin">
+        <form method="post" enctype="multipart/form-data" action="{% url 'add_post' current_class %}" class="form-signin">
         <table style="margin-right:auto;
           margin-left:auto; ">
                 {{ form.title|addcss:"form-control, placeholder: Title" }}
                 <br>
                 {{ form.text|addcss:"form-control, placeholder: Post" }}
+                {{ form.attachment|addcss:"form-control, placeholder: Attachment" }}
+                {{ form.attachment_name|addcss:"form-control, placeholder: Attachment Name" }}
                 {% csrf_token %}
       </div>
       <div class="modal-footer">
@@ -36,18 +38,33 @@
 <div id="wrapper">
 
     <!-- Sidebar -->
-    <div id="sidebar-wrapper" style="background: url(http://subtlepatterns.com/patterns/grey_wash_wall.png);">
+    <div id="sidebar-wrapper" style="background: url(http://subtlepatterns.com/patterns/school.png);">
         <ul class="sidebar-nav">
             <li class="sidebar-brand">
                 <div>
-                 Studygroup {{current_class}}     <button style="position:relative; margin-left:110px; "class="btn btn-info" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-file"></span> Add Post</button>
+                 Study Group {{current_class}}     <button style="position:relative; margin-left:110px; "class="btn btn-info" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-file"></span> Add Post</button>
                 </div>
 
             </li>
+            <div class="row-fluid">
+                <div class="col-lg-12 col-md-12 ">
+                    <div class="picture-container">
+                        {% for stu in students.all %}
+                        <a href="{% url 'profile' stu.id %}"><div class="profile-image" style="background-image: url({{stu.picture_url}})"></div>
+                        </a>
+                        {% endfor %}
+                        <!-- <div id="image">
+                            {% for stu in students.all %}
+                            <img src="{{stu.picture_url}}" border="0">
+                            {% endfor %}
+                        </div> -->
+                    </div>
+                </div>
+            </div>
 
             {% for post in posts %}
                 <li>
-                <a style= "color:white;" href="/socialnetwork/show_post/{{post.id}}" ><span class="glyphicon glyphicon-question-sign"></span>  {{post.title}}</a>   
+                <a href="/socialnetwork/show_post/{{post.id}}" ><span class="glyphicon glyphicon-question-sign"></span>  {{post.title}}</a>   
                 </li>
             {% endfor %}
             
@@ -68,13 +85,22 @@
                 <div class="timeline-entry-inner">
 
                     <div class="timeline-icon bg-success">
-                        <span class="glyphicon glyphicon-heart" style="font-size: 1.4em; color:red;"></span>12
+                        <span class="glyphicon glyphicon-heart" style="font-size: 1.4em; color:red;"></span>{{ current_post.upvotes }}
+                        
+                        <a href="{% url 'addPostUpvote' current_post.id 1 %}"><span class="glyphicon glyphicon-plus" style="font-size: 1.4em; color:green;"></span></a>
+                        
+                        
+                        <a href="{% url 'addPostUpvote' current_post.id -1 %}"><span class="glyphicon glyphicon-minus" style="font-size: 1.4em; color:red;"></span></a>
+                        
                         <i class="entypo-feather"></i>
                     </div>
 
                     <div class="timeline-label">
                         <h2><a href="#">{{current_post.student.user.first_name}} {{current_post.student.user.last_name}}</a> <span>{{current_post.date}}</span></h2>
                         <p>{{current_post}}</p>
+                        {% if attachment_url %}
+                            <a href="{{attachment_url}}">{{ attachment_name}} </a>
+                        {% endif %}
                     </div>
                 </div>
 
