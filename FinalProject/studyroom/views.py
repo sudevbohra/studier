@@ -109,3 +109,49 @@ def get_studygroups(request, user_id):
     #[elem for elem in li if li.count(elem) == 1]
 	response_text = serializers.serialize('json', studygroups, use_natural_foreign_keys=True)
 	return HttpResponse(response_text , content_type="application/json")
+
+@login_required
+@transaction.atomic
+def add_post(request, name):
+	errors = []
+	form = PostForm(request.POST, request.FILES)
+	if(form.is_valid()):
+		post = Post(text=form.cleaned_data['text'], title=form.cleaned_data['title'])
+		student = Student.objects.get(user=request.user)
+		classroom = Classroom.objects.get(name=name)
+			post.classroom = classroom
+		post.student = student
+		post.location = name
+		post.upvotes = 0
+		post.save()
+		if form.cleaned_data['attachment']:
+		    url = s3_upload(form.cleaned_data['attachment'], post.id)
+		    post.attachment_url = url
+		    if form.cleaned_data['attachment_name']:
+		    	post.attachment_name = form.cleaned_data['attachment_name']
+		    else:
+		    	post.attachment_name = post.title
+		    post.save()
+	return show_post(request, post.id)
+	else:
+		print 'FORM NOT VALID'
+	return change_class(request, name)
+
+@login_required
+def show_post(request, id):
+	user_id = request.user.id
+	student = Student.objects.get(user=request.user)
+	current_post = Post.objects.get(id=id)
+	posts = current_post.classroom.posts.all()
+	current_class = current_post.classroom
+	context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, "classes" : student.classes.all(), "posts" : posts}
+	context['form'] = PostForm()
+	context['comment_form'] = CommentForm()
+	context['students'] = current_class.students
+	if current_post.attachment_url:
+		context['attachment_url'] = current_post.attachment_url
+		context['attachment_name'] = current_post.attachment_name
+		print current_post.attachment_url
+	return render(request, 'socialnetwork/studygroup.html', context)
+
+
