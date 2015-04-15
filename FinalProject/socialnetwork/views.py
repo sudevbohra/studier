@@ -34,6 +34,8 @@ def get_default_context(request):
     context = {}
     context['notifications'] = student.notifications
     context['classes'] = student.classes.all()
+    if(len(student.notifications.all()) > 0):
+        context['notif_count'] = len(student.notifications.all())
     return context
 
 @login_required

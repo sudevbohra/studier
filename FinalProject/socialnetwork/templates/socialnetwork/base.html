@@ -93,7 +93,14 @@
               {% endif %}
             {% endif %}
             <li><a href="{% url 'profile' user_id %}" class="btn btn-warning">Me</a></li>
-            <li data-toggle="modal" data-toggle="modal" data-target="#notificationsModal"><a href="#" id="clear-notifications">Notifications</a></li>
+            <li data-toggle="modal" data-toggle="modal" data-target="#notificationsModal"><a href="#" id="clear-notifications">
+            {% if notif_count %}
+              Notifications ({{notif_count}})
+            {% else %}
+              Notifications
+            {% endif %}
+
+            </a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>
           </ul>
           {% endif %}
