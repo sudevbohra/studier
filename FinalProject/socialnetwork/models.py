@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 class Notification(models.Model):
 	text = models.CharField(blank=True, max_length=80)
-	picture_url = models.CharField(blank=True, max_length=256, default="https://s3-us-west-2.amazonaws.com/final-project-webapps/gates.jpg")
+	picture_url = models.CharField(blank=True, max_length=256, default="...")
 	link = models.CharField(blank=True, max_length=150)
 	def __unicode__(self):
 		return 'Notification(id=' + str(self.id) + ')'
