@@ -84,7 +84,7 @@ def show_post(request, id):
     user_id = request.user.id
     student = Student.objects.get(user=request.user)
     current_post = Post.objects.get(id=id)
-    posts = current_post.classroom.posts.all()
+    posts = current_post.classroom.posts.order_by('-date')
     current_class = current_post.classroom
     context = get_default_context(request)
     context['current_post'] = current_post
