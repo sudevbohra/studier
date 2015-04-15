@@ -339,9 +339,9 @@ def add_comment(request, id):
     class_name = post.classroom
 
     # Notification function
-    notif_text = request.user.get_full_name() + "commented on your post"
-    notif_lint = 'socialnetwork/show_post/' + str(post.id)
-    notify(request, id, notif_text, notif_link)
+    notif_text = request.user.get_full_name() + " commented on your post"
+    notif_link = '/socialnetwork/show_post/' + str(post.id)
+    notify(request, post.student.id, notif_text, notif_link)
 
     return show_post(request, post.id)
 
@@ -374,6 +374,7 @@ def unfriend(request, id):
 @login_required
 @transaction.atomic
 def notify(request, id, notif_text, notif_link):
+    print "NOTIFICATION AHHH"    
     picture_url = Student.objects.get(user=request.user).picture_url
     new_notification = Notification(text=notif_text, link=notif_link, picture_url=picture_url)
     new_notification.save()
