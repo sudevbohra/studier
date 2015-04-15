@@ -57,7 +57,7 @@ def home(request):
     return render(request, "socialnetwork/map.html", context)
 
 @login_required
-def change_class(request, name, post=None):
+def change_class(request, name):
     user_id = request.user.id
     student = Student.objects.get(user=request.user)
     posts = Classroom.objects.get(name=name).posts.all()
@@ -292,17 +292,16 @@ def add_post(request, name):
         classroom = Classroom.objects.get(name=name)
         post.classroom = classroom
         post.student = student
-        post.location = name
         post.upvotes = 0
+        post.save()
         if form.cleaned_data['attachment']:
-            post.save()
             url = s3_upload(form.cleaned_data['attachment'], post.id)
             post.attachment_url = url
             if form.cleaned_data['attachment_name']:
                 post.attachment_name = form.cleaned_data['attachment_name']
             else:
                 post.attachment_name = post.title
-        post.save()
+            post.save()
         return show_post(request, post.id)
     else:
         print 'FORM NOT VALID'

@@ -50,6 +50,23 @@ class Classroom(models.Model):
 	def __unicode__(self):
 		return self.name
 
+class StudyGroup(models.Model):
+	name = models.CharField(blank=True, max_length=40)
+	owner = models.ForeignKey(Student, related_name="studygroups")
+	members = models.ManyToManyField(Student, related_name='member')
+	start_time = models.DateTimeField(auto_now_add=True)
+	end_time = models.DateTimeField(auto_now_add=True)
+	active = models.BooleanField(default=True)
+	course = models.CharField(max_length = 10)
+	topic = models.CharField(max_length=100)
+	description = models.CharField(max_length=255)
+	location_room = models.CharField(max_length=50)
+	location_name = models.CharField(max_length=255)
+	location_latitude = models.DecimalField(blank=True, null= True, default=40.4430939,max_digits=30,decimal_places=20)
+	location_longitude  = models.DecimalField(blank=True, null= True, default=-79.942309,max_digits=30,decimal_places=20)
+	def __unicode__(self):
+		return 'StudyGroup(id=' + str(self.id) + ", owner=" + str(self.owner) + ')'
+		
 class Post(models.Model):
 	group_name = models.CharField(blank=True, max_length=40)
 	location = models.CharField(blank=True, max_length=40)
@@ -59,6 +76,7 @@ class Post(models.Model):
 	comments = models.ManyToManyField(Comment)
 	upvotes = models.IntegerField(blank=True, default=0)
 	classroom = models.ForeignKey(Classroom, null=True, related_name='posts')
+	studygroup = models.ForeignKey(StudyGroup, null=True, related_name='posts')
 	title = models.CharField(max_length=200)
 	attachment_url = models.CharField(blank=True, max_length=256)
 	attachment_name = models.CharField(blank=True, max_length=200)
@@ -66,8 +84,6 @@ class Post(models.Model):
 		return self.text
 	def natural_key(self):
 		return(self.user, self.id)
-
-
 
 # class StudyGroup(models.Model):
 # 	name = models.CharField(blank=True, max_length=40)

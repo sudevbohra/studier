@@ -16,6 +16,7 @@ from socialnetwork.models import *
 from socialnetwork.forms import *
 from studyroom.models import *
 from studyroom.forms import *
+from socialnetwork.s3 import s3_upload, s3_delete
 
 # Used to generate a one-time-use token to verify a user's email address
 from django.contrib.auth.tokens import default_token_generator
@@ -26,6 +27,7 @@ from django.core.mail import send_mail
 from django.core import serializers
 from django.http import HttpResponse
 import json
+
 
 @login_required
 def show_modal(request, error=None):
@@ -40,6 +42,16 @@ def show_modal(request, error=None):
 	if error != None:
 		context["error"] = error
 	return render(request, 'socialnetwork/map.html', context)
+
+
+
+@login_required
+def upvotePostStudygroup(request, id, upvote):
+    post = Post.objects.get(id=id)
+    post.upvotes += int(upvote)
+    post.save()
+    return show_post_studygroup(request, id)
+
 
 @login_required
 def map_studygroups(request, studygroup_id):
@@ -86,6 +98,14 @@ def add_studygroup(request):
 							location_room=studygroupform.cleaned_data['location_room'],
 							location_name=studygroupform.cleaned_data['location_name'])
 	studygroup.save()
+	instructions = "Welome to the Class. No Posts exist yet. Add some posts using the button on the left!"
+	post = Post(text=instructions, title="Instructions")
+	
+	post.student = student
+	post.upvotes = 0
+	post.studygroup = studygroup
+	post.save()
+	studygroup.save()
 	return map_studygroups(request, studygroup.id)
 # Create your views here.
 
@@ -109,3 +129,77 @@ def get_studygroups(request, user_id):
     #[elem for elem in li if li.count(elem) == 1]
 	response_text = serializers.serialize('json', studygroups, use_natural_foreign_keys=True)
 	return HttpResponse(response_text , content_type="application/json")
+
+@login_required
+@transaction.atomic
+def add_post_studygroup(request, id):
+	errors = []
+	form = PostForm(request.POST, request.FILES)
+	if(form.is_valid()):
+		post = Post(text=form.cleaned_data['text'], title=form.cleaned_data['title'])
+		student = Student.objects.get(user=request.user)
+		studygroup = StudyGroup.objects.get(id=id)
+		post.studygroup = studygroup
+		post.student = student
+		post.upvotes = 0
+		post.save()
+		if form.cleaned_data['attachment']:
+		    url = s3_upload(form.cleaned_data['attachment'], post.id)
+		    post.attachment_url = url
+		    if form.cleaned_data['attachment_name']:
+		    	post.attachment_name = form.cleaned_data['attachment_name']
+		    else:
+		    	post.attachment_name = post.title
+		    post.save()
+	return show_post_studygroup(request, post.id)
+	
+
+@login_required
+def show_post_studygroup(request, id):
+	user_id = request.user.id
+	student = Student.objects.get(user=request.user)
+	current_post = Post.objects.get(id=id)
+	posts = current_post.studygroup.posts.all()
+	current_studygroup = current_post.studygroup
+	context = {'current_post' : current_post, 'current_studygroup' : current_studygroup, 'user_id' : user_id, "classes" : student.classes.all(), "posts" : posts}
+	context['form'] = PostForm()
+	context['comment_form'] = CommentForm()
+	context['students'] = current_studygroup.members
+	if current_post.attachment_url:
+		context['attachment_url'] = current_post.attachment_url
+		context['attachment_name'] = current_post.attachment_name
+		print current_post.attachment_url
+	return render(request, 'socialnetwork/studygroup.html', context)
+
+@login_required
+def change_studygroup(request, id):
+    user_id = request.user.id
+    student = Student.objects.get(user=request.user)
+    posts = StudyGroup.objects.get(pk=id).posts.all()
+    try:
+        current_post = posts[:1].get()
+    except Exception:
+        current_post = "Welcome to the Classroom " #+ name + ". This is a place of learning. Life is short."
+    # context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, 'current_class' : name, "classes" : student.classes.all(), "posts" : posts}
+    # context['form'] = PostForm()
+    # context['comment_form'] = CommentForm()
+    return show_post_studygroup(request, current_post.id )
+
+@login_required
+def home(request):
+    # # Sets up list of just the logged-in user's (request.user's) items
+    user_id = request.user.id
+    student = Student.objects.get(user=request.user)
+    context = {}
+    context["user_id"] = user_id
+    context["student"] = student
+    context["classes"] = student.classes.all()
+    context['studygroupform'] = StudyGroupForm()
+    # # For now we'll use 15437
+    # current_class = "15437"
+    # context = {'user_id' : user_id, 'current_class' : current_class, "classes" : student.classes.all()}
+    # context['form'] = PostForm()
+    # context['comment_form'] = CommentForm()
+    # return render(request, 'socialnetwork/index.html', context)
+    return render(request, "socialnetwork/map.html", context)
+
