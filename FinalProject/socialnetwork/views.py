@@ -319,6 +319,11 @@ def friend(request, id):
     prof_student = Student.objects.select_for_update().get(user=user)
     prof_student.friends.add(student)
     prof_student.save()
+
+    #Notification function
+    notif_text = request.user.get_full_name() + " has friended you!"
+    notif_link = "{% url \'profile\' " + str(id) + " %}"
+    notify(request, id, notif_text, notif_link)
     return redirect('/socialnetwork/profile/' + str(user.id))
     
 @login_required
@@ -329,4 +334,17 @@ def unfriend(request, id):
     prof_student = Student.objects.select_for_update().get(user=user)
     prof_student.friends.remove(student)
     prof_student.save()
+
     return redirect('/socialnetwork/profile/' + str(user.id))
+
+@login_required
+@transaction.atomic
+def notify(request, id, notif_text, notif_link):
+    print "IN NOTIFICATONS"
+    picture_url = Student.objects.get(user=request.user).picture_url
+    new_notification = Notification(text=notif_text, link=notif_link, picture_url=picture_url)
+    new_notification.save()
+    user = get_object_or_404(User, id=id)
+    prof_student = Student.objects.select_for_update().get(user=user)
+    prof_student.notifications.add(new_notification)
+    return

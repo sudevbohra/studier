@@ -1,6 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+class Notification(models.Model):
+	text = models.CharField(blank=True, max_length=80)
+	picture_url = models.CharField(blank=True, max_length=256, default="https://s3-us-west-2.amazonaws.com/final-project-webapps/gates.jpg")
+	link = models.CharField(blank=True, max_length=150)
+	def __unicode__(self):
+		return 'Notification(id=' + str(self.id) + ')'
+
 class Student(models.Model):
 	user = models.OneToOneField(User)
 	# classes = models.ManyToManyField(Classroom, related_name='class', symmetrical='True')
@@ -15,6 +22,7 @@ class Student(models.Model):
 	endorsements = models.CharField(blank=True, max_length=430)
 	age = models.IntegerField(blank=True) 
 	picture_url = models.CharField(blank=True, max_length=256, default="https://s3-us-west-2.amazonaws.com/final-project-webapps/gates.jpg")
+	notifications = models.ManyToManyField(Notification, symmetrical='False')
 	def __unicode__(self):
 		return 'Student(id=' + str(self.id) + ')'
 
@@ -59,7 +67,8 @@ class Post(models.Model):
 	def natural_key(self):
 		return(self.user, self.id)
 
-	
+
+
 # class StudyGroup(models.Model):
 # 	name = models.CharField(blank=True, max_length=40)
 # 	owner = models.OneToOneField(Student)
