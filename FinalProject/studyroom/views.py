@@ -46,9 +46,25 @@ def show_modal(request, error=None):
 
 
 @login_required
+@transaction.atomic
 def upvotePostStudygroup(request, id, upvote):
+
     post = Post.objects.get(id=id)
-    post.upvotes += int(upvote)
+    print post.upvoters.all()
+    student = Student.objects.get(user=request.user)
+    if (student not in post.upvoters.all()) and int(upvote) == 1:
+        post.upvoters.add(student)
+        post.upvotes += int(upvote)
+    elif student not in post.downvoters.all() and int(upvote) == -1:        
+        post.downvoters.add(student)
+        post.upvotes += int(upvote)
+    elif student in post.upvoters.all() and int(upvote) == -1:
+        post.upvoters.remove(student)
+        post.upvotes += int(upvote)
+    elif student in post.downvoters.all() and int(upvote) == 1:
+        post.downvoters.remove(student)
+        post.upvotes += int(upvote)
+    
     post.save()
     return show_post_studygroup(request, id)
 
@@ -159,7 +175,7 @@ def show_post_studygroup(request, id):
 	user_id = request.user.id
 	student = Student.objects.get(user=request.user)
 	current_post = Post.objects.get(id=id)
-	posts = current_post.studygroup.posts.all()
+	posts = current_post.studygroup.posts.order_by('-date')
 	current_studygroup = current_post.studygroup
 	context = {'current_post' : current_post, 'current_studygroup' : current_studygroup, 'user_id' : user_id, "classes" : student.classes.all(), "posts" : posts}
 	context['form'] = PostForm()
