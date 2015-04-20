@@ -266,6 +266,7 @@ def add_class(request):
     try:
         student = Student.objects.get(user=request.user)
         classObj = Classroom.objects.get(name=request.POST['course_id'])
+        student.classes.add(classObj)
         #classObj.students.add(student)
         return change_class(request, classObj)
     except Exception:
@@ -273,6 +274,7 @@ def add_class(request):
         new_class.save()
         student = Student.objects.get(user=request.user)
         #new_class.students.add(student)
+        student.classes.add(new_class)
         instructions = "Welome to the Class. No Posts exist yet. Add some posts using the button on the left!"
         post = Post(text=instructions, title="Instructions")
         post.classroom = new_class
