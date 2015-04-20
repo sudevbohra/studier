@@ -181,7 +181,7 @@ def profile(request, id):
     context['user_id'] = request.user.id
     context['prof_id'] = user.id
     context['prof_classes'] = prof_student.classes.all()
-    context['is_student'] = (student.id == int(id))
+    context['is_student'] = (student.user.id == int(id))
     friends = prof_student.friends
     context['is_friend'] = (student in friends.all())
     context['prof_classes'] = prof_student.classes.all()
