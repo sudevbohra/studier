@@ -2,8 +2,8 @@
 *.pot
 *.pyc
 local_settings.py
-
-
+db1
+myenv
 # Editor backup files
 *~
 *#
