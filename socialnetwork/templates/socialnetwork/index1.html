@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="http://getbootstrap.com/favicon.ico">
+
+    <title>Mellon Planner</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="http://getbootstrap.com/examples/dashboard/dashboard.css" rel="stylesheet">
+
+    <script src="http://getbootstrap.com/assets/js/ie-emulation-modes-warning.js"></script>
+    <link href='../static/css/fullcalendar.css' rel='stylesheet' />
+    <link href='../static/css/fullcalendar.print.css' rel='stylesheet' media='print' />
+    <script src='../static/css/moment.min.js'></script>
+    <script src='../static/css/jquery.min.js'></script>
+    <script src='../static/css/fullcalendar.min.js'></script>
+    
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a href="#" style="color:white"><h1>Mellon Planner</h1></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a href="{% url 'home' %}">
+                  
+                    <button  value="" class="btn btn-primary">Try New Schedule</button>
+                    
+                </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div id="wrapper">
+
+    <!-- Sidebar -->
+    <div id="sidebar-wrapper" style="background: url(http://subtlepatterns.com/patterns/congruent_outline.png);">
+        <ul class="sidebar-nav">
+            <li class="sidebar-brand">
+                <div>
+                 Classroom {{current_class}}     <button style="position:relative; margin-left:110px; "class="btn btn-info" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-file"></span> Add Post</button>
+                </div>
+            </li>
+            {% for i,units in unitsList %}
+                {% if i == currentIndex %}
+                  <li class="active"><a href="{% url 'getschedule' i %}">{{i}} ({{units}})</a></li>
+                {% else %}
+
+                  <li><a href="{% url 'getschedule' i %}">{{i}} ({{units}})</a></li>
+                {% endif %}
+              {% endfor %}
+            
+        </ul>
+    </div>
+    <!-- /#sidebar-wrapper -->
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper" style="margin-top:60px">
+          <div id='calendar1'></div>
+          
+          
+           {% for error in errors %}
+                <div class="alert alert-dismissible alert-danger">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <strong>Oh snap!</strong> <a href="#" class="alert-link">{{ error }}
+              </div>
+          {% endfor %}
+        </div>
+      </div>
+   
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
+    <script src='../static/css/fullcalendar.min.js'></script>
+    <script>
+
+  $(document).ready(function() {
+
+    $('#calendar1').fullCalendar({
+      minTime: '06:00:00',
+      defaultView: 'agendaWeek',
+      header: {
+        left: '',
+        center: '',
+        right: ''
+      },
+      allDaySlot: false,
+      defaultDate: '2015-02-12',
+      editable: false,
+      eventLimit: true, // allow "more" link when too many events
+      events: [
+      {% for cls in schedule %}
+      {
+        title: '{{cls.title}}',
+        start: '{{cls.start}}',
+        end: '{{cls.end}}'
+      },
+      {% endfor %}
+      ]
+    });
+    $( "th.fc-sun" ).html("Sunday");
+    $( "th.fc-mon" ).html("Monday");
+    $( "th.fc-tue" ).html("Tuesday");
+    $( "th.fc-wed" ).html("Wednesday");
+    $( "th.fc-thu" ).html("Thursday");
+    $( "th.fc-fri" ).html("Friday");
+    $( "th.fc-sat" ).html("Saturday");
+  });
+  
+
+</script>
+    <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
+    <script src="http://getbootstrap.com/assets/js/vendor/holder.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="http://getbootstrap.com/assets/js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>
