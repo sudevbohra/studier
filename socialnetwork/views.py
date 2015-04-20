@@ -174,7 +174,7 @@ def profile(request, id):
     context['full_name'] = user.get_full_name()
     student = Student.objects.get(user=request.user)
     context['student'] = student
-    prof_student = Student.objects.get(id=id)
+    prof_student = Student.objects.get(user_id=id)
     context['prof_student'] = prof_student
     context['school'] = prof_student.school
     context['major'] = prof_student.major
@@ -263,24 +263,24 @@ def map(request):
 @login_required
 @transaction.atomic
 def add_class(request):
-    # try:
-    #     student = Student.objects.get(user=request.user)
-    #     classObj = Classroom.objects.get(name=request.POST['course_id'])
-    #     classObj.students.add(student)
-    #     return change_class(request, classObj)
-    # except Classroom.DoesNotExist:
-    new_class = Classroom(name=request.POST['course_id'])
-    new_class.save()
-    student = Student.objects.get(user=request.user)
-    new_class.students.add(student)
-    instructions = "Welome to the Class. No Posts exist yet. Add some posts using the button on the left!"
-    post = Post(text=instructions, title="Instructions")
-    post.classroom = new_class
-    post.student = student
-    post.upvotes = 0
-    post.save()
-    new_class.save()
-    return change_class(request, new_class)
+    try:
+        student = Student.objects.get(user=request.user)
+        classObj = Classroom.objects.get(name=request.POST['course_id'])
+        classObj.students.add(student)
+        return change_class(request, classObj)
+    except Classroom.DoesNotExist:
+        new_class = Classroom(name=request.POST['course_id'])
+        new_class.save()
+        student = Student.objects.get(user=request.user)
+        new_class.students.add(student)
+        instructions = "Welome to the Class. No Posts exist yet. Add some posts using the button on the left!"
+        post = Post(text=instructions, title="Instructions")
+        post.classroom = new_class
+        post.student = student
+        post.upvotes = 0
+        post.save()
+        new_class.save()
+        return change_class(request, new_class)
 	# if not (Classroom.objects.filter(name=request.POST['course_id']).count):
 	# 	new_class = Classroom(name=request.POST['course_id'])
 	# 	new_class.save()
