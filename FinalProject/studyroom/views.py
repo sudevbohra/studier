@@ -199,7 +199,8 @@ def set_map_studygroup_default(request):
 def get_studygroups(request, user_id):
 	courses = [cls.name for cls in Student.objects.get(user_id=user_id).classes.all()]
 	now = datetime.datetime.now().replace(tzinfo=tzlocal())
-	studygroups = StudyGroup.objects.filter(start_time__lte = now, end_time__gt = now, course__in = courses)
+	# start_time__lte = now, <-- add to only show groups which are in progress
+	studygroups = StudyGroup.objects.filter(end_time__gte=now, course__in = courses)
     #[elem for elem in li if li.count(elem) == 1]
 	response_text = serializers.serialize('json', studygroups, use_natural_foreign_keys=True)
 	return HttpResponse(response_text , content_type="application/json")
