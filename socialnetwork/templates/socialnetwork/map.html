@@ -99,10 +99,15 @@
 
 <div id = "buttons">
  <a href="#" style="position: fixed; bottom: 30px; right: 70px;" class="btn btn-success btn-sm  " data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-plus" id = "study-group" aria-hidden="true"></span> Study Group</a>
+
+{% if is_studying %}
+<a href="#" style="position: fixed; bottom: 30px; right: 30px;" class="btn btn-danger btn-sm  "><span class="glyphicon glyphicon-stop" id = "stop" aria-hidden="true"></span></a>
+
+{% else %}
 <a href="#" style="position: fixed; bottom: 30px; right: 30px;" class="btn btn-info btn-sm  "><span class="glyphicon glyphicon-record" id = "location" aria-hidden="true"></span></a>
+
+{% endif %}
 </div>
-
-
 <div id = "add-studygroup" hidden="true">
       <button id = 'start-studying' href="#" style="position: fixed; bottom: 30px; right: 30px;" class="btn btn-info btn-sm  "><span class="glyphicon glyphicon-book"  hidden="true"></span> Start Studying</button>
       <div class="form-group" style="position: fixed; bottom: 60px; right: 30px;">
@@ -152,6 +157,7 @@
 
 ]);
   // Try HTML5 geolocation
+if ($('#location').length) {
   document.getElementById("location").onclick = function() {
     $('#buttons').hide(150)
     $('#add-studygroup').show(300);
@@ -173,6 +179,29 @@
       handleNoGeolocation(true);
     });
   };
+}
+else {
+  document.getElementById("stop").onclick = function() {
+    
+    var csrftoken = document.getElementsByName("csrfmiddlewaretoken")[0].defaultValue;
+    $.ajax({
+        url: "{% url 'set_map_studygroup_default' %}",
+        type:'get',
+        dataType : "json",
+        data: {csrfmiddlewaretoken: csrftoken, id:"{{user_id}}" },
+        success: function( items ) {
+            
+            console.log('success');
+            $('.navbar-brand')[0].click();
+        }, error: function (items) {
+            $('.navbar-brand')[0].click();
+        }
+            
+    });
+  }
+}
+
+
 
 
 
@@ -192,7 +221,7 @@
                 
 
                 var infowindow = new google.maps.InfoWindow({
-                    content: "<a href ='/studyroom/change_studygroup/" + items[i].pk + "' <b style = 'color:black;'>" + items[i].fields['course'] + ": " + items[i].fields['name'] + "</b>" +"<p style = 'color:black;'>" + items[i].fields['description'] + "</p>" + "<p style = 'color:blue;'>" + 'Owned by ' + items[i].fields['owner'] + "</p></a>", noSuppress:true
+                    content: "<a href ='/studyroom/change_studygroup/" + items[i].pk + "' <b style = 'color:black;'>" + items[i].fields['course'] + ": " + items[i].fields['name'] + "</b>" +"<p style = 'color:black;'>" + "</p>" + "<p style = 'color:blue;'>" + 'Owned by ' + items[i].fields['owner'] + "</p></a>", noSuppress:true
                 });
 
 
@@ -260,6 +289,9 @@ function fixInfoWindow() {
             
     });
   }
+
+  
+   
 
 </script>
 

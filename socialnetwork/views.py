@@ -25,6 +25,8 @@ from django.core.mail import send_mail
 
 from django.core import serializers
 from django.http import HttpResponse
+import datetime
+from dateutil.tz import *
 
 # Create your views here.
 
@@ -38,6 +40,9 @@ def get_default_context(request):
         context['notif_count'] = len(student.notifications.all())
     return context
 
+def default_studygroup(student):
+    return student.natural_key() + " is studying"
+
 @login_required
 def home(request):
     # # Sets up list of just the logged-in user's (request.user's) items
@@ -49,6 +54,13 @@ def home(request):
     context["classes"] = student.classes.all()
     context['studygroupform'] = StudyGroupForm()
     context['notifications'] = student.notifications
+    now = datetime.datetime.now().replace(tzinfo=tzlocal())
+    
+    studygroups = StudyGroup.objects.filter(owner=student, name= default_studygroup(student) , start_time__lte = now, end_time__gte = now)
+    
+    if studygroups.count() > 0:
+        context['is_studying'] = studygroups.count()
+
     # # For now we'll use 15437
     # current_class = "15437"
     # context = {'user_id' : user_id, 'current_class' : current_class, "classes" : student.classes.all()}
@@ -263,10 +275,7 @@ def edit(request):
 def map(request):
     # Sets up list of just the logged-in user's (request.user's) items
     return home(request)
-    user_id = request.user.id
-    student = Student.objects.get(user=request.user)
-    return render(request, 'socialnetwork/map.html', {'user_id' : user_id, "classes" : student.classes.all(), "notifications" : student.notifications})
-
+    
 @login_required
 @transaction.atomic
 def add_class(request):
