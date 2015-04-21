@@ -246,6 +246,7 @@ def show_post_studygroup(request, id):
 	context['in_studygroup'] = in_studygroup
 	context['comment_form'] = CommentForm()
 	context['students'] = current_studygroup.members
+	context['studygroups'] = student.groups.all()
 	print current_studygroup.id
 	if current_post.attachment_url:
 		context['attachment_url'] = current_post.attachment_url
