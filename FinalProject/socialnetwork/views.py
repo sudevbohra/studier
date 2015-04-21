@@ -289,7 +289,7 @@ def add_class(request):
         student.classes.add(classObj)
         #classObj.students.add(student)
         return change_class(request, classObj)
-    except DoesNotExist:
+    except Classroom.DoesNotExist:
         new_class = Classroom(name=request.POST['course_id'])
         new_class.save()
         student = Student.objects.get(user=request.user)

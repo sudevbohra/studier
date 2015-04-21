@@ -10,13 +10,17 @@
       </div>
       <div class="modal-body">
         <form method="post" enctype="multipart/form-data" action="{% url 'add_post' current_class %}" class="form-signin">
-        <table style="margin-right:auto;
-          margin-left:auto; ">
+        <table style="margin-right:auto;margin-left:auto; ">
                 {{ form.title|addcss:"form-control, placeholder: Title" }}
                 <br>
                 {{ form.text|addcss:"form-control, placeholder: Post" }}
+                <br>
+                Add an attachment?
+                <br>
                 {{ form.attachment|addcss:"form-control, placeholder: Attachment" }}
+                <br>
                 {{ form.attachment_name|addcss:"form-control, placeholder: Attachment Name" }}
+                <br>
                 {% csrf_token %}
       </div>
       <div class="modal-footer">
@@ -47,10 +51,33 @@
             <div class="row-fluid">
                 <div class="col-lg-12 col-md-12 ">
                     <div class="picture-container">
-                        {% for stu in students.all %}
-                        <a href="{% url 'profile' stu.id %}"><div class="profile-image" style="background-image: url({{stu.picture_url}})"></div>
-                        </a>
-                        {% endfor %}
+                        
+                            <!-- {% for stu in students.all %}
+                            <a href="{% url 'profile' stu.id %}">
+                                <div class="profile-image" style="background-image: url({{stu.picture_url}})">
+                                    <center style="margin-top: 80px;color:black;">{{ stu.user.first_name }}</center>
+                                </div>
+                            </a> 
+                            {% endfor %} -->
+                        <table width="100%">
+                            <tr>
+                                {% for stu in students.all %}
+                                    <td>
+                                        <a href="{% url 'profile' stu.id %}">
+                                            <div class="image-cropper" style="width: 200px;height: 80px;border-radius: 5%;">
+                                                <img src="{{ stu.picture_url }}" class="profile-image" name="aboutme" >
+                                            </div>
+                                        </a>
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                            <tr>
+                                {% for stu in students.all %}
+                                    <td>{{ stu.user.first_name }}</td>
+                                {% endfor %}
+                            </tr>
+                        
+                        </table>
                         <!-- <div id="image">
                             {% for stu in students.all %}
                             <img src="{{stu.picture_url}}" border="0">
