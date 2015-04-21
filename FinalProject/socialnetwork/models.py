@@ -25,6 +25,8 @@ class Student(models.Model):
 	notifications = models.ManyToManyField(Notification, symmetrical='False')
 	def __unicode__(self):
 		return 'Student(id=' + str(self.id) + ')'
+	def natural_key(self):
+		return self.user.first_name + " " + self.user.last_name
 
 class Comment(models.Model):
 	text = models.CharField(max_length=160, null=True)
@@ -58,10 +60,7 @@ class StudyGroup(models.Model):
 	end_time = models.DateTimeField(auto_now_add=True)
 	active = models.BooleanField(default=True)
 	course = models.CharField(max_length = 10)
-	topic = models.CharField(max_length=100)
-	description = models.CharField(max_length=255)
-	location_room = models.CharField(max_length=50)
-	location_name = models.CharField(max_length=255)
+	location_name = models.CharField(max_length=255, blank=True, null=True)
 	location_latitude = models.DecimalField(blank=True, null= True, default=40.4430939,max_digits=30,decimal_places=20)
 	location_longitude  = models.DecimalField(blank=True, null= True, default=-79.942309,max_digits=30,decimal_places=20)
 	def __unicode__(self):

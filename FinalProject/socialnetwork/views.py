@@ -25,6 +25,8 @@ from django.core.mail import send_mail
 
 from django.core import serializers
 from django.http import HttpResponse
+import datetime
+from dateutil.tz import *
 
 # Create your views here.
 
@@ -38,6 +40,9 @@ def get_default_context(request):
         context['notif_count'] = len(student.notifications.all())
     return context
 
+def default_studygroup(student):
+    return student.natural_key() + " is studying"
+
 @login_required
 def home(request):
     # # Sets up list of just the logged-in user's (request.user's) items
@@ -49,6 +54,13 @@ def home(request):
     context["classes"] = student.classes.all()
     context['studygroupform'] = StudyGroupForm()
     context['notifications'] = student.notifications
+    now = datetime.datetime.now().replace(tzinfo=tzlocal())
+    
+    studygroups = StudyGroup.objects.filter(owner=student, name= default_studygroup(student) , start_time__lte = now, end_time__gte = now)
+    
+    if studygroups.count() > 0:
+        context['is_studying'] = studygroups.count()
+
     # # For now we'll use 15437
     # current_class = "15437"
     # context = {'user_id' : user_id, 'current_class' : current_class, "classes" : student.classes.all()}
@@ -63,6 +75,8 @@ def change_class(request, name):
     student = Student.objects.get(user=request.user)
     posts = Classroom.objects.get(name=name).posts.all()
     current_class = name
+
+
     try:
         current_post = posts[:1].get()
     except Exception:
@@ -103,26 +117,31 @@ def show_post(request, id):
     current_post = Post.objects.get(id=id)
     posts = current_post.classroom.posts.order_by('-date')
     current_class = current_post.classroom
-    context = get_default_context(request)
-    context['current_post'] = current_post
-    context['current_class'] = current_class
-    print current_class
-    context['user_id'] = user_id
-    context['posts'] = posts
-    # context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, "classes" : student.classes.all(), "posts" : posts}
-    context['form'] = PostForm()
-    context['comment_form'] = CommentForm()
-    context['students'] = current_class.students
-    if current_post.attachment_url:
-        context['attachment_url'] = current_post.attachment_url
-        context['attachment_name'] = current_post.attachment_name
-        print current_post.attachment_url
-    return render(request, 'socialnetwork/index.html', context)
 
 
-@login_required
-def map(request):
-    return render(request, "socialnetwork/map.html", {})
+    if student in current_class.students.all():
+        
+
+        context = get_default_context(request)
+        context['current_post'] = current_post
+        context['current_class'] = current_class
+        print current_class
+        context['user_id'] = user_id
+        context['posts'] = posts
+        # context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, "classes" : student.classes.all(), "posts" : posts}
+        context['form'] = PostForm()
+        context['comment_form'] = CommentForm()
+        context['students'] = current_class.students
+        if current_post.attachment_url:
+            context['attachment_url'] = current_post.attachment_url
+            context['attachment_name'] = current_post.attachment_name
+            print current_post.attachment_url
+        return render(request, 'socialnetwork/index.html', context)
+    else:
+        return home(request)
+
+
+
 
 @transaction.atomic
 def register(request):
@@ -256,10 +275,7 @@ def edit(request):
 def map(request):
     # Sets up list of just the logged-in user's (request.user's) items
     return home(request)
-    user_id = request.user.id
-    student = Student.objects.get(user=request.user)
-    return render(request, 'socialnetwork/map.html', {'user_id' : user_id, "classes" : student.classes.all(), "notifications" : student.notifications})
-
+    
 @login_required
 @transaction.atomic
 def add_class(request):
@@ -269,13 +285,13 @@ def add_class(request):
         student.classes.add(classObj)
         #classObj.students.add(student)
         return change_class(request, classObj)
-    except Exception:
+    except DoesNotExist:
         new_class = Classroom(name=request.POST['course_id'])
         new_class.save()
         student = Student.objects.get(user=request.user)
         #new_class.students.add(student)
         student.classes.add(new_class)
-        instructions = "Welome to the Class. No Posts exist yet. Add some posts using the button on the left!"
+        instructions = "Welcome to the Class. No Posts exist yet. Add some posts using the button on the left!"
         post = Post(text=instructions, title="Instructions")
         post.classroom = new_class
         post.student = student
