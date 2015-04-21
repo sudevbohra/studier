@@ -1,23 +1,26 @@
 from django import forms
 from django.contrib.auth.models import User
-from studyroom.models import *
+from socialnetwork.models import *
 from django.forms.widgets import SplitDateTimeWidget
 from datetime import datetime
 
-# def getTime():
-# 	return datetime.now()
-
-# def get3Hours():
-# 	return datetime.now() + timedelta(hours=3)
-
 class StudyGroupForm(forms.ModelForm):
-	# start_time = forms.DateTimeField(default=getTime())
-	# end_time = forms.DateTimeField(default=get3Hours())
 
 	class Meta:
 		model = StudyGroup
 		name = models.CharField(blank=True, max_length=40)
-		exclude = ['location_latitude', 'location_longitude', 'owner', 'members', 'active']
+		exclude = ['location_latitude', 'location_longitude', 'owner', 'members', 'active', 'course']
+
+	def __init__(self, *args, **kwargs):
+		if 'user' in kwargs:
+			user = kwargs.pop('user')
+		else: 
+			user = None
+		super(StudyGroupForm, self).__init__(*args, **kwargs)
+		if user != None:
+			self.fields['course'] = forms.ModelChoiceField(queryset=Classroom.objects.filter(students__id=user.id))
+		else:
+			self.fields['course'] = forms.CharField(max_length=10)
 
 	def clean(self):
 		cleaned_data = super(StudyGroupForm, self).clean()

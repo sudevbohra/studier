@@ -35,9 +35,9 @@ from django.http import Http404
 
 @login_required
 def show_modal(request, error=None):
-	studyRoomForm = StudyGroupForm()
 	user_id = request.user.id
 	student = Student.objects.get(user=request.user)
+	studyRoomForm = StudyGroupForm(None,user=student)
 	context = {}
 	context["user_id"] = user_id
 	context["student"] = student
@@ -94,23 +94,23 @@ def map_studygroups(request, studygroup_id):
 
 @login_required
 def add_studygroup(request):
-
-	studygroupform = StudyGroupForm(request.POST)
 	user = request.user
 	student = Student.objects.get(user=user)
+	studygroupform = StudyGroupForm(request.POST, user=student)
+	
 	studygroupform.is_valid()
 	try:
 		course = Classroom.objects.get(name=studygroupform.cleaned_data["course"])
 	except Classroom.DoesNotExist:
 		course = None
 	if course == None: 
-		return show_modal(request, "You are not in that class")
+		return home(request, "You are not in that class")
 	if student not in course.students.all():
-		return show_modal(request, "You are not in that class")
+		return home(request, "You are not in that class")
 	studygroup = StudyGroup(name=studygroupform.cleaned_data['name'],
 							owner=student,
 							active=True,
-							course=studygroupform.cleaned_data['course'],
+							course=studygroupform.cleaned_data['course'].name,
 							location_name=studygroupform.cleaned_data['location_name'])
 	studygroup.save()
 	studygroup.members.add(student)

@@ -48,7 +48,7 @@ def default_studygroup(student):
     return student.natural_key() + " is studying"
 
 @login_required
-def home(request):
+def home(request, error=None):
     # # Sets up list of just the logged-in user's (request.user's) items
     user_id = request.user.id
     student = Student.objects.get(user=request.user)
@@ -56,8 +56,10 @@ def home(request):
     context["user_id"] = user_id
     context["student"] = student
     context["classes"] = student.classes.all()
-    context['studygroupform'] = StudyGroupForm()
+    context['studygroupform'] = StudyGroupForm(None, user=student)
     context['notifications'] = student.notifications
+    if error != None:
+        context["error"] = error
     now = datetime.datetime.now().replace(tzinfo=tzlocal())
     
     studygroups = StudyGroup.objects.filter(owner=student, name= default_studygroup(student) , start_time__lte = now, end_time__gte = now)
