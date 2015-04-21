@@ -64,6 +64,12 @@
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li><a href="{% url 'home' %}">Map</a></li>
+            <li class='dropdown'><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Studyrooms</a>
+                <ul class="dropdown-menu" role="menu">
+                {% for studygroup in studygroups %}
+                  <li><a href="/studyroom/change_studygroup/{{studygroup.pk}}">{{studygroup.name}}</a></li>
+                {% endfor %}
+                </ul></li>
             {% for class in classes %}
                 <li><a href="/socialnetwork/change_class/{{class}}" id="menu-toggle">{{ class }}</a></li>
                 <!-- <li><a href="#menu-toggle" id="menu-toggle">36-225</a></li>
