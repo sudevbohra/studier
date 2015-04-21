@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+
+    <title>studier</title>
+
+    <title>Simple Sidebar - Start Bootstrap Template</title>
+   <!-- Bootstrap Core CSS -->
+    <script src="/static/js/jquery.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+    {% if studygroupform %}
+      <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min.js"></script>        
+      <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.4.0/lang/en-gb.js"></script>                
+      <script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/3.0.0/js/bootstrap-datetimepicker.min.js"></script>`
+    {% endif %}
+
+    <link href="https://bootswatch.com/darkly/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="/static/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+    <link href="/static/css/simple-sidebar.css" rel="stylesheet">
+    <link href="/static/css/question-answer.css" rel="stylesheet">
+    <link href="/static/css/login.css" rel="stylesheet">
+    <link href="/static/css/profile.css" rel="stylesheet">
+    <link href="/static/css/main.css" rel="stylesheet">
+
+    
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+{% block head %}
+{% endblock %}
+</head>
+
+<body style="background: url(http://subtlepatterns.com/patterns/gplaypattern.png);">
+
+    {% block navbar %}
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" style="color:rgba(242,156,16,1);" href="{% url 'home' %}"><b>studier</b></a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="{% url 'home' %}">Map</a></li>
+            {% for class in classes %}
+                <li><a href="/socialnetwork/change_class/{{class}}" id="menu-toggle">{{ class }}</a></li>
+                <!-- <li><a href="#menu-toggle" id="menu-toggle">36-225</a></li>
+                <li><a href="#menu-toggle" id="menu-toggle">37-226</a></li>
+                 -->
+            {% endfor %}
+            <li ><a id = "add-class" href="#add-class"><span class="glyphicon glyphicon-plus"></span></a></li>
+
+          </ul>
+          <form id = "class" hidden = "true" class="navbar-form navbar-left" action = "{% url 'add_class' %}" method = "post">
+            <div class="form-group">
+              <input type="text" name="course_id" class="form-control" placeholder="eg. 36225 or 15112">
+            </div>
+            <button type="submit" class="btn btn-info">+ Course</button>
+            {% csrf_token %}
+          </form>
+          {% if user_id %}
+          <ul class="nav navbar-nav navbar-right">
+            {% if current_class %}
+              <li> <a href="{% url 'remove_class' current_class %}">Leave Class</a></li>
+            {% endif %}
+            {% if current_studygroup %}
+              {% if in_studygroup %}
+                <li> <a href="{% url 'remove_person_studygroup' current_studygroup.id %}">Leave Studygroup</a></li>
+              {% else %}
+                <li> <a href="{% url 'add_person_studygroup' current_studygroup.id %}">Add Studygroup</a></li>
+              {% endif %}
+            {% endif %}
+            <li><a href="{% url 'profile' user_id %}" class="btn btn-warning">Me</a></li>
+            <li data-toggle="modal" data-toggle="modal" data-target="#notificationsModal"><a href="#" id="clear-notifications">
+            {% if notif_count %}
+              Notifications ({{notif_count}})
+            {% else %}
+              Notifications
+            {% endif %}
+
+            </a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+          </ul>
+          {% endif %}
+        </div><!--/.nav-collapse -->
+
+      </div>
+    </nav>
+    {% endblock %}
+
+    {% block mainbody %}
+    {% endblock %}
+
+    </div>
+
+    
+    </div>
+</div>
+        <!-- /#page-content-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+{% block top %}
+{% endblock %}
+<!-- Create modal for notifications -->
+<div class="modal fade" id="notificationsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Notifications</h4>
+      </div>
+      <div class="modal-body">
+        <ul class="media-list">
+          {% if notifications %}
+          {% for notif in notifications.all %}
+          <a href={{notif.link}}>
+              <li class="media">
+                <div class="media-left">
+                    <img class="media-object" src={{notif.picture_url}}>
+                </div>
+                <div class="media-body">
+                  <h4 class="media-heading">{{notif.text}}</h4>
+                </div>
+              </li>
+          </a>
+          {% endfor %}
+          {% endif %}
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% block scripts %}
+{% endblock %}
+
+
+<!-- jQuery -->
+
+
+
+
+<!-- Menu Toggle Script -->
+<script>
+document.getElementById("clear-notifications").onclick = 
+  function() {
+    var csrftoken = document.getElementsByName("csrfmiddlewaretoken")[0].defaultValue;
+    $.ajax({
+        url: "{% url 'clear_notifications' %}",
+        type:'post',
+        dataType : "json",
+        data: {csrfmiddlewaretoken: csrftoken},
+    });
+  }
+// $("#menu-toggle").click(function(e) {
+//     e.preventDefault();
+//     $("#wrapper").toggleClass("toggled");
+// });
+
+
+
+var addClassHTML="";
+addClassHTML += "<div class=\"form-group\">";
+addClassHTML += "    <input name=\"search\" id=\"search\"\/>";
+addClassHTML += "    <button class=\"btn btn-warning btn-xs\">button<\/button>";
+addClassHTML += "<\/div>";
+  
+$("#add-class").click(function(e) {
+    $("#add-class").hide(100);
+    $('#class').show(500);
+});
+
+
+{% block in_scripts %}
+{% endblock %}
+</script>
+
+
+</body>
+
+</html>

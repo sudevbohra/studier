@@ -1,0 +1,72 @@
+{% extends "socialnetwork/base.html" %}
+
+{% block mainbody %}
+<div class="modal-dialog" style="margin-top: 100px;">
+<div class="modal-content" style="background-color: rgba(243, 156, 18, 0.8);width: 100%;margin-right: auto;margin-left: auto;">
+
+    <div class="modal-body">
+        <center>
+        <div class="image-cropper" style="width: 500px;height: 300px;border-radius: 5%;">
+        <img src="{{picture_url}}" width="200px" name="aboutme" border="0">
+      </div></a>
+        <h3 class="media-heading">{{full_name}}</h3>
+        </center>
+        <hr>
+        <span><strong>School: {{school}}</strong></span>
+        <hr>
+        <span><strong>Major: {{major}}</strong></span>
+        <hr>
+        <span><strong>Classes: </strong></span>
+            {% for class in prof_classes %}
+            <span class="label label-info">{{class}}</span>
+            {% endfor %}
+        {% if is_student %}
+        <hr>
+        <span>
+            <strong>Friends: </strong>
+            <div class="row-fluid">
+                <div class="col-lg-12 col-md-12 ">
+                    <div class="picture-container">
+                        {% for stu in my_friends.all %}
+                        <a href="{% url 'profile' stu.id %}"><div class="profile-image" style="background-image: url({{stu.picture_url}})"></div>
+                        </a>
+                        {% endfor %}
+                        <!-- <div id="image">
+                            {% for stu in students.all %}
+                            <img src="{{stu.picture_url}}" border="0">
+                            {% endfor %}
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </span>
+        {% endif %}
+    </div>
+    <div class="modal-footer">
+        <center>
+        {% if is_friend %}
+        <form action="{% url 'unfriend' prof_id %}" method="get">
+            <button type="submit" class="btn btn-danger" data-dismiss="modal">Unfriend</button>
+        </form>
+        {% elif is_student %}
+        <form action="/socialnetwork/edit" method="get">
+            <button type="submit" class="btn btn-info" data-dismiss="modal" value="Edit">Edit</button>
+        {% else %}
+        <form action="{% url 'friend' prof_id %}" method="get">
+            <button type="submit" class="btn btn-primary" style="background-color: #00BC8C;border-color: #00BC8C;"data-dismiss="modal">Add Friend</button>
+        </form>
+        {% endif %}
+        </center>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- jQuery -->
+<script src="/static/js/jquery.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/static/js/bootstrap.min.js"></script>
+<script src="http://mymaplist.com/js/vendor/TweenLite.min.js"></script>
+<!-- Menu Toggle Script -->
+{% endblock %}
