@@ -221,9 +221,9 @@ else {
                 
 
                 var infowindow = new google.maps.InfoWindow({
-                    content: "<a href ='/studyroom/change_studygroup/" + items[i].pk + "' <b style = 'color:black;'>" + items[i].fields['course'] + ": " + items[i].fields['name'] + "</b>" +"<p style = 'color:black;'>" + "</p>" + "<p style = 'color:blue;'>" + 'Owned by ' + items[i].fields['owner'] + "</p></a>", noSuppress:true
-                });
+                    content: "<a style='text-decoration:none;' href ='/studyroom/change_studygroup/" + items[i].pk + "' ><b style = 'color:black;'><div class='info_title' style='font-size:20px;'>" + items[i].fields['name'] + "</div>" + items[i].fields['course'] + "</b>" +"<p style = 'color:black;'>" + "</p>" + "<p style = 'color:black;'>" + 'Owned by ' + items[i].fields['owner'] + "</p></a>", noSuppress:true
 
+                });
 
                 var marker = new google.maps.Marker({
                   position: new google.maps.LatLng(items[i].fields['location_latitude'],items[i].fields['location_longitude']),

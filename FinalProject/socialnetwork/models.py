@@ -55,7 +55,7 @@ class Classroom(models.Model):
 class StudyGroup(models.Model):
 	name = models.CharField(blank=True, max_length=40)
 	owner = models.ForeignKey(Student, related_name="studygroups")
-	members = models.ManyToManyField(Student, related_name='member')
+	members = models.ManyToManyField(Student, related_name='groups')
 	start_time = models.DateTimeField(auto_now_add=True)
 	end_time = models.DateTimeField(auto_now_add=True)
 	active = models.BooleanField(default=True)
@@ -63,6 +63,7 @@ class StudyGroup(models.Model):
 	location_name = models.CharField(max_length=255, blank=True, null=True)
 	location_latitude = models.DecimalField(blank=True, null= True, default=40.4430939,max_digits=30,decimal_places=20)
 	location_longitude  = models.DecimalField(blank=True, null= True, default=-79.942309,max_digits=30,decimal_places=20)
+	private = models.BooleanField(default=True)
 	def __unicode__(self):
 		return 'StudyGroup(id=' + str(self.id) + ", owner=" + str(self.owner) + ')'
 		

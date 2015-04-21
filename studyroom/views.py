@@ -11,7 +11,7 @@ from django.contrib.auth import login, authenticate
 
 # Django transaction system so we can use @transaction.atomic
 from django.db import transaction
-
+from socialnetwork.views import *
 from socialnetwork.models import *
 from socialnetwork.forms import *
 from studyroom.models import *
@@ -28,6 +28,9 @@ from django.core import serializers
 from django.http import HttpResponse
 import json
 import datetime
+from dateutil.tz import *
+from django.utils import timezone
+from django.http import Http404
 
 
 @login_required
@@ -108,20 +111,16 @@ def add_studygroup(request):
 							owner=student,
 							active=True,
 							course=studygroupform.cleaned_data['course'],
-							topic=studygroupform.cleaned_data['topic'],
-							description=studygroupform.cleaned_data['description'],
-							location_room=studygroupform.cleaned_data['location_room'],
 							location_name=studygroupform.cleaned_data['location_name'])
 	studygroup.save()
 	studygroup.members.add(student)
-	studygroup.start_time = datetime.datetime.strptime(request.POST['startTime'], "%m/%d/%Y %I:%M %p")
-	studygroup.end_time = datetime.datetime.strptime(request.POST['endTime'], "%m/%d/%Y %I:%M %p")
-	startTime = request.POST['startTime']
-	endTime = request.POST['endTime']
-	print startTime, endTime
+	studygroup.start_time = datetime.datetime.strptime(request.POST['startTime'], "%m/%d/%Y %I:%M %p").replace(tzinfo=tzlocal())
+	studygroup.end_time = datetime.datetime.strptime(request.POST['endTime'], "%m/%d/%Y %I:%M %p").replace(tzinfo=tzlocal())
+
 	studygroup.save()
-	instructions = "Welome to the Class. No Posts exist yet. Add some posts using the button on the left!"
-	post = Post(text=instructions, title="Instructions")
+	instructions = "\n Owner: {1} \nStart Time: {2} \nEnd Time: {3} \n\nWelcome to {0}. \n This is a study group for {4}. Join to view all posts. ".format(studygroup.name, studygroup.owner.user.first_name + " " + studygroup.owner.user.last_name,\
+		request.POST['startTime'], request.POST['endTime'], studygroupform.cleaned_data['course'])
+	post = Post(text=instructions, title="Study Group Welcome Post")
 	
 	post.student = student
 	post.upvotes = 0
@@ -139,15 +138,68 @@ def set_map_studygroup(request):
 		studygroup = StudyGroup.objects.get(id = request.POST['id'])
 		studygroup.location_latitude = request.POST['lat']
 		studygroup.location_longitude = request.POST['lng']
+
 		studygroup.save()
 	except Exception:
 		print "Error in set_map_studygroup"
 	return HttpResponse()
 
+
+def default_studygroup(student):
+    return student.natural_key() + " is studying"
+
+import traceback
+@login_required
+@transaction.atomic
+def set_map_studygroup_default(request):
+	if request.method == 'POST':
+		try:
+			course = request.POST['course']
+			print "HERE"
+			if Classroom.objects.filter(name = course).count() != 0:
+				print "AFTER IF"
+				student  = Student.objects.get(user_id =request.POST['id'])
+
+				studygroup = StudyGroup(name=  default_studygroup(student),
+									owner= student,
+									active=True,
+									course=request.POST['course'],
+									location_name= "Check Pin" )
+				studygroup.location_latitude = request.POST['lat']
+				studygroup.location_longitude = request.POST['lng']
+				studygroup.save()
+				studygroup.end_time += datetime.timedelta(hours=6)
+				instructions = "\n Owner: {1} \nStart Time: {2}  \n\nWelcome to {0}. \n This is a study group for {3}. Join to view all posts. ".format(studygroup.name, studygroup.owner.user.first_name + " " + studygroup.owner.user.last_name,\
+				studygroup.start_time.strftime("%m/%d/%Y %I:%M %p"), course)
+				post = Post(student = student, upvotes = 0, text=instructions, title="Study Group Welcome Post", studygroup = studygroup)
+				post.save()
+				studygroup.posts.add(post)
+				studygroup.members.add(student)
+				studygroup.save()
+
+		except Exception:
+			print "Error in set_map_studygroup_default"
+			print traceback.format_exc()
+		return HttpResponse()
+	elif request.method == 'GET':
+		try:
+			now = datetime.datetime.now().replace(tzinfo=tzlocal())
+			student  = Student.objects.get(user_id =request.GET['id'])
+			studygroups = StudyGroup.objects.filter(owner=student, name= default_studygroup(student) , start_time__lte = now, end_time__gte = now)
+			studygroups.delete()
+
+
+		except Exception:
+			print "Error in set_map_studygroup_default"
+			print traceback.format_exc()
+
+
+
 @login_required
 def get_studygroups(request, user_id):
 	courses = [cls.name for cls in Student.objects.get(user_id=user_id).classes.all()]
-	studygroups = StudyGroup.objects.filter(course__in = courses)
+	now = datetime.datetime.now().replace(tzinfo=tzlocal())
+	studygroups = StudyGroup.objects.filter(start_time__lte = now, end_time__gt = now, course__in = courses)
     #[elem for elem in li if li.count(elem) == 1]
 	response_text = serializers.serialize('json', studygroups, use_natural_foreign_keys=True)
 	return HttpResponse(response_text , content_type="application/json")
@@ -185,9 +237,11 @@ def show_post_studygroup(request, id):
 	current_studygroup = current_post.studygroup
 	if student in current_studygroup.members.all():
 		in_studygroup = True
+		context = {'current_post' : current_post, 'current_studygroup' : current_studygroup, 'user_id' : user_id, "classes" : student.classes.all(), "posts" : posts}
 	else:
+		context = {'current_post' : posts[posts.count()-1], 'current_studygroup' : current_studygroup, 'user_id' : user_id, "classes" : student.classes.all()}
 		in_studygroup = False
-	context = {'current_post' : current_post, 'current_studygroup' : current_studygroup, 'user_id' : user_id, "classes" : student.classes.all(), "posts" : posts}
+
 	context['form'] = PostForm()
 	context['in_studygroup'] = in_studygroup
 	context['comment_form'] = CommentForm()
@@ -199,19 +253,33 @@ def show_post_studygroup(request, id):
 		print current_post.attachment_url
 	return render(request, 'socialnetwork/studygroup.html', context)
 
+def in_studygroup(student, studygroup):
+	if studygroup.members.objects.filter(id = student.id).count() != 0:
+		return True
+	else:
+		False
+
+def in_class(student, classroom):
+	if classroom.students.objects.filter(id = student.id).count() != 0:
+		return True
+	else:
+		False
+
 @login_required
 def change_studygroup(request, id):
-    user_id = request.user.id
-    student = Student.objects.get(user=request.user)
-    posts = StudyGroup.objects.get(pk=id).posts.all()
-    try:
-        current_post = posts[:1].get()
-    except Exception:
-        current_post = "Welcome to the Classroom " #+ name + ". This is a place of learning. Life is short."
-    # context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, 'current_class' : name, "classes" : student.classes.all(), "posts" : posts}
-    # context['form'] = PostForm()
-    # context['comment_form'] = CommentForm()
-    return show_post_studygroup(request, current_post.id )
+	try:
+	    user_id = request.user.id
+	    student = Student.objects.get(user=request.user)
+	    posts = StudyGroup.objects.get(pk=id).posts.all()
+	   
+	    current_post = posts[:1].get()
+	     #+ name + ". This is a place of learning. Life is short."
+	    # context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, 'current_class' : name, "classes" : student.classes.all(), "posts" : posts}
+	    # context['form'] = PostForm()
+	    # context['comment_form'] = CommentForm()
+	    return show_post_studygroup(request, current_post.id )
+	except ObjectDoesNotExist:
+		raise Http404("StudyGroup does not exist")
 
 @login_required
 @transaction.atomic
@@ -231,21 +299,5 @@ def add_person_studygroup(request, id):
     studygroup.save()
     return change_studygroup(request, studygroup.id)
 
-@login_required
-def home(request):
-    # # Sets up list of just the logged-in user's (request.user's) items
-    user_id = request.user.id
-    student = Student.objects.get(user=request.user)
-    context = {}
-    context["user_id"] = user_id
-    context["student"] = student
-    context["classes"] = student.classes.all()
-    context['studygroupform'] = StudyGroupForm()
-    # # For now we'll use 15437
-    # current_class = "15437"
-    # context = {'user_id' : user_id, 'current_class' : current_class, "classes" : student.classes.all()}
-    # context['form'] = PostForm()
-    # context['comment_form'] = CommentForm()
-    # return render(request, 'socialnetwork/index.html', context)
-    return render(request, "socialnetwork/map.html", context)
+
 
