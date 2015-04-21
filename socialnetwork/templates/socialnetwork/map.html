@@ -23,29 +23,26 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Make a New StudyGroup</h4>
+        <h4 class="modal-title" id="myModalLabel">Make a new Study Group</h4>
       </div>
       <div class="modal-body">
         <form method="post" action="{% url 'add_studygroup' %}" class="form-signin">
         <table style="margin-right:auto;
           margin-left:auto; ">
-              {{ studygroupform.name|addcss:"form-control, placeholder:Name"}}  
+              {{ studygroupform.name|addcss:"form-control, placeholder:Name"}}
+              <br>
               {{ studygroupform.course|addcss:"form-control, placeholder:Course"}} 
-              {{ studygroupform.topic|addcss:"form-control, placeholder:Topic"}} 
-              {{ studygroupform.description|addcss:"form-control, placeholder:Description"}} 
-              {{ studygroupform.location_room|addcss:"form-control, placeholder:Room"}} 
+              <br>
               {{ studygroupform.location_name|addcss:"form-control, placeholder:Location Name"}} 
-
-              <div class="well">
+              <br>
                 <div id="datetimepicker2" class="input-append">
-                  <input data-format="MM/dd/yyyy HH:mm:ss PP" name="startTime" class="form-control" type="text"></input>
+                  <input data-format="MM/dd/yyyy HH:mm:ss PP" name="startTime" class="form-control" placeholder="Start Time" type="text"></input>
                   <span class="add-on">
                     <i data-time-icon="icon-time" data-date-icon="icon-calendar">
                     </i>
                   </span>
                 </div>
-              </div>
-              <script type="text/javascript">
+                            <script type="text/javascript">
                 $(function() {
                   $('#datetimepicker2').datetimepicker({
                     language: 'en',
@@ -53,16 +50,15 @@
                   });
                 });
               </script>
-
-              <div class="well">
+              <br>
                 <div id="datetimepicker1" class="input-append">
-                  <input data-format="MM/dd/yyyy HH:mm:ss PP" name="endTime" class="form-control" type="text"></input>
+                  <input placeholder="End Time" data-format="MM/dd/yyyy HH:mm:ss PP" name="endTime" class="form-control" type="text"></input>
                   <span class="add-on">
                     <i data-time-icon="icon-time" data-date-icon="icon-calendar">
                     </i>
                   </span>
                 </div>
-              </div>
+              
               <script type="text/javascript">
                 $(function() {
                   $('#datetimepicker1').datetimepicker({
@@ -100,8 +96,21 @@
 {% block scripts %}
 <div id="map-canvas"></div>
 <div>
+
+<div id = "buttons">
  <a href="#" style="position: fixed; bottom: 30px; right: 70px;" class="btn btn-success btn-sm  " data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-plus" id = "study-group" aria-hidden="true"></span> Study Group</a>
 <a href="#" style="position: fixed; bottom: 30px; right: 30px;" class="btn btn-info btn-sm  "><span class="glyphicon glyphicon-record" id = "location" aria-hidden="true"></span></a>
+</div>
+
+
+<div id = "add-studygroup" hidden="true">
+      <button id = 'start-studying' href="#" style="position: fixed; bottom: 30px; right: 30px;" class="btn btn-info btn-sm  "><span class="glyphicon glyphicon-book"  hidden="true"></span> Start Studying</button>
+      <div class="form-group" style="position: fixed; bottom: 60px; right: 30px;">
+        <input   type="text" name="studying-course" id = "studying-course" class="form-control" placeholder="eg. 36225 or 15112">
+      </div>
+           
+</div>
+
 </div>
 <style>
       #map-canvas {
@@ -144,21 +153,29 @@
 ]);
   // Try HTML5 geolocation
   document.getElementById("location").onclick = function() {
+    $('#buttons').hide(150)
+    $('#add-studygroup').show(300);
+
     navigator.geolocation.getCurrentPosition(function(position) {
       var pos = new google.maps.LatLng(position.coords.latitude,
                                        position.coords.longitude);
 
-      var marker = new google.maps.Marker({
+      data.marker = new google.maps.Marker({
       position: pos,
       map: map,
-      icon:'http://cdn-img.easyicon.net/png/40/4058.png'
+      draggable:true,
+    animation: google.maps.Animation.BOUNCE,
     });
-
+      map.setCenter(pos);
+      map.setZoom(18)
      
     }, function() {
       handleNoGeolocation(true);
     });
   };
+
+
+
 
 
   $.ajax({
@@ -169,6 +186,7 @@
             
             // $("li").remove();
             console.log('success');
+            
             // // Adds each new todo-list item to the list
             for (i = 0; i < items.length; i++){
                 
@@ -220,6 +238,28 @@ function fixInfoWindow() {
 
   fixInfoWindow();
   google.maps.event.addDomListener(window, 'load', initialize);
+
+
+  document.getElementById("start-studying").onclick = function() {
+    var pos = data.marker.getPosition();
+    var csrftoken = document.getElementsByName("csrfmiddlewaretoken")[0].defaultValue;
+    var course = $('#studying-course').val()
+    
+    $.ajax({
+        url: "{% url 'set_map_studygroup_default' %}",
+        type:'post',
+        dataType : "json",
+        data: {csrfmiddlewaretoken: csrftoken, course:course,lat:pos.k, lng:pos.D, id:"{{user_id}}" },
+        success: function( items ) {
+            
+            console.log('success');
+            $('.navbar-brand')[0].click();
+        }, error: function (items) {
+            $('.navbar-brand')[0].click();
+        }
+            
+    });
+  }
 
 </script>
 

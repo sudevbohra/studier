@@ -63,6 +63,8 @@ def change_class(request, name):
     student = Student.objects.get(user=request.user)
     posts = Classroom.objects.get(name=name).posts.all()
     current_class = name
+
+
     try:
         current_post = posts[:1].get()
     except Exception:
@@ -103,26 +105,31 @@ def show_post(request, id):
     current_post = Post.objects.get(id=id)
     posts = current_post.classroom.posts.order_by('-date')
     current_class = current_post.classroom
-    context = get_default_context(request)
-    context['current_post'] = current_post
-    context['current_class'] = current_class
-    print current_class
-    context['user_id'] = user_id
-    context['posts'] = posts
-    # context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, "classes" : student.classes.all(), "posts" : posts}
-    context['form'] = PostForm()
-    context['comment_form'] = CommentForm()
-    context['students'] = current_class.students
-    if current_post.attachment_url:
-        context['attachment_url'] = current_post.attachment_url
-        context['attachment_name'] = current_post.attachment_name
-        print current_post.attachment_url
-    return render(request, 'socialnetwork/index.html', context)
 
 
-@login_required
-def map(request):
-    return render(request, "socialnetwork/map.html", {})
+    if student in current_class.students.all():
+        
+
+        context = get_default_context(request)
+        context['current_post'] = current_post
+        context['current_class'] = current_class
+        print current_class
+        context['user_id'] = user_id
+        context['posts'] = posts
+        # context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, "classes" : student.classes.all(), "posts" : posts}
+        context['form'] = PostForm()
+        context['comment_form'] = CommentForm()
+        context['students'] = current_class.students
+        if current_post.attachment_url:
+            context['attachment_url'] = current_post.attachment_url
+            context['attachment_name'] = current_post.attachment_name
+            print current_post.attachment_url
+        return render(request, 'socialnetwork/index.html', context)
+    else:
+        return home(request)
+
+
+
 
 @transaction.atomic
 def register(request):

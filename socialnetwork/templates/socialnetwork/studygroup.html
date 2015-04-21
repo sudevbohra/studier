@@ -42,7 +42,7 @@
         <ul class="sidebar-nav">
             <li class="sidebar-brand">
                 <div>
-                 Study Group {{current_studygroup.name}}     <button style="position:relative; margin-left:110px; "class="btn btn-info" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-file"></span> Add Post</button>
+                 Study Group {{current_studygroup.name}}<button style="position:absolute; margin-left:90px; margin-top:20px "class="btn btn-info btn-xs" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-file"></span> Add Post</button>
                 </div>
 
             </li>
@@ -61,7 +61,7 @@
                     </div>
                 </div>
             </div>
-
+            <br><br><br><br><br>
             {% for post in posts %}
                 <li>
                 <a href="/studyroom/show_post_studygroup/{{post.id}}" ><span class="glyphicon glyphicon-question-sign"></span>  {{post.title}}</a>   
@@ -97,7 +97,7 @@
 
                     <div class="timeline-label">
                         <h2><a href="#">{{current_post.student.user.first_name}} {{current_post.student.user.last_name}}</a> <span>{{current_post.date}}</span></h2>
-                        <p>{{current_post}}</p>
+                        <div style="color:black;"> {{current_post.text|linebreaksbr}} </div>
                         {% if attachment_url %}
                             <a href="{{attachment_url}}">{{ attachment_name}} </a>
                         {% endif %}

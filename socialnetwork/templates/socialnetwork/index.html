@@ -95,7 +95,7 @@
 
                     <div class="timeline-label">
                         <h2><a href="#">{{current_post.student.user.first_name}} {{current_post.student.user.last_name}}</a> <span>{{current_post.date}}</span></h2>
-                        <p>{{current_post}}</p>
+                        <div style="color:black;"> {{current_post.text|linebreaksbr}} </div>
                         {% if attachment_url %}
                             <a href="{{attachment_url}}">{{ attachment_name}} </a>
                         {% endif %}

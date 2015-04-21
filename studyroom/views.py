@@ -28,6 +28,8 @@ from django.core import serializers
 from django.http import HttpResponse
 import json
 import datetime
+from dateutil.tz import *
+from django.utils import timezone
 
 
 @login_required
@@ -108,20 +110,16 @@ def add_studygroup(request):
 							owner=student,
 							active=True,
 							course=studygroupform.cleaned_data['course'],
-							topic=studygroupform.cleaned_data['topic'],
-							description=studygroupform.cleaned_data['description'],
-							location_room=studygroupform.cleaned_data['location_room'],
 							location_name=studygroupform.cleaned_data['location_name'])
 	studygroup.save()
 	studygroup.members.add(student)
-	studygroup.start_time = datetime.datetime.strptime(request.POST['startTime'], "%m/%d/%Y %I:%M %p")
-	studygroup.end_time = datetime.datetime.strptime(request.POST['endTime'], "%m/%d/%Y %I:%M %p")
-	startTime = request.POST['startTime']
-	endTime = request.POST['endTime']
-	print startTime, endTime
+	studygroup.start_time = datetime.datetime.strptime(request.POST['startTime'], "%m/%d/%Y %I:%M %p").replace(tzinfo=tzlocal())
+	studygroup.end_time = datetime.datetime.strptime(request.POST['endTime'], "%m/%d/%Y %I:%M %p").replace(tzinfo=tzlocal())
+
 	studygroup.save()
-	instructions = "Welome to the Class. No Posts exist yet. Add some posts using the button on the left!"
-	post = Post(text=instructions, title="Instructions")
+	instructions = "\n Owner: {1} \nStart Time: {2} \nEnd Time: {3} \n\nWelcome to {0}. \n This is a study group for {4}. Join to view all posts. ".format(studygroup.name, studygroup.owner.user.first_name + " " + studygroup.owner.user.last_name,\
+		request.POST['startTime'], request.POST['endTime'], studygroupform.cleaned_data['course'])
+	post = Post(text=instructions, title="Study Group Welcome Post")
 	
 	post.student = student
 	post.upvotes = 0
@@ -139,15 +137,52 @@ def set_map_studygroup(request):
 		studygroup = StudyGroup.objects.get(id = request.POST['id'])
 		studygroup.location_latitude = request.POST['lat']
 		studygroup.location_longitude = request.POST['lng']
+
 		studygroup.save()
 	except Exception:
 		print "Error in set_map_studygroup"
 	return HttpResponse()
 
+import traceback
+@login_required
+@transaction.atomic
+def set_map_studygroup_default(request):
+	
+	try:
+		course = request.POST['course']
+		print "HERE"
+		if Classroom.objects.filter(name = course).count() != 0:
+			print "AFTER IF"
+			student  = Student.objects.get(user_id =request.POST['id'])
+
+			studygroup = StudyGroup(name=  student.natural_key() + " studying",
+								owner= student,
+								active=True,
+								course=request.POST['course'],
+								location_name= "Check Pin" )
+			studygroup.location_latitude = request.POST['lat']
+			studygroup.location_longitude = request.POST['lng']
+			studygroup.save()
+			instructions = "\n Owner: {1} \nStart Time: {2}  \n\nWelcome to {0}. \n This is a study group for {3}. Join to view all posts. ".format(studygroup.name, studygroup.owner.user.first_name + " " + studygroup.owner.user.last_name,\
+			studygroup.start_time.strftime("%m/%d/%Y %I:%M %p"), course)
+			post = Post(student = student, upvotes = 0, text=instructions, title="Study Group Welcome Post", studygroup = studygroup)
+			post.save()
+			studygroup.posts.add(post)
+			studygroup.members.add(student)
+			studygroup.save()
+
+	except Exception:
+		print "Error in set_map_studygroup_default"
+		print traceback.format_exc()
+	return HttpResponse()
+
+
+
 @login_required
 def get_studygroups(request, user_id):
 	courses = [cls.name for cls in Student.objects.get(user_id=user_id).classes.all()]
-	studygroups = StudyGroup.objects.filter(course__in = courses)
+	now = datetime.datetime.now().replace(tzinfo=tzlocal())
+	studygroups = StudyGroup.objects.filter()
     #[elem for elem in li if li.count(elem) == 1]
 	response_text = serializers.serialize('json', studygroups, use_natural_foreign_keys=True)
 	return HttpResponse(response_text , content_type="application/json")
@@ -185,9 +220,11 @@ def show_post_studygroup(request, id):
 	current_studygroup = current_post.studygroup
 	if student in current_studygroup.members.all():
 		in_studygroup = True
+		context = {'current_post' : current_post, 'current_studygroup' : current_studygroup, 'user_id' : user_id, "classes" : student.classes.all(), "posts" : posts}
 	else:
+		context = {'current_post' : posts[posts.count()-1], 'current_studygroup' : current_studygroup, 'user_id' : user_id, "classes" : student.classes.all()}
 		in_studygroup = False
-	context = {'current_post' : current_post, 'current_studygroup' : current_studygroup, 'user_id' : user_id, "classes" : student.classes.all(), "posts" : posts}
+
 	context['form'] = PostForm()
 	context['in_studygroup'] = in_studygroup
 	context['comment_form'] = CommentForm()
@@ -199,15 +236,26 @@ def show_post_studygroup(request, id):
 		print current_post.attachment_url
 	return render(request, 'socialnetwork/studygroup.html', context)
 
+def in_studygroup(student, studygroup):
+	if studygroup.members.objects.filter(id = student.id).count() != 0:
+		return True
+	else:
+		False
+
+def in_class(student, classroom):
+	if classroom.students.objects.filter(id = student.id).count() != 0:
+		return True
+	else:
+		False
+
 @login_required
 def change_studygroup(request, id):
     user_id = request.user.id
     student = Student.objects.get(user=request.user)
     posts = StudyGroup.objects.get(pk=id).posts.all()
-    try:
-        current_post = posts[:1].get()
-    except Exception:
-        current_post = "Welcome to the Classroom " #+ name + ". This is a place of learning. Life is short."
+   
+    current_post = posts[:1].get()
+     #+ name + ". This is a place of learning. Life is short."
     # context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, 'current_class' : name, "classes" : student.classes.all(), "posts" : posts}
     # context['form'] = PostForm()
     # context['comment_form'] = CommentForm()
