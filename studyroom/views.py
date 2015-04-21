@@ -30,6 +30,7 @@ import json
 import datetime
 from dateutil.tz import *
 from django.utils import timezone
+from django.http import Http404
 
 
 @login_required
@@ -266,16 +267,19 @@ def in_class(student, classroom):
 
 @login_required
 def change_studygroup(request, id):
-    user_id = request.user.id
-    student = Student.objects.get(user=request.user)
-    posts = StudyGroup.objects.get(pk=id).posts.all()
-   
-    current_post = posts[:1].get()
-     #+ name + ". This is a place of learning. Life is short."
-    # context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, 'current_class' : name, "classes" : student.classes.all(), "posts" : posts}
-    # context['form'] = PostForm()
-    # context['comment_form'] = CommentForm()
-    return show_post_studygroup(request, current_post.id )
+	try:
+	    user_id = request.user.id
+	    student = Student.objects.get(user=request.user)
+	    posts = StudyGroup.objects.get(pk=id).posts.all()
+	   
+	    current_post = posts[:1].get()
+	     #+ name + ". This is a place of learning. Life is short."
+	    # context = {'current_post' : current_post, 'current_class' : current_class, 'user_id' : user_id, 'current_class' : name, "classes" : student.classes.all(), "posts" : posts}
+	    # context['form'] = PostForm()
+	    # context['comment_form'] = CommentForm()
+	    return show_post_studygroup(request, current_post.id )
+	except ObjectDoesNotExist:
+		raise Http404("StudyGroup does not exist")
 
 @login_required
 @transaction.atomic
