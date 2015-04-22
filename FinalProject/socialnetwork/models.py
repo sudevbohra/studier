@@ -10,6 +10,12 @@ class Notification(models.Model):
 	def __unicode__(self):
 		return 'Notification(id=' + str(self.id) + ')'
 
+	def __eq__(self, other):
+		if self.text == other.text:
+			return True
+		else:
+			return False
+
 class Student(models.Model):
 	user = models.OneToOneField(User)
 	# classes = models.ManyToManyField(Classroom, related_name='class', symmetrical='True')

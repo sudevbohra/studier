@@ -99,7 +99,8 @@ def add_studygroup(request):
 	student = Student.objects.get(user=user)
 	studygroupform = StudyGroupForm(request.POST, user=student)
 	
-	studygroupform.is_valid()
+	if not studygroupform.is_valid():
+		return home(request, "You need to provide a name, course, location, start time and end time!")
 	try:
 		course = Classroom.objects.get(name=studygroupform.cleaned_data["course"])
 	except Classroom.DoesNotExist:
@@ -347,14 +348,14 @@ def add_to_studygroup(request, studygroup_id, student_id):
 	student = Student.objects.get(id=student_id)
 	studygroup.members.add(student)
 	return change_studygroup(request, studygroup_id)
-	
+
 @login_required
 def request_to_be_added(request, id):
 	context = get_default_context(request)
 	studygroup = StudyGroup.objects.get(id=id)
 	user = request.user
 	notif_link = "/studyroom/add_to_studygroup/" + str(id) + "/" + str(user.id)
-	notif_text = user.first_name + " " + user.last_name + " wants to join your studygroup " + studygroup.name
+	notif_text = user.first_name + " " + user.last_name + " wants to join your studygroup " + studygroup.name + ". Click the link to accept!"
 	notify(request, studygroup.owner.id, notif_text, notif_link, True)
 	return home(request)
 

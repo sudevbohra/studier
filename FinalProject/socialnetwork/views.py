@@ -411,6 +411,12 @@ def unfriend(request, id):
 @transaction.atomic
 def notify(request, id, notif_text, notif_link, persistent=False): 
     picture_url = Student.objects.get(user=request.user).picture_url
+    student = Student.objects.get(user__id=id)
+    try:
+        if student.notifications.filter(text=notif_text):
+            return 
+    except Student.DoesNotExist:
+        s = "khhfw"
     new_notification = Notification(text=notif_text, link=notif_link, picture_url=picture_url, persistent=persistent)
     new_notification.save()
     user = get_object_or_404(User, id=id)
@@ -424,9 +430,11 @@ def clear_notifications(request):
     print "TRUUUUEEE"
     student = Student.objects.get(user=request.user)
     notifications = student.notifications.filter(persistent=True)
-    print notifications
-    for notification in student.notifications.all():
-        if notification not in notifications:
-            notification.delete()
+    # for notification in student.notifications.all():
+    #     if notification not in notifications:
+    #         notification.delete()
+    student.notifications = notifications
+    student.save()
+
         
     return HttpResponse()
