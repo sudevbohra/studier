@@ -137,6 +137,9 @@
                             <div class="timeline-label">
                                 <h2><a href="#">{{comment.student.user.first_name}} {{comment.student.user.last_name}}</a> <span>{{comment.date}}</span></h2>
                                 <p>{{comment.text}}</p>
+                                {% if comment.attachment_url %}
+                                    <a href="{{comment.attachment_url}}">{{ comment.attachment_name}} </a>
+                                {% endif %}
                             </div>
                         </div>
 
