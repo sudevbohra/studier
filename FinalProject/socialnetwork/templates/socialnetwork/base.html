@@ -69,9 +69,7 @@
                   {% if notif.yes_link %}
                   <div class="media-right" style='float:right;'>
                       <a href="{{notif.yes_link}}" class="btn btn-info btn-sm">Accept</a>
-                      {% if notif.no_link %}
-                        <a href="#" class="btn btn-danger btn-sm" onclick="RemoveNotification({{notif.id}})">Dismiss</a>
-                      {% endif %}
+                      <a href="#" class="btn btn-danger btn-sm" onclick="RemoveNotification({{notif.id}})">Dismiss</a>
                   </div>
                   {% endif %}
                 </li>
