@@ -161,6 +161,7 @@
                     {% if is_owner %}
                     <li data-toggle="modal" data-toggle="modal" data-target="#inviteModal"><a href="#">
                     Invite Students</a></li>
+                    <li><a href="{% url 'map_studygroups' current_studygroup.id %}">Change Location</a></li>
                     <li onclick="ConfirmDelete({{current_studygroup.id}})"><a href="#">Delete Studygroup</a></li>
                     {% elif is_member %}
                     <li><a href="{% url 'remove_person_studygroup' current_studygroup.id %}">Leave Studygroup</a></li>

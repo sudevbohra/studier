@@ -57,7 +57,7 @@ class RegistrationForm(forms.Form):
             raise forms.ValidationError("Please enter a password")
         if len(password) < 8:
             raise forms.ValidationError("Must use longer password")
-        return password1
+        return password
 
     def clean_password2(self):
         password = self.cleaned_data.get('password2')
@@ -65,7 +65,7 @@ class RegistrationForm(forms.Form):
             raise forms.ValidationError("Please enter to confirm password")
         if len(password) < 8:
             raise forms.ValidationError("Must use longer password")
-        return password1
+        return password
 
 class EditForm(forms.ModelForm):
     first_name = forms.CharField(max_length=20, required=False, widget=forms.TextInput(attrs={'placeholder': 'Search'}))
