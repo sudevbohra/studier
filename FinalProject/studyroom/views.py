@@ -285,6 +285,35 @@ def change_studygroup(request, id):
 		raise Http404("StudyGroup does not exist")
 
 @login_required
+def add_comment(request, id):
+	form = CommentForm(request.POST, request.FILES)
+	post = Post.objects.get(id=id)
+	student = Student.objects.get(user=request.user)
+	#form.cleaned_data["text"]
+	form.is_valid()
+	new_comment = Comment(text=form.cleaned_data["text"], student=student, upvotes=0)
+	new_comment.save()
+	if form.cleaned_data['attachment']:
+	    url = s3_upload(form.cleaned_data['attachment'], new_comment.id)
+	    new_comment.attachment_url = url
+	    if form.cleaned_data['attachment_name']:
+	        new_comment.attachment_name = form.cleaned_data['attachment_name']
+	    else:
+	        new_comment.attachment_name = post.title
+	    new_comment.save()
+	post.comments.add(new_comment)
+	post.save()
+	class_name = post.classroom
+
+	# Notification function
+	notif_text = request.user.get_full_name() + " commented on your post"
+	notif_link = '/studyroom/show_post/' + str(post.id)
+	notify(request, post.student.id, notif_text, notif_link)
+
+	return show_post_studygroup(request, post.id)
+
+
+@login_required
 @transaction.atomic
 def remove_person_studygroup(request, id):
     student = Student.objects.get(user = request.user)
