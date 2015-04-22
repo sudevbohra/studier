@@ -393,7 +393,7 @@ def friend(request, id):
     #Notification function
     notif_text = request.user.get_full_name() + " has friended you!"
     notif_link = '/socialnetwork/profile/' + str(request.user.id)
-    notify(request, id, notif_text, notif_link)
+    notify(request, id, notif_text, notif_link, persistent=True)
     return redirect('/socialnetwork/profile/' + str(user.id))
     
 @login_required
@@ -418,8 +418,7 @@ def notify(request, id, notif_text, notif_link, persistent=False, yes_link= None
     except Student.DoesNotExist:
         pass
     new_notification = Notification(text=notif_text, link=notif_link, picture_url=picture_url, persistent=persistent, yes_link=yes_link,no_link=no_link)
-    if yes_link:
-        new_notification.persistent = True
+    new_notification.persistent = persistent
     new_notification.save()
     user = get_object_or_404(User, id=id)
     prof_student = Student.objects.get(user=user)
@@ -431,12 +430,12 @@ def notify(request, id, notif_text, notif_link, persistent=False, yes_link= None
 @transaction.atomic
 def clear_notifications(request):
     student = Student.objects.get(user=request.user)
-    notifications = student.notifications.filter(persistent=True)
-    # for notification in student.notifications.all():
-    #     if notification not in notifications:
-    #         notification.delete()
-    student.notifications = notifications
-    student.save()        
+    notifications = student.notifications.filter(yes_link=None)
+    print notifications
+    for n in notifications:
+        print n
+        student.notifications.remove(n)
+    student.save()
     return HttpResponse()
 
 @login_required
@@ -444,7 +443,8 @@ def clear_notifications(request):
 def delete_notification(request):
     student = Student.objects.get(user=request.user)
     notif_id = request.POST['notif_id']
-    student.notifications.objects.get(id=notif_id).delete()
-    student.notifications.save()
+    remove_notif = Notification.objects.get(id = notif_id)
+    student.notifications.remove(remove_notif)
+
     student.save()
     return HttpResponse()

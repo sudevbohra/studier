@@ -245,6 +245,8 @@ function RemoveNotification(notif_id) {
   var notifTag=document.getElementById('notif_' + notif_id.toString())
   notifTag.style.display='none';
   $("notif_" + notif_id.toString()).remove();
+  console.log("IN DELETE FUNC")
+  var csrftoken = document.getElementsByName("csrfmiddlewaretoken")[0].defaultValue;
   $.ajax({
         url: "{% url 'delete_notification' %}",
         type:'post',
