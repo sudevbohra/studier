@@ -184,11 +184,14 @@
                                   </div>
                                   <div class="panel-body">
                                     {{ comment_form.text|addcss:"form-control, placeholder:Comment, id:comment-text-box" }}
+                                    <a id="attachment"><h4 style="text-align: right; margin-right:15px; margin-top:15px; color:white;"><span class = "glyphicon glyphicon-paperclip"></span></h4></a>
                                     <br>
+                                    <div id = "attachment-comment" hidden="true">
                                     {{ comment_form.attachment|addcss:"form-control, placeholder: Attachment" }}
                                     <br>
                                     {{ comment_form.attachment_name|addcss:"form-control, placeholder: Attachment Name" }}
                                     <br>
+                                    </div>
                                     <button class="btn btn-lg btn-primary btn-block" type="submit">Add Comment!</button>  
                                     
                                   </div>
@@ -222,6 +225,14 @@
 
 {% block in_scripts %}
    
+    $("#attachment").click(function(e) {
+        $('#attachment-comment').toggle(500);
+        $('#attachment').toggle(500);
+        
+    });
+
+    
+
     $("#add-comment").click(function(e) {
         $('#comment-box').toggle(500);
         $('#comment-text-box').focus();
