@@ -291,6 +291,10 @@ def remove_person_studygroup(request, id):
     studygroup = StudyGroup.objects.get(id=id)
     studygroup.members.remove(student)
     studygroup.save()
+    if student == studygroup.owner:
+    	print "OWNER IS DELETING"
+    	studygroup.delete()
+    
     return home(request)
 
 @login_required
