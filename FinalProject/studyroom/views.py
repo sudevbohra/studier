@@ -210,12 +210,16 @@ def get_studygroups(request, user_id):
 @login_required
 @transaction.atomic
 def add_post_studygroup(request, id):
+	student = Student.objects.get(user=request.user)
+	studygroup = StudyGroup.objects.get(id=id)
+	if student not in studygroup.members.all():
+		return home(request, "You arent in this studygroup")
 	errors = []
 	form = PostForm(request.POST, request.FILES)
 	if(form.is_valid()):
 		post = Post(text=form.cleaned_data['text'], title=form.cleaned_data['title'])
-		student = Student.objects.get(user=request.user)
-		studygroup = StudyGroup.objects.get(id=id)
+		
+		
 		post.studygroup = studygroup
 		post.student = student
 		post.upvotes = 0

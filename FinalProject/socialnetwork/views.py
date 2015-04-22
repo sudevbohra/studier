@@ -36,10 +36,9 @@ def get_default_context(request):
     context = {}
     context['notifications'] = student.notifications
     context['classes'] = student.classes.all()
+    context['user_id'] = request.user.id
+    context['student'] = student
     context['studygroups'] = student.groups.all()
-    print "TRUUUUUUU"
-    print student.groups.all()
-    # for sg in student.studygroups
     if(len(student.notifications.all()) > 0):
         context['notif_count'] = len(student.notifications.all())
     return context
