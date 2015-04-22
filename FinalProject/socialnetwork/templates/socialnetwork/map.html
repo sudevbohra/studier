@@ -35,9 +35,6 @@
               <br>
               {{ studygroupform.location_name|addcss:"form-control, placeholder:Location Name"}} 
               <br>
-              {{ studygroupform.private }}
-              Private
-              <br>
                 <div id="datetimepicker2" class="input-append">
                   <input data-format="MM/dd/yyyy HH:mm:ss PP" name="startTime" class="form-control" placeholder="Start Time" type="text"></input>
                   <span class="add-on">
@@ -70,7 +67,8 @@
                   });
                 });
               </script>
-
+                <br>
+              Private {{ studygroupform.private|addcss:"form-control, placeholder:Private" }}
         </table>
 
         
