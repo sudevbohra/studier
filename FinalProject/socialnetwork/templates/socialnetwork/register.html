@@ -5,6 +5,35 @@
 
 {% block panel %}
 
+<!-- {% if form.errors %}
+	{{ form.errors }}
+{% endif %}  -->
+
+{% if form.email.errors %}
+    <ol>
+    {% for error in form.email.errors %}
+        <li><strong>{{ error|escape }}</strong></li>
+    {% endfor %}
+    </ol>
+{% endif %}
+
+{% if form.password1.errors %}
+    <ol>
+    {% for error in form.password1.errors %}
+        <li><strong>{{ error|escape }}</strong></li>
+    {% endfor %}
+    </ol>
+{% endif %}
+
+{% if form.password2.errors %}
+    <ol>
+    {% for error in form.password2.errors %}
+        <li><strong>{{ error|escape }}</strong></li>
+    {% endfor %}
+    </ol>
+{% endif %}
+
+
 <form method="post" action="{% url 'register' %}" class="form-signin">
 <table style="margin-right:auto;
   margin-left:auto; ">

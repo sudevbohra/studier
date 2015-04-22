@@ -89,7 +89,8 @@
             <br><br><br><br><br>
             {% for post in posts %}
                 <li>
-                <a href="/socialnetwork/show_post/{{post.id}}" ><span class="glyphicon glyphicon-question-sign"></span>  {{post.title}}</a>   
+                <a href="/socialnetwork/show_post/{{post.id}}" ><div style="margin-top:10px;color:white;line-height:200%;">{{post.title}}</div>
+                <div style="font-size:9px;line-height:200%;">{{ post.text|slice:"80" }}{% if post.text|length > 80 %}...{% endif %}</div></a>
                 </li>
             {% endfor %}
             
@@ -108,6 +109,13 @@
             <article class="timeline-entry">
 
                 <div class="timeline-entry-inner">
+                    <div class="timeline-time">
+                        <a href="{% url 'profile' current_post.student.id %}">
+                                            <center><div style="width: 80px;height: 80px;border-radius: 5%;">
+                                                <img src="{{ current_post.student.picture_url }}" class="profile-image" name="aboutme" width="100%" style="width: 50px;height: 50px;">
+                                            </div></center>
+                                        </a>
+                    </div>
 
                     <div class="timeline-icon bg-success">
                         <span class="glyphicon glyphicon-heart" style="font-size: 1.4em; color:red;"></span>{{ current_post.upvotes }}
@@ -121,7 +129,7 @@
                     </div>
 
                     <div class="timeline-label">
-                        <h2><a href="#">{{current_post.student.user.first_name}} {{current_post.student.user.last_name}}</a> <span>{{current_post.date}}</span></h2>
+                        <h2><a href="{% url 'profile' current_post.student.id %}">{{current_post.student.user.first_name}} {{current_post.student.user.last_name}}</a> <span>{{current_post.date}}</span></h2>
                         <div style="color:black;"> {{current_post.text|linebreaksbr}} </div>
                         {% if attachment_url %}
                             <a href="{{attachment_url}}">{{ attachment_name}} </a>
@@ -138,9 +146,14 @@
 
 
                         <div class="timeline-entry-inner">
-
+                            <div class="timeline-time">
+                            <a href="{% url 'profile' comment.student.id %}">
+                                                <center><div style="width: 80px;height: 80px;border-radius: 5%;">
+                                                    <img src="{{ comment.student.picture_url }}" class="profile-image" name="aboutme" width="100%" style="width: 40px;height: 40px;">
+                                                </div></center>
+                                            </a>
+                            </div>
                             <div class="timeline-icon bg-warning">
-                                <span class="glyphicon glyphicon-heart-empty" style="font-size: 1.4em; color:white;"></span>1
                                 <i class="entypo-suitcase"></i>
                             </div>
 

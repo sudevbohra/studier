@@ -106,7 +106,7 @@ def map_studygroups(request, studygroup_id):
 def add_studygroup(request):
 	user = request.user
 	student = Student.objects.get(user=user)
-	studygroupform = StudyGroupForm(request.POST, user=student)
+	studygroupform = StudyGroupForm(request.POST)
 	
 	if not studygroupform.is_valid():
 		print "WOOOOOOW"
@@ -145,18 +145,23 @@ def add_studygroup(request):
 	return map_studygroups(request, studygroup.id)
 # Create your views here.
 
+import traceback
 
 @login_required
 def set_map_studygroup(request):
 	
 	try:
+		student = Student.objects.get(user_id=int(request.POST['user']))
 		studygroup = StudyGroup.objects.get(id = request.POST['id'])
-		studygroup.location_latitude = request.POST['lat']
-		studygroup.location_longitude = request.POST['lng']
+		if student == studygroup.owner:
+			
+			studygroup.location_latitude = request.POST['lat']
+			studygroup.location_longitude = request.POST['lng']
 
-		studygroup.save()
+			studygroup.save()
 	except Exception:
 		print "Error in set_map_studygroup"
+		print traceback.format_exc()
 	return HttpResponse()
 
 
@@ -174,12 +179,13 @@ def set_map_studygroup_default(request):
 			if Classroom.objects.filter(name = course).count() != 0:
 				print "AFTER IF"
 				student  = Student.objects.get(user_id =request.POST['id'])
-
+				classroom = Classroom.objects.get(name=course)
 				studygroup = StudyGroup(name=  default_studygroup(student),
 									owner= student,
 									active=True,
+									classroom = classroom,
 									course=request.POST['course'],
-									location_name= "Check Pin" )
+									location_name= "Check Pin",private=False, )
 				studygroup.location_latitude = request.POST['lat']
 				studygroup.location_longitude = request.POST['lng']
 				studygroup.save()

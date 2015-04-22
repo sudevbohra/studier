@@ -34,7 +34,7 @@ def get_default_context(request):
     user_id = request.user.id
     student = Student.objects.get(user=request.user)
     context = {}
-    context['notifications'] = student.notifications
+    context['notifications'] = student.notifications.order_by('-time')
     context['classes'] = student.classes.all()
     context['user_id'] = request.user.id
     context['student'] = student
@@ -159,9 +159,7 @@ def register(request):
 
     form = RegistrationForm(request.POST)
     context['form'] = form
-
-    errors = []
-    context['errors'] = errors
+    print form.errors
 
     # Checks the validity of the form data
     if not form.is_valid():
@@ -409,15 +407,15 @@ def unfriend(request, id):
 
 @login_required
 @transaction.atomic
-def notify(request, id, notif_text, notif_link, persistent=False): 
+def notify(request, id, notif_text, notif_link, persistent=False, yes_link= None, no_link=None): 
     picture_url = Student.objects.get(user=request.user).picture_url
     student = Student.objects.get(user__id=id)
     try:
         if student.notifications.filter(text=notif_text):
             return 
     except Student.DoesNotExist:
-        s = "khhfw"
-    new_notification = Notification(text=notif_text, link=notif_link, picture_url=picture_url, persistent=persistent)
+        pass
+    new_notification = Notification(text=notif_text, link=notif_link, picture_url=picture_url, persistent=persistent, yes_link=yes_link,no_link=no_link)
     new_notification.save()
     user = get_object_or_404(User, id=id)
     prof_student = Student.objects.select_for_update().get(user=user)

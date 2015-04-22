@@ -81,13 +81,18 @@
                     </div>
                 </div>
             </div>
-            <br><br><br><br><br>
+            {% if posts %}
             {% for post in posts %}
                 <li>
-                <a href="/studyroom/show_post_studygroup/{{post.id}}" ><span class="glyphicon glyphicon-question-sign"></span>  {{post.title}}</a>   
+                <a href="/socialnetwork/show_post_studygroup/{{post.id}}" ><div style="margin-top:10px;color:white;line-height:200%;">{{post.title}}</div>
+                <div style="font-size:9px;line-height:200%;">{{ post.text|slice:"80" }}{% if post.text|length > 80 %}...{% endif %}</div></a>
                 </li>
             {% endfor %}
-            
+            {% else %}
+                <li>
+                <div style="margin-top:10px;color:white;line-height:200%;">Join studygroup to view posts.</div>
+                </li>
+            {% endif %}
         </ul>
     </div>
     <!-- /#sidebar-wrapper -->
