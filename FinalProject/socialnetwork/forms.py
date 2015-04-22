@@ -2,12 +2,29 @@ from django import forms
 
 from django.contrib.auth.models import User
 from models import *
+
 MAX_UPLOAD_SIZE = 2500000
+
+def get_schools():
+    schools = open('colleges.txt', 'r')
+    choices = []
+    x = 1
+    for school in schools:
+        school = school.strip()
+        schoolTuple = (school)
+        statusTuple = (x, schoolTuple)
+        choices.append(statusTuple)
+
+        x += 1
+    schools.close()
+    return tuple(choices)
 
 class RegistrationForm(forms.Form):
     first_name = forms.CharField(max_length=20)
     last_name  = forms.CharField(max_length=20)
-    school = forms.CharField(max_length=20)
+    #school = forms.CharField(max_length=20, choices=get_schools())
+
+    #school = forms.ChoiceField(choices=CHOICE, widget=forms.Select())
     major = forms.CharField(max_length=40)
     email = forms.CharField(max_length = 30)
     password1 = forms.CharField(max_length = 200,
@@ -18,6 +35,11 @@ class RegistrationForm(forms.Form):
                                  widget = forms.PasswordInput())
     school = forms.CharField(max_length=150)
 
+
+    def __init__(self, *args, **kwargs):
+        super(RegistrationForm, self).__init__(*args, **kwargs)
+        self.fields['school'] = forms.ChoiceField(
+            choices=get_schools() )
 
     # Customizes form validation for properties that apply to more
     # than one field.  Overrides the forms.Form.clean function.
@@ -57,7 +79,7 @@ class RegistrationForm(forms.Form):
             raise forms.ValidationError("Please enter a password")
         if len(password) < 8:
             raise forms.ValidationError("Must use longer password")
-        return password1
+        return password
 
     def clean_password2(self):
         password = self.cleaned_data.get('password2')
@@ -65,7 +87,7 @@ class RegistrationForm(forms.Form):
             raise forms.ValidationError("Please enter to confirm password")
         if len(password) < 8:
             raise forms.ValidationError("Must use longer password")
-        return password1
+        return password
 
 class EditForm(forms.ModelForm):
     first_name = forms.CharField(max_length=20, required=False, widget=forms.TextInput(attrs={'placeholder': 'Search'}))

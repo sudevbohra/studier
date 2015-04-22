@@ -159,7 +159,7 @@ def register(request):
 
     form = RegistrationForm(request.POST)
     context['form'] = form
-    print form.errors
+
 
     # Checks the validity of the form data
     if not form.is_valid():
@@ -315,6 +315,7 @@ def add_class(request):
 @login_required
 @transaction.atomic
 def remove_class(request, name):
+    
     student = Student.objects.get(user = request.user)
     classObj = Classroom.objects.get(name=name)
     classObj.students.remove(student)
@@ -324,6 +325,7 @@ def remove_class(request, name):
 @login_required
 @transaction.atomic
 def add_post(request, name):
+    
     errors = []
     form = PostForm(request.POST, request.FILES)
     if(form.is_valid()):

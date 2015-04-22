@@ -4,6 +4,7 @@ from socialnetwork.models import *
 from django.forms.widgets import SplitDateTimeWidget
 from datetime import datetime
 
+
 class StudyGroupForm(forms.ModelForm):
 
 	class Meta:

@@ -109,11 +109,10 @@ def add_studygroup(request):
 	studygroupform = StudyGroupForm(request.POST)
 	
 	if not studygroupform.is_valid():
-		print "WOOOOOOW"
-		print studygroupform.errors
 		return home(request, "You need to provide a name, course, location, start time and end time!")
 	try:
-		course = Classroom.objects.get(name=studygroupform.cleaned_data["course"])
+		print studygroupform.cleaned_data["course"]
+		course = Classroom.objects.get(id=studygroupform.cleaned_data["course"])
 	except Classroom.DoesNotExist:
 		course = None
 	if course == None: 
@@ -124,8 +123,8 @@ def add_studygroup(request):
 	studygroup = StudyGroup(name=studygroupform.cleaned_data['name'],
 							owner=student,
 							active=True,
-							classroom=studygroupform.cleaned_data['course'],
-							course=studygroupform.cleaned_data['course'].name,
+							classroom=course,
+							course=course.name,
 							location_name=studygroupform.cleaned_data['location_name'],
 							private=studygroupform.cleaned_data['private'])
 	studygroup.save()
@@ -180,6 +179,8 @@ def set_map_studygroup_default(request):
 				print "AFTER IF"
 				student  = Student.objects.get(user_id =request.POST['id'])
 				classroom = Classroom.objects.get(name=course)
+				if student not in classroom.students.all():
+					return home(request, "You are not in this class!")
 				studygroup = StudyGroup(name=  default_studygroup(student),
 									owner= student,
 									active=True,
@@ -381,7 +382,7 @@ def send_invites(request):
 		student = Student.objects.get(id=stu_id)
 		notif_text = request.user.get_full_name() + " has invited you to " + studygroup.name + ". Click to join study room!"
 		notif_link = 'socialnetwork/add_person_studygroup/' + studygroup_id
-		notify(request, stu_id, notif_text, notif_link)
+		notify(request, stu_id, notif_text, "", yes_link=notif_link, no_link="")
  	
  	return HttpResponse()
 	
@@ -399,5 +400,5 @@ def request_to_be_added(request, id):
 	user = request.user
 	notif_link = "/studyroom/add_to_studygroup/" + str(id) + "/" + str(user.id)
 	notif_text = user.first_name + " " + user.last_name + " wants to join your studygroup " + studygroup.name + ". Click the link to accept!"
-	notify(request, studygroup.owner.id, notif_text, notif_link, True)
+	notify(request, studygroup.owner.id, notif_text, "", yes_link=notif_link, no_link="")
 	return home(request)

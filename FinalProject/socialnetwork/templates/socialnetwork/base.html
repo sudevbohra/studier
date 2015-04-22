@@ -68,7 +68,9 @@
                 {% if notif.yes_link %}
                 <div class="media-right" style='float:right;'>
                     <a href="{{notif.yes_link}}" class="btn btn-info btn-sm">Accept</a>
-                    <a href="{{notif.no_link}}" class="btn btn-danger btn-sm">Dismiss</a>
+                    {% if notif.no_link %}
+                      <a href="{{notif.no_link}}" class="btn btn-danger btn-sm">Dismiss</a>
+                    {% endif %}
                 </div>
                 {% endif %}
               </li>
