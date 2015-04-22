@@ -83,7 +83,7 @@ def upvotePostStudygroup(request, id, upvote):
 
 
 @login_required
-def map_studygroups(request, studygroup_id):
+def map_studygroups(request, id):
     # # Sets up list of just the logged-in user's (request.user's) items
 
     user_id = request.user.id
@@ -92,7 +92,7 @@ def map_studygroups(request, studygroup_id):
     context["user_id"] = user_id
     context["student"] = student
     context["classes"] = student.classes.all()
-    context['studygroup_id'] = studygroup_id
+    context['studygroup_id'] = id
     # # For now we'll use 15437
     # current_class = "15437"
     # context = {'user_id' : user_id, 'current_class' : current_class, "classes" : student.classes.all()}
@@ -132,9 +132,9 @@ def add_studygroup(request):
 	studygroup.start_time = datetime.datetime.strptime(request.POST['startTime'], "%m/%d/%Y %I:%M %p").replace(tzinfo=tzlocal())
 	studygroup.end_time = datetime.datetime.strptime(request.POST['endTime'], "%m/%d/%Y %I:%M %p").replace(tzinfo=tzlocal())
 	studygroup.save()
-	instructions = "\n Owner: {1} \nStart Time: {2} \nEnd Time: {3} \n\nWelcome to {0}. \n This is a study group for {4}. Join to view all posts. ".format(studygroup.name, studygroup.owner.user.first_name + " " + studygroup.owner.user.last_name,\
+	instructions = "\n Owner: {1} \nStart Time: {2} \nEnd Time: {3} \n\nWelcome to {0}. \n This is a studyroom for {4}. Join to view all posts. ".format(studygroup.name, studygroup.owner.user.first_name + " " + studygroup.owner.user.last_name,\
 		request.POST['startTime'], request.POST['endTime'], studygroupform.cleaned_data['course'])
-	post = Post(text=instructions, title="Study Group Welcome Post")
+	post = Post(text=instructions, title="Studyroom Welcome Post")
 	
 	post.student = student
 	post.upvotes = 0
@@ -191,9 +191,9 @@ def set_map_studygroup_default(request):
 				studygroup.location_longitude = request.POST['lng']
 				studygroup.save()
 				studygroup.end_time += datetime.timedelta(hours=6)
-				instructions = "\n Owner: {1} \nStart Time: {2}  \n\nWelcome to {0}. \n This is a study group for {3}. Join to view all posts. ".format(studygroup.name, studygroup.owner.user.first_name + " " + studygroup.owner.user.last_name,\
+				instructions = "\n Owner: {1} \nStart Time: {2}  \n\nWelcome to {0}. \n This is a studyroom for {3}. Join to view all posts. ".format(studygroup.name, studygroup.owner.user.first_name + " " + studygroup.owner.user.last_name,\
 				studygroup.start_time.strftime("%m/%d/%Y %I:%M %p"), course)
-				post = Post(student = student, upvotes = 0, text=instructions, title="Study Group Welcome Post", studygroup = studygroup)
+				post = Post(student = student, upvotes = 0, text=instructions, title="Studyroom Welcome Post", studygroup = studygroup)
 				post.save()
 				studygroup.posts.add(post)
 				studygroup.members.add(student)
@@ -266,15 +266,16 @@ def show_post_studygroup(request, id):
 	context['current_studygroup'] = current_studygroup
 	
 	if student in current_studygroup.members.all():
-		in_studygroup = True
 		context['current_post'] = current_post
 		context['posts'] = posts
+		context['is_member'] = True
 	else:
 		context['current_post'] = posts[posts.count()-1]
-		in_studygroup = False
+		context['is_member'] = False
 
+	context['is_owner'] = (student == current_studygroup.owner)
 	context['form'] = PostForm()
-	context['in_studygroup'] = in_studygroup
+	context['in_studygroup'] = True
 	context['comment_form'] = CommentForm()
 	context['students'] = current_post.studygroup.members
 	context['studygroups'] = student.groups.all()
@@ -383,6 +384,7 @@ def send_invites(request):
 		notif_text = request.user.get_full_name() + " has invited you to " + studygroup.name + ". Click to join study room!"
 		notif_link = 'socialnetwork/add_person_studygroup/' + studygroup_id
 		notify(request, stu_id, notif_text, "", yes_link=notif_link, no_link="")
+
  	
  	return HttpResponse()
 	

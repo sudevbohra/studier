@@ -94,14 +94,16 @@
         <h4 class="modal-title" id="myModalLabel">Invite Students</h4>
       </div>
       <div class="modal-body">
-        <ul class="media-list">
+        <table class="media-list">
           {% for student in class_students %}
+          <td>
           <div style="width: 200px;height: 80px;border-radius: 5%;">
-              <img src="{{ student.picture_url }}" class="profile-image" name="aboutme" width="100%" style="width: 170px;height: 70px;" onclick="InviteStudent({{student.id}});">
-              {{student.user.first_name}}
+              <img src="{{ student.picture_url }}" class="profile-image" name="aboutme" width="100%" style="width:70px;height: 70px;opacity:0.4;" id="invite_{{student.id}}" onclick="InviteStudent({{student.id}});">
+              <br>{{student.user.first_name}}
           </div>
+          </td>
           {% endfor %}
-        </ul>
+        </table>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal" id="send-invites">Send Invites!</button>
@@ -129,7 +131,7 @@
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li><a href="{% url 'home' %}">Map</a></li>
-            <li class='dropdown'><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Study Groups</a>
+            <li class='dropdown'><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Studyrooms</a>
                 <ul class="dropdown-menu" role="menu">
                 {% for studygroup in studygroups %}
                   <li><a href="/studyroom/change_studygroup/{{studygroup.pk}}">{{studygroup.name}}</a></li>
@@ -153,22 +155,29 @@
           </form>
           {% if user_id %}
           <ul class="nav navbar-nav navbar-right">
-            {% if current_class %}
-              <li> <a href="{% url 'remove_class' current_class %}">Leave Class</a></li>
-            {% endif %}
-            {% if current_studygroup %}
-              {% if in_studygroup %}
-                <li> <a href="{% url 'remove_person_studygroup' current_studygroup.id %}">Leave Studygroup</a></li>
-                <!-- Button that allows owner to invite -->
-                <li data-toggle="modal" data-toggle="modal" data-target="#inviteModal"><a href="#">
-                Invite</li>
-              {% else %}
-                {% if current_studygroup.private %}
-                  <li> <a href="{% url 'request_to_be_added' current_studygroup.id %}">Request To Be Added</a></li>
-                {% else %}
-                  <li> <a href="{% url 'add_person_studygroup' current_studygroup.id %}">Add Studygroup</a></li>
-                {% endif %}
-              {% endif %}
+            
+            {% if in_studygroup or current_class %}
+            <li class='dropdown'><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true">Tools <span class="caret"></span></a>
+                <ul class="dropdown-menu" role="menu">
+                  {% if in_studygroup %}
+                    {% if is_owner %}
+                    <li data-toggle="modal" data-toggle="modal" data-target="#inviteModal"><a href="#">
+                    Invite Students</a></li>
+                    <li><a href="{% url 'map_studygroups' current_studygroup.id %}">Change Location</a></li>
+                    <li onclick="ConfirmDelete({{current_studygroup.id}})"><a href="#">Delete Studygroup</a></li>
+                    {% elif is_member %}
+                    <li><a href="{% url 'remove_person_studygroup' current_studygroup.id %}">Leave Studygroup</a></li>
+                    {% elif current_studygroup.private %}
+                    <li> <a href="{% url 'request_to_be_added' current_studygroup.id %}">Request To Be Added</a></li>
+                    {% else %}
+                    <li> <a href="{% url 'add_person_studygroup' current_studygroup.id %}">Join Studygroup</a></li>
+                    {% endif %}
+                  {% else %}
+                      <li> <a href="{% url 'remove_class' current_class %}">Leave Class</a></li>
+                  {% endif %}
+                  
+                </ul>
+            </li>
             {% endif %}
             <li><a href="{% url 'profile' user_id %}" class="btn btn-warning">Me</a></li>
             <li data-toggle="modal" data-toggle="modal" data-target="#notificationsModal"><a href="#" id="clear-notifications">
@@ -243,8 +252,28 @@ $("#add-class").click(function(e) {
 
 var invites = [];
 function InviteStudent(student) {
+  console.log('invite' + student)
+  var imgTag=document.getElementById('invite_' + student);
+  imgTag.style.opacity='1';
   invites[invites.length] = student;
   console.log(invites)
+}
+
+function ConfirmDelete(group_id) {
+  if(confirm('Deleting this studyroom would remove its data forever. Are you sure you want to proceed?')) {
+    var csrftoken = document.getElementsByName("csrfmiddlewaretoken")[0].defaultValue;
+    console.log(typeof(group_id))
+    console.log(group_id)
+
+    var url_string = "/socialnetwork/remove_person_studygroup/" + group_id.toString()
+    console.log(url_string)
+    $.ajax({
+        url: url_string,
+        type:'post',
+        dataType : "json",
+        data: {csrfmiddlewaretoken: csrftoken},
+    });
+  }
 }
 
 {% block in_scripts %}

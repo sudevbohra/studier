@@ -18,6 +18,9 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=40, blank=True)),
             ],
+            options={
+            },
+            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Comment',
@@ -29,6 +32,9 @@ class Migration(migrations.Migration):
                 ('attachment_url', models.CharField(max_length=256, blank=True)),
                 ('attachment_name', models.CharField(max_length=200, blank=True)),
             ],
+            options={
+            },
+            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Documents',
@@ -38,6 +44,9 @@ class Migration(migrations.Migration):
                 ('documents_url', models.CharField(max_length=150, blank=True)),
                 ('upvotes', models.IntegerField(blank=True)),
             ],
+            options={
+            },
+            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Notification',
@@ -51,6 +60,9 @@ class Migration(migrations.Migration):
                 ('time', models.DateTimeField(auto_now_add=True)),
                 ('persistent', models.BooleanField(default=False)),
             ],
+            options={
+            },
+            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Post',
@@ -67,6 +79,9 @@ class Migration(migrations.Migration):
                 ('classroom', models.ForeignKey(related_name='posts', to='socialnetwork.Classroom', null=True)),
                 ('comments', models.ManyToManyField(to='socialnetwork.Comment')),
             ],
+            options={
+            },
+            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Student',
@@ -85,6 +100,9 @@ class Migration(migrations.Migration):
                 ('notifications', models.ManyToManyField(to='socialnetwork.Notification')),
                 ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
             ],
+            options={
+            },
+            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='StudyGroup',
@@ -103,45 +121,56 @@ class Migration(migrations.Migration):
                 ('members', models.ManyToManyField(related_name='groups', to='socialnetwork.Student')),
                 ('owner', models.ForeignKey(related_name='studygroups', to='socialnetwork.Student')),
             ],
+            options={
+            },
+            bases=(models.Model,),
         ),
         migrations.AddField(
             model_name='post',
             name='downvoters',
             field=models.ManyToManyField(related_name='downvoted', to='socialnetwork.Student'),
+            preserve_default=True,
         ),
         migrations.AddField(
             model_name='post',
             name='student',
             field=models.ForeignKey(to='socialnetwork.Student'),
+            preserve_default=True,
         ),
         migrations.AddField(
             model_name='post',
             name='studygroup',
             field=models.ForeignKey(related_name='posts', to='socialnetwork.StudyGroup', null=True),
+            preserve_default=True,
         ),
         migrations.AddField(
             model_name='post',
             name='upvoters',
             field=models.ManyToManyField(related_name='upvoted', to='socialnetwork.Student'),
+            preserve_default=True,
         ),
         migrations.AddField(
             model_name='documents',
             name='owner',
             field=models.OneToOneField(to='socialnetwork.Student'),
+            preserve_default=True,
         ),
         migrations.AddField(
             model_name='comment',
             name='student',
             field=models.ForeignKey(to='socialnetwork.Student', null=True),
+            preserve_default=True,
         ),
         migrations.AddField(
             model_name='classroom',
             name='documents',
             field=models.ManyToManyField(to='socialnetwork.Documents'),
+            preserve_default=True,
         ),
         migrations.AddField(
             model_name='classroom',
             name='students',
             field=models.ManyToManyField(related_name='classes', to='socialnetwork.Student'),
+            preserve_default=True,
         ),
     ]
