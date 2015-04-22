@@ -231,9 +231,6 @@ def edit(request):
         context['form'] = form
         #print form
         if not form.is_valid():
-            print form.errors
-            print "NOT VALID"
-            context['form'] = EditForm()
             return render(request, 'socialnetwork/edit.html', context)
         #profile = form.save()
 

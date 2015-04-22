@@ -103,6 +103,7 @@ class EditForm(forms.ModelForm):
         return super(EditForm, self).save(commit=commit)
 
     def clean_picture(self):
+        fileTypes = (".jpg", ".jpeg", ".png", ".gif")
         picture = self.cleaned_data['picture']
         if not picture:
             return None
@@ -110,6 +111,8 @@ class EditForm(forms.ModelForm):
         #     raise forms.ValidationError('File type is not image')
         if picture.size > MAX_UPLOAD_SIZE:
             raise forms.ValidationError('File too big (max size is {0} bytes)'.format(MAX_UPLOAD_SIZE))
+        if not picture.name.endswith(fileTypes):
+            raise forms.ValidationError('File must be a jpg, jpeg, png and gif')
         return picture
 
 class PostForm(forms.Form):

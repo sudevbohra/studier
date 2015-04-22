@@ -27,3 +27,4 @@ class StudyGroupForm(forms.ModelForm):
 		cleaned_data = super(StudyGroupForm, self).clean()
 		return cleaned_data
 
+	
