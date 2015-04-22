@@ -11,17 +11,17 @@
       </div></a>
         <h3 class="media-heading">{{full_name}}</h3>
         </center>
-        <hr>
+        <br><br>
         <span><strong>School: {{school}}</strong></span>
-        <hr>
+        <br><br>
         <span><strong>Major: {{major}}</strong></span>
-        <hr>
+        <br><br>
         <span><strong>Classes: </strong></span>
             {% for class in prof_classes %}
             <span class="label label-info">{{class}}</span>
             {% endfor %}
         {% if is_student %}
-        <hr>
+        <br><br>
         <span>
             <strong>Friends: </strong>
             <div class="row-fluid">
@@ -56,8 +56,7 @@
             </div>
         </span>
         {% endif %}
-    </div>
-    <div class="modal-footer">
+   
         <center>
         {% if is_friend %}
         <form action="{% url 'unfriend' prof_id %}" method="get">
