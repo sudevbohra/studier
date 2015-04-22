@@ -427,14 +427,21 @@ def notify(request, id, notif_text, notif_link, persistent=False, yes_link= None
 @login_required
 @transaction.atomic
 def clear_notifications(request):
-    print "TRUUUUEEE"
     student = Student.objects.get(user=request.user)
     notifications = student.notifications.filter(persistent=True)
     # for notification in student.notifications.all():
     #     if notification not in notifications:
     #         notification.delete()
     student.notifications = notifications
-    student.save()
+    student.save()        
+    return HttpResponse()
 
-        
+@login_required
+@transaction.atomic
+def delete_notification(request):
+    student = Student.objects.get(user=request.user)
+    notif_id = request.POST['notif_id']
+    student.notifications.objects.get(id=notif_id).delete()
+    student.notifications.save()
+    student.save()
     return HttpResponse()

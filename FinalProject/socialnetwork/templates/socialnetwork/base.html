@@ -240,11 +240,15 @@ document.getElementById("clear-notifications").onclick =
 // });
 
 function RemoveNotification(notif_id) {
-  console.log("IN FUNC SUCCESS")
-  console.log("notif_" + notif_id.toString())
   var notifTag=document.getElementById('notif_' + notif_id.toString())
   notifTag.style.display='none';
   $("notif_" + notif_id.toString()).remove();
+  $.ajax({
+        url: "{% url 'delete_notification' %}",
+        type:'post',
+        dataType : "json",
+        data: {csrfmiddlewaretoken: csrftoken, notif_id: notif_id},
+    });
 }
 
 var addClassHTML="";
