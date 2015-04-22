@@ -112,6 +112,13 @@
                 <div class="timeline-entry-inner">
 
                     <div class="timeline-icon bg-success">
+                        <div class="timeline-time">
+                        <a href="{% url 'profile' current_post.student.id %}">
+                                            <center><div style="width: 80px;height: 80px;border-radius: 5%;">
+                                                <img src="{{ current_post.student.picture_url }}" class="profile-image" name="aboutme" width="100%" style="width: 50px;height: 50px;">
+                                            </div></center>
+                                        </a>
+                    </div>
                         <span class="glyphicon glyphicon-heart" style="font-size: 1.4em; color:red;"></span>{{ current_post.upvotes }}
                         
                         <a href="{% url 'addPostUpvoteStudyGroup' current_post.id 1 %}"><span class="glyphicon glyphicon-plus" style="font-size: 1.4em; color:green;"></span></a>
@@ -140,7 +147,13 @@
 
 
                         <div class="timeline-entry-inner">
-
+                            <div class="timeline-time">
+                        <a href="{% url 'profile' current_post.student.id %}">
+                                            <center><div style="width: 80px;height: 80px;border-radius: 5%;">
+                                                <img src="{{ current_post.student.picture_url }}" class="profile-image" name="aboutme" width="100%" style="width: 50px;height: 50px;">
+                                            </div></center>
+                                        </a>
+                    </div>
                             <div class="timeline-icon bg-warning">
                                 <span class="glyphicon glyphicon-heart-empty" style="font-size: 1.4em; color:white;"></span>1
                                 <i class="entypo-suitcase"></i>
