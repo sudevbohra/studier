@@ -88,9 +88,15 @@ class RegistrationForm(forms.Form):
 class EditForm(forms.ModelForm):
     first_name = forms.CharField(max_length=20, required=False, widget=forms.TextInput(attrs={'placeholder': 'Search'}))
     last_name  = forms.CharField(max_length=20, required=False)
-    school = forms.CharField(max_length=20, required=False)
+    #school = forms.CharField(max_length=20, required=False)
     major = forms.CharField(max_length=40, required=False)
     picture = forms.FileField(required=False, label='Change picture')
+
+    def __init__(self, *args, **kwargs):
+        super(EditForm, self).__init__(*args, **kwargs)
+        self.fields['school'] = forms.ChoiceField(
+            choices=get_schools() )
+
     class Meta:
         model = Student
         exclude = ('user', 'interests', 'linkedin', 'friends', 'picture_url', 'answer_rating', 'collab_rating', 'endorsements', 'age', 'notifications')
