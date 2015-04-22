@@ -137,6 +137,9 @@
                             <div class="timeline-label">
                                 <h2><a href="#">{{comment.student.user.first_name}} {{comment.student.user.last_name}}</a> <span>{{comment.date}}</span></h2>
                                 <p>{{comment.text}}</p>
+                                {% if comment.attachment_url %}
+                                    <a href="{{comment.attachment_url}}">{{ comment.attachment_name}} </a>
+                                {% endif %}
                             </div>
                         </div>
 
@@ -149,7 +152,7 @@
                 <div class="timeline-entry-inner">
 
                     <div class="timeline-label">
-                        <form action="{% url 'add_comment' current_post.id %}" method="post">
+                        <form action="{% url 'add_comment_studygroup' current_post.id %}" enctype="multipart/form-data" method="post">
                             <div class="col">
                                 <div class="panel" style="background-color:#00BC8C">
                                   <div class="panel-heading">
@@ -157,6 +160,10 @@
                                   </div>
                                   <div class="panel-body">
                                     {{ comment_form.text|addcss:"form-control, placeholder:Comment, id:comment-text-box" }}
+                                    <br>
+                                    {{ comment_form.attachment|addcss:"form-control, placeholder: Attachment" }}
+                                    <br>
+                                    {{ comment_form.attachment_name|addcss:"form-control, placeholder: Attachment Name" }}
                                     <br>
                                     <button class="btn btn-lg btn-primary btn-block" type="submit">Add Comment!</button>  
                                     
