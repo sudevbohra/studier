@@ -180,7 +180,7 @@
             </li>
             {% endif %}
             <li><a href="{% url 'profile' user_id %}" class="btn btn-warning">Me</a></li>
-            <li data-toggle="modal" data-toggle="modal" data-target="#notificationsModal"><a href="#" id="clear-notifications">
+            <li data-toggle="modal" data-toggle="modal" data-target="#notificationsModal"><a href="#" id="clear-notifications"><span class="glyphicon glyphicon-list"></span>
             {% if notif_count %}
               Notifications ({{notif_count}})
             {% else %}

@@ -344,7 +344,7 @@ def add_comment(request, id):
 
 	# Notification function
 	notif_text = request.user.get_full_name() + " commented on your post"
-	notif_link = '/studyroom/show_post/' + str(post.id)
+	notif_link = '/studyroom/show_post_studygroup/' + str(post.id)
 	notify(request, post.student.id, notif_text, notif_link)
 
 	return show_post_studygroup(request, post.id)
@@ -388,7 +388,7 @@ def send_invites(request):
 	for stu_id in invite_list:
 		student = Student.objects.get(id=stu_id)
 		notif_text = request.user.get_full_name() + " has invited you to " + studygroup.name + ". Click to join study room!"
-		notif_link = 'socialnetwork/add_person_studygroup/' + studygroup_id
+		notif_link = '/socialnetwork/add_person_studygroup/' + studygroup_id
 		notify(request, stu_id, notif_text, "", yes_link=notif_link, no_link="")
 
  	

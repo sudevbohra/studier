@@ -49,7 +49,7 @@
                 
                     <div>
                      {{current_studygroup.name}}
-                     {% if in_studygroup %}
+                     {% if is_owner or is_member %}
                         <button style="position:absolute; left:280px; top: 10px;" class="btn btn-info" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-file"></span> Add Post</button>
                     {% endif %}
                     </div>
@@ -92,7 +92,7 @@
             {% endfor %}
             {% else %}
                 <li>
-                <div style="margin-top:10px;color:white;line-height:200%;">Join studygroup to view posts.</div>
+                <div style="margin-top:10px;color:white;line-height:200%;">Go to tools and join studygroup to view posts.</div>
                 </li>
             {% endif %}
         </ul>
