@@ -6,6 +6,7 @@ class Notification(models.Model):
 	picture_url = models.CharField(blank=True, max_length=256, default="...")
 	link = models.CharField(blank=True, max_length=150)
 	time = models.DateTimeField(auto_now_add=True)
+	persistent = models.BooleanField(blank=False, default=False)
 	def __unicode__(self):
 		return 'Notification(id=' + str(self.id) + ')'
 

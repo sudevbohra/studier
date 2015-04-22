@@ -409,10 +409,9 @@ def unfriend(request, id):
 
 @login_required
 @transaction.atomic
-def notify(request, id, notif_text, notif_link):
-    print "NOTIFICATION AHHH"    
+def notify(request, id, notif_text, notif_link, persistent=False): 
     picture_url = Student.objects.get(user=request.user).picture_url
-    new_notification = Notification(text=notif_text, link=notif_link, picture_url=picture_url)
+    new_notification = Notification(text=notif_text, link=notif_link, picture_url=picture_url, persistent=persistent)
     new_notification.save()
     user = get_object_or_404(User, id=id)
     prof_student = Student.objects.select_for_update().get(user=user)
@@ -422,9 +421,10 @@ def notify(request, id, notif_text, notif_link):
 @login_required
 @transaction.atomic
 def clear_notifications(request):
-    print "TRUUUU"
+    print "TRUUUUEEE"
     student = Student.objects.get(user=request.user)
-    notifications = student.notifications.order_by('-time')[:5]
+    notifications = student.notifications.filter(persistent=True)
+    print notifications
     for notification in student.notifications.all():
         if notification not in notifications:
             notification.delete()
