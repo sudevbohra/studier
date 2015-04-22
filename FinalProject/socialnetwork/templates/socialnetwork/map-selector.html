@@ -123,7 +123,7 @@
         url: "{% url 'set_map_studygroup' %}",
         type:'post',
         dataType : "json",
-        data: {csrfmiddlewaretoken: csrftoken, lat:pos.k, lng:pos.D, id:{{studygroup_id}} },
+        data: {csrfmiddlewaretoken: csrftoken, lat:pos.k, lng:pos.D, id:{{studygroup_id}}, user:{{request.user_id}} },
         success: function( items ) {
             
             console.log('success');
