@@ -8,14 +8,12 @@ MAX_UPLOAD_SIZE = 2500000
 def get_schools():
     schools = open('colleges.txt', 'r')
     choices = []
-    x = 1
     for school in schools:
         school = school.strip()
         schoolTuple = (school)
-        statusTuple = (x, schoolTuple)
+        statusTuple = (schoolTuple, schoolTuple)
         choices.append(statusTuple)
 
-        x += 1
     schools.close()
     return tuple(choices)
 
