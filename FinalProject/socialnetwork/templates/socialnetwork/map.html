@@ -233,6 +233,11 @@ else {
                     var icon = "https://s3-us-west-2.amazonaws.com/quotist-bucket/pin_blue.png"
                 }
 
+                if (!items[i].fields['active']) {
+                    var icon = "https://s3-us-west-2.amazonaws.com/quotist-bucket/pin_grey.png"
+
+                }
+
                 var marker = new google.maps.Marker({
                     position: new google.maps.LatLng(items[i].fields['location_latitude'],items[i].fields['location_longitude']),
                     map: map,

@@ -149,7 +149,6 @@ class CommentForm(forms.Form):
         return cleaned_data
 
     def clean_attachment(self):
-        print "kwghwe;vjewhgve"
         attachment = self.cleaned_data['attachment']
         print self.cleaned_data['attachment']
         if not attachment:

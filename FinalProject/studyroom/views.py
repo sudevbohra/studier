@@ -186,7 +186,7 @@ def set_map_studygroup_default(request):
 									active=True,
 									classroom = classroom,
 									course=request.POST['course'],
-									location_name= "Check Pin",private=False, )
+									location_name= "Check Pin",private=False)
 				studygroup.location_latitude = request.POST['lat']
 				studygroup.location_longitude = request.POST['lng']
 				studygroup.save()
@@ -222,8 +222,14 @@ def get_studygroups(request, user_id):
 	courses = [cls.name for cls in Student.objects.get(user_id=user_id).classes.all()]
 	now = datetime.datetime.now().replace(tzinfo=tzlocal())
 	# start_time__lte = now, <-- add to only show groups which are in progress
-	studygroups = StudyGroup.objects.filter(end_time__gte=now, course__in = courses)
+	inactive_studygroups = StudyGroup.objects.filter(end_time__gte=now, start_time__gte=now, course__in = courses, active = True)
     #[elem for elem in li if li.count(elem) == 1]
+
+	for sg in inactive_studygroups.all():
+		sg.active = False
+		sg.save()
+	studygroups = StudyGroup.objects.filter(end_time__gte=now, course__in = courses)
+
 	response_text = serializers.serialize('json', studygroups, use_natural_foreign_keys=True)
 	return HttpResponse(response_text , content_type="application/json")
 
