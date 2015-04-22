@@ -35,18 +35,37 @@ class RegistrationForm(forms.Form):
         # We must return the cleaned data we got from our parent.
         return cleaned_data
 
-
     # Customizes form validation for the username field.
-    def clean_username(self):
+    def clean_email(self):
         # Confirms that the username is not already present in the
         # User model database.
-        username = self.cleaned_data.get('email')
-        if User.objects.filter(username__exact=username):
+        email = self.cleaned_data.get('email')
+        if not email:
+            raise forms.ValidationError("Must provide an email")
+        if User.objects.filter(email__exact=email):
             raise forms.ValidationError("Username is already taken.")
+        if not ".edu" in email:
+            raise forms.ValidationError("Must be a .edu email address")
 
         # We must return the cleaned data we got from the cleaned_data
         # dictionary
-        return username
+        return email
+
+    def clean_password1(self):
+        password = self.cleaned_data.get('password1')
+        if not password:
+            raise forms.ValidationError("Please enter a password")
+        if len(password) < 8:
+            raise forms.ValidationError("Must use longer password")
+        return password1
+
+    def clean_password2(self):
+        password = self.cleaned_data.get('password2')
+        if not password:
+            raise forms.ValidationError("Please enter to confirm password")
+        if len(password) < 8:
+            raise forms.ValidationError("Must use longer password")
+        return password1
 
 class EditForm(forms.ModelForm):
     first_name = forms.CharField(max_length=20, required=False, widget=forms.TextInput(attrs={'placeholder': 'Search'}))
@@ -102,7 +121,7 @@ class CommentForm(forms.Form):
     text = forms.CharField(max_length=300)
     attachment = forms.FileField(required=False, label="Attachment")
     attachment_name = forms.CharField(max_length=200, required=False)
-    
+
     def clean(self):
         cleaned_data = super(CommentForm, self).clean()
         return cleaned_data

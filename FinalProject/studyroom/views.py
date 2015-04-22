@@ -106,7 +106,7 @@ def map_studygroups(request, studygroup_id):
 def add_studygroup(request):
 	user = request.user
 	student = Student.objects.get(user=user)
-	studygroupform = StudyGroupForm(request.POST, user=student)
+	studygroupform = StudyGroupForm(request.POST)
 	
 	if not studygroupform.is_valid():
 		return home(request, "You need to provide a name, course, location, start time and end time!")

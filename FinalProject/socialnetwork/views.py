@@ -34,7 +34,7 @@ def get_default_context(request):
     user_id = request.user.id
     student = Student.objects.get(user=request.user)
     context = {}
-    context['notifications'] = student.notifications
+    context['notifications'] = student.notifications.order_by('-time')
     context['classes'] = student.classes.all()
     context['user_id'] = request.user.id
     context['student'] = student
@@ -159,9 +159,7 @@ def register(request):
 
     form = RegistrationForm(request.POST)
     context['form'] = form
-
-    errors = []
-    context['errors'] = errors
+    print form.errors
 
     # Checks the validity of the form data
     if not form.is_valid():
