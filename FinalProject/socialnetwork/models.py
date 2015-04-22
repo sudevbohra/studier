@@ -33,6 +33,8 @@ class Comment(models.Model):
 	student = models.ForeignKey(Student, null=True)
 	date = models.DateTimeField(blank=True, auto_now_add=True, null=True)
 	upvotes = models.IntegerField(blank=True, default=0)
+	attachment_url = models.CharField(blank=True, max_length=256)
+	attachment_name = models.CharField(blank=True, max_length=200)
 	def __unicode__(self):
 		return self.text
 	def natural_key(self):

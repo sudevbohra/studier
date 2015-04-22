@@ -353,14 +353,24 @@ def add_post(request, name):
 @login_required
 @transaction.atomic
 def add_comment(request, id):
+
     errors = []
-    form = CommentForm(request.POST)
+    form = CommentForm(request.POST, request.FILES)
     post = Post.objects.get(id=id)
     student = Student.objects.get(user=request.user)
     #form.cleaned_data["text"]
     form.is_valid()
     new_comment = Comment(text=form.cleaned_data["text"], student=student, upvotes=0)
     new_comment.save()
+    if form.cleaned_data['attachment']:
+        print "jhdjsgfhjewgfweglfgewqlf"
+        url = s3_upload(form.cleaned_data['attachment'], new_comment.id)
+        new_comment.attachment_url = url
+        if form.cleaned_data['attachment_name']:
+            new_comment.attachment_name = form.cleaned_data['attachment_name']
+        else:
+            new_comment.attachment_name = post.title
+        new_comment.save()
     post.comments.add(new_comment)
     post.save()
     class_name = post.classroom

@@ -302,5 +302,13 @@ def add_person_studygroup(request, id):
     studygroup.save()
     return change_studygroup(request, studygroup.id)
 
-
+@login_required
+def request_to_be_added(request, id):
+	context = get_default_context(request)
+	studygroup = StudyGroup.objects.get(id=id)
+	user = request.user
+	notif_link = "/studyroom/change_studygroup/" + str(id)
+	notif_text = user.first_name + " " + user.last_name + " wants to join your studygroup " + studygroup.name
+	notify(request, studygroup.owner.id, notif_text, notif_link)
+	return home(request)
 
