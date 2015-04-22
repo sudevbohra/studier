@@ -107,11 +107,13 @@ def add_studygroup(request):
 		return home(request, "You are not in that class")
 	if student not in course.students.all():
 		return home(request, "You are not in that class")
+
 	studygroup = StudyGroup(name=studygroupform.cleaned_data['name'],
 							owner=student,
 							active=True,
 							course=studygroupform.cleaned_data['course'].name,
-							location_name=studygroupform.cleaned_data['location_name'])
+							location_name=studygroupform.cleaned_data['location_name'],
+							private=studygroupform.cleaned_data['private'])
 	studygroup.save()
 	studygroup.members.add(student)
 	studygroup.start_time = datetime.datetime.strptime(request.POST['startTime'], "%m/%d/%Y %I:%M %p").replace(tzinfo=tzlocal())
