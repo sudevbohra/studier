@@ -82,10 +82,11 @@
                     </div>
                 </div>
             </div>
+            <br><br><br><br><br>
             {% if posts %}
             {% for post in posts %}
                 <li>
-                <a href="/socialnetwork/show_post_studygroup/{{post.id}}" ><div style="margin-top:10px;color:white;line-height:200%;">{{post.title}}</div>
+                <a href="{% url 'show_post_studygroup' post.id %}" ><div style="margin-top:10px;color:white;line-height:200%;">{{post.title}}</div>
                 <div style="font-size:9px;line-height:200%;">{{ post.text|slice:"80" }}{% if post.text|length > 80 %}...{% endif %}</div></a>
                 </li>
             {% endfor %}
