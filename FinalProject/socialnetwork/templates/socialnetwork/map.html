@@ -9,12 +9,12 @@
 {% if studygroupform %}
 {% block top %}
 <script>
-  function myFunction() {
-    alert("You are not in this class");
+  function myFunction(error) {
+    alert(error);
   }
 </script>
 {% if error %}
-<script type="text/javascript"> myFunction();</script>
+<script type="text/javascript"> myFunction("{{error}}");</script>
 {% endif %}
 
 

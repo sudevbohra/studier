@@ -64,16 +64,16 @@
                                 {% for stu in students.all %}
                                     <td>
                                         <a href="{% url 'profile' stu.id %}">
-                                            <div style="width: 180px;height: 80px;border-radius: 5%;">
-                                                <img src="{{ stu.picture_url }}" class="profile-image" name="aboutme" width="100%" style="width: 150px;height: 70px;">
-                                            </div>
+                                            <center><div style="width: 80px;height: 80px;border-radius: 5%;">
+                                                <img src="{{ stu.picture_url }}" class="profile-image" name="aboutme" width="100%" style="width: 70px;height: 70px;">
+                                            </div></center>
                                         </a>
                                     </td>
                                 {% endfor %}
                             </tr>
                             <tr>
                                 {% for stu in students.all %}
-                                    <td>{{ stu.user.first_name }} {{ stu.user.last_name}}</td>
+                                    <td><center>{{ stu.user.first_name }}</center></td>
                                 {% endfor %}
                             </tr>
                         
@@ -146,7 +146,11 @@
 
                             <div class="timeline-label">
                                 <h2><a href="#">{{comment.student.user.first_name}} {{comment.student.user.last_name}}</a> <span>{{comment.date}}</span></h2>
-                                <p>{{comment.text}}</p>
+                                <div style="color:black;">{{comment.text}} </div>
+
+                                {% if comment.attachment_url %}
+                                    <a href="{{comment.attachment_url}}">{{ comment.attachment_name}} </a>
+                                {% endif %}
                             </div>
                         </div>
 
@@ -159,7 +163,7 @@
                 <div class="timeline-entry-inner">
 
                     <div class="timeline-label">
-                        <form action="{% url 'add_comment' current_post.id %}" method="post">
+                        <form action="{% url 'add_comment' current_post.id %}" enctype="multipart/form-data" method="post">
                             <div class="col">
                                 <div class="panel" style="background-color:#00BC8C">
                                   <div class="panel-heading">
@@ -167,6 +171,10 @@
                                   </div>
                                   <div class="panel-body">
                                     {{ comment_form.text|addcss:"form-control, placeholder:Comment, id:comment-text-box" }}
+                                    <br>
+                                    {{ comment_form.attachment|addcss:"form-control, placeholder: Attachment" }}
+                                    <br>
+                                    {{ comment_form.attachment_name|addcss:"form-control, placeholder: Attachment Name" }}
                                     <br>
                                     <button class="btn btn-lg btn-primary btn-block" type="submit">Add Comment!</button>  
                                     

@@ -36,10 +36,9 @@ def get_default_context(request):
     context = {}
     context['notifications'] = student.notifications
     context['classes'] = student.classes.all()
+    context['user_id'] = request.user.id
+    context['student'] = student
     context['studygroups'] = student.groups.all()
-    print "TRUUUUUUU"
-    print student.groups.all()
-    # for sg in student.studygroups
     if(len(student.notifications.all()) > 0):
         context['notif_count'] = len(student.notifications.all())
     return context
@@ -194,7 +193,7 @@ def register(request):
 
 @login_required
 def profile(request, id):
-    context=get_default_context(request)
+    context = get_default_context(request)
     user = get_object_or_404(User, id=id)
     context['full_name'] = user.get_full_name()
     student = Student.objects.get(user=request.user)
@@ -353,14 +352,24 @@ def add_post(request, name):
 @login_required
 @transaction.atomic
 def add_comment(request, id):
+
     errors = []
-    form = CommentForm(request.POST)
+    form = CommentForm(request.POST, request.FILES)
     post = Post.objects.get(id=id)
     student = Student.objects.get(user=request.user)
     #form.cleaned_data["text"]
     form.is_valid()
     new_comment = Comment(text=form.cleaned_data["text"], student=student, upvotes=0)
     new_comment.save()
+    if form.cleaned_data['attachment']:
+        print "jhdjsgfhjewgfweglfgewqlf"
+        url = s3_upload(form.cleaned_data['attachment'], new_comment.id)
+        new_comment.attachment_url = url
+        if form.cleaned_data['attachment_name']:
+            new_comment.attachment_name = form.cleaned_data['attachment_name']
+        else:
+            new_comment.attachment_name = post.title
+        new_comment.save()
     post.comments.add(new_comment)
     post.save()
     class_name = post.classroom
@@ -400,10 +409,9 @@ def unfriend(request, id):
 
 @login_required
 @transaction.atomic
-def notify(request, id, notif_text, notif_link):
-    print "NOTIFICATION AHHH"    
+def notify(request, id, notif_text, notif_link, persistent=False): 
     picture_url = Student.objects.get(user=request.user).picture_url
-    new_notification = Notification(text=notif_text, link=notif_link, picture_url=picture_url)
+    new_notification = Notification(text=notif_text, link=notif_link, picture_url=picture_url, persistent=persistent)
     new_notification.save()
     user = get_object_or_404(User, id=id)
     prof_student = Student.objects.select_for_update().get(user=user)
@@ -413,8 +421,12 @@ def notify(request, id, notif_text, notif_link):
 @login_required
 @transaction.atomic
 def clear_notifications(request):
-    print "TRUUUU"
+    print "TRUUUUEEE"
     student = Student.objects.get(user=request.user)
-    student.notifications.all().delete()
+    notifications = student.notifications.filter(persistent=True)
+    print notifications
+    for notification in student.notifications.all():
+        if notification not in notifications:
+            notification.delete()
         
     return HttpResponse()

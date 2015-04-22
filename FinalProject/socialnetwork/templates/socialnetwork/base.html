@@ -155,7 +155,11 @@
                 <li data-toggle="modal" data-toggle="modal" data-target="#inviteModal"><a href="#">
                 Invite</li>
               {% else %}
-                <li> <a href="{% url 'add_person_studygroup' current_studygroup.id %}">Add Studygroup</a></li>
+                {% if current_studygroup.private %}
+                  <li> <a href="{% url 'request_to_be_added' current_studygroup.id %}">Request To Be Added</a></li>
+                {% else %}
+                  <li> <a href="{% url 'add_person_studygroup' current_studygroup.id %}">Add Studygroup</a></li>
+                {% endif %}
               {% endif %}
             {% endif %}
             <li><a href="{% url 'profile' user_id %}" class="btn btn-warning">Me</a></li>

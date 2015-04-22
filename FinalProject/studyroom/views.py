@@ -31,6 +31,7 @@ import datetime
 from dateutil.tz import *
 from django.utils import timezone
 from django.http import Http404
+import traceback
 
 def get_default_context(request):
     user_id = request.user.id
@@ -84,9 +85,13 @@ def upvotePostStudygroup(request, id, upvote):
 @login_required
 def map_studygroups(request, studygroup_id):
     # # Sets up list of just the logged-in user's (request.user's) items
+
     user_id = request.user.id
     student = Student.objects.get(user=request.user)
     context = get_default_context(request)
+    context["user_id"] = user_id
+    context["student"] = student
+    context["classes"] = student.classes.all()
     context['studygroup_id'] = studygroup_id
     # # For now we'll use 15437
     # current_class = "15437"
@@ -215,12 +220,16 @@ def get_studygroups(request, user_id):
 @login_required
 @transaction.atomic
 def add_post_studygroup(request, id):
+	student = Student.objects.get(user=request.user)
+	studygroup = StudyGroup.objects.get(id=id)
+	if student not in studygroup.members.all():
+		return home(request, "You arent in this studygroup")
 	errors = []
 	form = PostForm(request.POST, request.FILES)
 	if(form.is_valid()):
 		post = Post(text=form.cleaned_data['text'], title=form.cleaned_data['title'])
-		student = Student.objects.get(user=request.user)
-		studygroup = StudyGroup.objects.get(id=id)
+		
+		
 		post.studygroup = studygroup
 		post.student = student
 		post.upvotes = 0
@@ -296,12 +305,45 @@ def change_studygroup(request, id):
 		raise Http404("StudyGroup does not exist")
 
 @login_required
+def add_comment(request, id):
+	form = CommentForm(request.POST, request.FILES)
+	post = Post.objects.get(id=id)
+	student = Student.objects.get(user=request.user)
+	#form.cleaned_data["text"]
+	form.is_valid()
+	new_comment = Comment(text=form.cleaned_data["text"], student=student, upvotes=0)
+	new_comment.save()
+	if form.cleaned_data['attachment']:
+	    url = s3_upload(form.cleaned_data['attachment'], new_comment.id)
+	    new_comment.attachment_url = url
+	    if form.cleaned_data['attachment_name']:
+	        new_comment.attachment_name = form.cleaned_data['attachment_name']
+	    else:
+	        new_comment.attachment_name = post.title
+	    new_comment.save()
+	post.comments.add(new_comment)
+	post.save()
+	class_name = post.classroom
+
+	# Notification function
+	notif_text = request.user.get_full_name() + " commented on your post"
+	notif_link = '/studyroom/show_post/' + str(post.id)
+	notify(request, post.student.id, notif_text, notif_link)
+
+	return show_post_studygroup(request, post.id)
+
+
+@login_required
 @transaction.atomic
 def remove_person_studygroup(request, id):
     student = Student.objects.get(user = request.user)
     studygroup = StudyGroup.objects.get(id=id)
     studygroup.members.remove(student)
     studygroup.save()
+    if student == studygroup.owner:
+    	print "OWNER IS DELETING"
+    	studygroup.delete()
+    
     return home(request)
 
 @login_required
@@ -312,8 +354,6 @@ def add_person_studygroup(request, id):
     studygroup.members.add(student)
     studygroup.save()
     return change_studygroup(request, studygroup.id)
-
-import traceback
 
 @login_required
 @transaction.atomic
@@ -336,3 +376,19 @@ def send_invites(request):
  	
  	return HttpResponse()
 	
+@login_required
+def add_to_studygroup(request, studygroup_id, student_id):
+	studygroup = StudyGroup.objects.get(id=studygroup_id)
+	student = Student.objects.get(id=student_id)
+	studygroup.members.add(student)
+	return change_studygroup(request, studygroup_id)
+	
+@login_required
+def request_to_be_added(request, id):
+	context = get_default_context(request)
+	studygroup = StudyGroup.objects.get(id=id)
+	user = request.user
+	notif_link = "/studyroom/add_to_studygroup/" + str(id) + "/" + str(user.id)
+	notif_text = user.first_name + " " + user.last_name + " wants to join your studygroup " + studygroup.name
+	notify(request, studygroup.owner.id, notif_text, notif_link, True)
+	return home(request)

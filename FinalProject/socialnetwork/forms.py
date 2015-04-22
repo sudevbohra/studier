@@ -100,8 +100,20 @@ class PostForm(forms.Form):
 
 class CommentForm(forms.Form):
     text = forms.CharField(max_length=300)
+    attachment = forms.FileField(required=False, label="Attachment")
+    attachment_name = forms.CharField(max_length=200, required=False)
     
     def clean(self):
         cleaned_data = super(CommentForm, self).clean()
         return cleaned_data
+
+    def clean_attachment(self):
+        print "kwghwe;vjewhgve"
+        attachment = self.cleaned_data['attachment']
+        print self.cleaned_data['attachment']
+        if not attachment:
+            return None
+        if attachment.size > MAX_UPLOAD_SIZE:
+            raise forms.ValidationError('File too big (max size is {0} bytes)'.format(MAX_UPLOAD_SIZE))
+        return attachment
 

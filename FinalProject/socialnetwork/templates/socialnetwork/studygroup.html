@@ -1,6 +1,7 @@
 {% extends "socialnetwork/base.html" %}
 {% load addcss %}
 {% block top %}
+{% if in_studygroup %}
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -31,24 +32,27 @@
     </div>
   </div>
 </div>
+{% endif %}
 
 {% endblock %}
 
-{% block mainbody %}
-<style>
-   p {
-    font-size:20px;
-   } 
-</style>    
+{% block mainbody %}   
 <div id="wrapper">
 
     <!-- Sidebar -->
     <div id="sidebar-wrapper" style="background: url(http://subtlepatterns.com/patterns/denim.png);">
         <ul class="sidebar-nav">
             <li class="sidebar-brand">
-                <div>
-                 {{current_studygroup.name}}<button style="position:relative; margin-left:110px; "class="btn btn-info" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-file"></span> Add Post</button>
-                </div>
+
+
+                
+                    <div>
+                     {{current_studygroup.name}}
+                     {% if in_studygroup %}
+                        <button style="position:absolute; left:280px; top: 10px;" class="btn btn-info" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-file"></span> Add Post</button>
+                    {% endif %}
+                    </div>
+
             </li>
             <br>
             <div class="row-fluid">
@@ -59,9 +63,9 @@
                             <tr>
                                 {% for stu in students.all %}
                                     <td>
-                                        <a href="{% url 'profile' stu.id %}">
-                                            <div style="width: 200px;height: 80px;border-radius: 5%;">
-                                                <img src="{{ stu.picture_url }}" class="profile-image" name="aboutme" width="100%" style="width: 170px;height: 70px;">
+                                        <center><a href="{% url 'profile' stu.id %}">
+                                            <div style="width: 80px;height: 80px;border-radius: 5%;">
+                                                <img src="{{ stu.picture_url }}" class="profile-image" name="aboutme" width="100%" style="width: 70px;height: 70px;"></center>
                                             </div>
                                         </a>
                                     </td>
@@ -69,7 +73,7 @@
                             </tr>
                             <tr>
                                 {% for stu in students.all %}
-                                    <td>{{ stu.user.first_name }}</td>
+                                    <td><center>{{ stu.user.first_name }}</center></td>
                                 {% endfor %}
                             </tr>
                         </table>
@@ -137,7 +141,10 @@
 
                             <div class="timeline-label">
                                 <h2><a href="#">{{comment.student.user.first_name}} {{comment.student.user.last_name}}</a> <span>{{comment.date}}</span></h2>
-                                <p>{{comment.text}}</p>
+                                <div style="color:black;">{{comment.text}}</div>
+                                {% if comment.attachment_url %}
+                                    <a href="{{comment.attachment_url}}">{{ comment.attachment_name}} </a>
+                                {% endif %}
                             </div>
                         </div>
 
@@ -150,7 +157,7 @@
                 <div class="timeline-entry-inner">
 
                     <div class="timeline-label">
-                        <form action="{% url 'add_comment' current_post.id %}" method="post">
+                        <form action="{% url 'add_comment_studygroup' current_post.id %}" enctype="multipart/form-data" method="post">
                             <div class="col">
                                 <div class="panel" style="background-color:#00BC8C">
                                   <div class="panel-heading">
@@ -158,6 +165,10 @@
                                   </div>
                                   <div class="panel-body">
                                     {{ comment_form.text|addcss:"form-control, placeholder:Comment, id:comment-text-box" }}
+                                    <br>
+                                    {{ comment_form.attachment|addcss:"form-control, placeholder: Attachment" }}
+                                    <br>
+                                    {{ comment_form.attachment_name|addcss:"form-control, placeholder: Attachment Name" }}
                                     <br>
                                     <button class="btn btn-lg btn-primary btn-block" type="submit">Add Comment!</button>  
                                     
