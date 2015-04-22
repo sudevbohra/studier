@@ -193,7 +193,7 @@ def register(request):
 
 @login_required
 def profile(request, id):
-    context=get_default_context(request)
+    context = get_default_context(request)
     user = get_object_or_404(User, id=id)
     context['full_name'] = user.get_full_name()
     student = Student.objects.get(user=request.user)
