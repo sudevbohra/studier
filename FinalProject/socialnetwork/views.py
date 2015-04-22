@@ -418,6 +418,8 @@ def notify(request, id, notif_text, notif_link, persistent=False, yes_link= None
     except Student.DoesNotExist:
         pass
     new_notification = Notification(text=notif_text, link=notif_link, picture_url=picture_url, persistent=persistent, yes_link=yes_link,no_link=no_link)
+    if yes_link:
+        new_notification.persistent = True
     new_notification.save()
     user = get_object_or_404(User, id=id)
     prof_student = Student.objects.get(user=user)
