@@ -32,17 +32,25 @@ from dateutil.tz import *
 from django.utils import timezone
 from django.http import Http404
 
+def get_default_context(request):
+    user_id = request.user.id
+    student = Student.objects.get(user=request.user)
+    context = {}
+    context['notifications'] = student.notifications
+    context['classes'] = student.classes.all()
+    context['user_id'] = request.user.id
+    context['student'] = student
+    context['studygroups'] = student.groups.all()
+    if(len(student.notifications.all()) > 0):
+        context['notif_count'] = len(student.notifications.all())
+    return context
 
 @login_required
 def show_modal(request, error=None):
-	user_id = request.user.id
 	student = Student.objects.get(user=request.user)
 	studyRoomForm = StudyGroupForm(None,user=student)
-	context = {}
-	context["user_id"] = user_id
-	context["student"] = student
+	context = get_default_context(request)
 	context['studygroupform'] = studyRoomForm
-	context['classes'] = student.classes.all()
 	if error != None:
 		context["error"] = error
 	return render(request, 'socialnetwork/map.html', context)
@@ -78,10 +86,7 @@ def map_studygroups(request, studygroup_id):
     # # Sets up list of just the logged-in user's (request.user's) items
     user_id = request.user.id
     student = Student.objects.get(user=request.user)
-    context = {}
-    context["user_id"] = user_id
-    context["student"] = student
-    context["classes"] = student.classes.all()
+    context = get_default_context()
     context['studygroup_id'] = studygroup_id
     # # For now we'll use 15437
     # current_class = "15437"
@@ -238,17 +243,21 @@ def show_post_studygroup(request, id):
 	current_post = Post.objects.get(id=id)
 	posts = current_post.studygroup.posts.order_by('-date')
 	current_studygroup = current_post.studygroup
+	context = get_default_context(request)
+	context['current_studygroup'] = current_studygroup
+	
 	if student in current_studygroup.members.all():
 		in_studygroup = True
-		context = {'current_post' : current_post, 'current_studygroup' : current_studygroup, 'user_id' : user_id, "classes" : student.classes.all(), "posts" : posts}
+		context['current_post'] = current_post
+		context['posts'] = posts
 	else:
-		context = {'current_post' : posts[posts.count()-1], 'current_studygroup' : current_studygroup, 'user_id' : user_id, "classes" : student.classes.all()}
+		context['current_post'] = posts[posts.count()-1]
 		in_studygroup = False
 
 	context['form'] = PostForm()
 	context['in_studygroup'] = in_studygroup
 	context['comment_form'] = CommentForm()
-	context['students'] = current_studygroup.members
+	context['students'] = current_post.studygroup.members
 	context['studygroups'] = student.groups.all()
 	print current_studygroup.id
 	if current_post.attachment_url:
