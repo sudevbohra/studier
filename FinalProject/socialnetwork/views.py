@@ -420,8 +420,9 @@ def notify(request, id, notif_text, notif_link, persistent=False, yes_link= None
     new_notification = Notification(text=notif_text, link=notif_link, picture_url=picture_url, persistent=persistent, yes_link=yes_link,no_link=no_link)
     new_notification.save()
     user = get_object_or_404(User, id=id)
-    prof_student = Student.objects.select_for_update().get(user=user)
+    prof_student = Student.objects.get(user=user)
     prof_student.notifications.add(new_notification)
+    prof_student.save()
     return
 
 @login_required

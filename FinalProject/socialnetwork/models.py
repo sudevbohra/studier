@@ -1,23 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-class Notification(models.Model):
-	text = models.CharField(blank=True, max_length=80)
-	picture_url = models.CharField(blank=True, max_length=256, default="...")
-	link = models.CharField(blank=True, max_length=150)
-	yes_link = models.CharField(blank=True, null=True, max_length=150)
-	no_link = models.CharField(blank=True, null=True, max_length=150)
-	time = models.DateTimeField(auto_now_add=True)
-	persistent = models.BooleanField(blank=False, default=False)
-	def __unicode__(self):
-		return 'Notification(id=' + str(self.id) + ')'
-
-	def __eq__(self, other):
-		if self.text == other.text:
-			return True
-		else:
-			return False
-
 class Student(models.Model):
 	user = models.OneToOneField(User)
 	# classes = models.ManyToManyField(Classroom, related_name='class', symmetrical='True')
@@ -32,11 +15,30 @@ class Student(models.Model):
 	endorsements = models.CharField(blank=True, max_length=430)
 	age = models.IntegerField(blank=True) 
 	picture_url = models.CharField(blank=True, max_length=256, default="https://s3-us-west-2.amazonaws.com/final-project-webapps/gates.jpg")
-	notifications = models.ManyToManyField(Notification, symmetrical='False')
+	#notifications = models.ManyToManyField(Notification, symmetrical='False')
 	def __unicode__(self):
 		return 'Student(id=' + str(self.id) + ')'
 	def natural_key(self):
 		return self.user.first_name + " " + self.user.last_name
+
+class Notification(models.Model):
+	text = models.CharField(blank=True, max_length=200)
+	picture_url = models.CharField(blank=True, max_length=256, default="...")
+	link = models.CharField(blank=True, max_length=200)
+	yes_link = models.CharField(blank=True, null=True, max_length=200)
+	no_link = models.CharField(blank=True, null=True, max_length=200)
+	time = models.DateTimeField(auto_now_add=True)
+	persistent = models.BooleanField(blank=False, default=False)
+	student = models.ForeignKey(Student, related_name='notifications', null=True)
+	def __unicode__(self):
+		return 'Notification(id=' + str(self.id) + ')'
+
+	def __eq__(self, other):
+		if self.text == other.text:
+			return True
+		else:
+			return False
+
 
 class Comment(models.Model):
 	text = models.CharField(max_length=160, null=True)

@@ -132,9 +132,13 @@ def add_studygroup(request):
 	studygroup.start_time = datetime.datetime.strptime(request.POST['startTime'], "%m/%d/%Y %I:%M %p").replace(tzinfo=tzlocal())
 	studygroup.end_time = datetime.datetime.strptime(request.POST['endTime'], "%m/%d/%Y %I:%M %p").replace(tzinfo=tzlocal())
 	studygroup.save()
+	if studygroupform.cleaned_data['private']:
+		title = "Private Studyroom Welcome Post"
+	else:
+		title = "Studyroom Welcome Post"
 	instructions = "\n Owner: {1} \nStart Time: {2} \nEnd Time: {3} \n\nWelcome to {0}. \n This is a studyroom for {4}. Join to view all posts. ".format(studygroup.name, studygroup.owner.user.first_name + " " + studygroup.owner.user.last_name,\
 		request.POST['startTime'], request.POST['endTime'], studygroupform.cleaned_data['course'])
-	post = Post(text=instructions, title="Studyroom Welcome Post")
+	post = Post(text=instructions, title=title)
 	
 	post.student = student
 	post.upvotes = 0
@@ -218,16 +222,22 @@ def set_map_studygroup_default(request):
 
 
 @login_required
+@transaction.atomic
 def get_studygroups(request, user_id):
 	courses = [cls.name for cls in Student.objects.get(user_id=user_id).classes.all()]
 	now = datetime.datetime.now().replace(tzinfo=tzlocal())
 	# start_time__lte = now, <-- add to only show groups which are in progress
 	inactive_studygroups = StudyGroup.objects.filter(end_time__gte=now, start_time__gte=now, course__in = courses, active = True)
-    #[elem for elem in li if li.count(elem) == 1]
-
+	#[elem for elem in li if li.count(elem) == 1]
+	active_studygroups = StudyGroup.objects.filter(end_time__gte=now, start_time__lte=now, course__in = courses, active = False)
 	for sg in inactive_studygroups.all():
 		sg.active = False
 		sg.save()
+	for sg in active_studygroups.all():
+		sg.active = True
+		sg.save()
+
+
 	studygroups = StudyGroup.objects.filter(end_time__gte=now, course__in = courses)
 
 	response_text = serializers.serialize('json', studygroups, use_natural_foreign_keys=True)
@@ -403,7 +413,15 @@ def send_invites(request):
 def add_to_studygroup(request, studygroup_id, student_id):
 	studygroup = StudyGroup.objects.get(id=studygroup_id)
 	student = Student.objects.get(id=student_id)
-	studygroup.members.add(student)
+	if studygroup.private:
+		owner = Student.objects.get(user=request.user)
+		if studygroup.owner == owner:
+			studygroup.members.add(student)
+			notif_text = "You've been accepted to the study group! Click me to go to the study group!"
+			notif_link = "/studyroom/change_studygroup/" + studygroup_id
+			notify(request, student_id, notif_text, notif_link)
+	else:
+		studygroup.members.add(student)
 	return change_studygroup(request, studygroup_id)
 
 @login_required

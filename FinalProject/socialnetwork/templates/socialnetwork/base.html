@@ -96,12 +96,16 @@
       <div class="modal-body">
         <table class="media-list">
           {% for student in class_students %}
+          {% cycle '<tr>' '' '' '' %}
           <td>
-          <div style="width: 200px;height: 80px;border-radius: 5%;">
+          <center>
+          <div style="width: 135px;">
               <img src="{{ student.picture_url }}" class="profile-image" name="aboutme" width="100%" style="width:70px;height: 70px;opacity:0.4;" id="invite_{{student.id}}" onclick="InviteStudent({{student.id}});">
               <br>{{student.user.first_name}}
           </div>
+          </center>
           </td>
+          {% cycle '' '' '' '</tr>' %}
           {% endfor %}
         </table>
       </div>
@@ -120,8 +124,6 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
@@ -256,6 +258,7 @@ addClassHTML += "<\/div>";
 $("#add-class").click(function(e) {
     $("#add-class").hide(100);
     $('#class').show(500);
+    $('#course_id').focus();
 });
 
 var invites = [];

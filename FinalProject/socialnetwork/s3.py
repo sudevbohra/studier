@@ -15,6 +15,11 @@ import os
 # AWS_SECRET_ACCESS_KEY = config.get('S3', 'SecretKey')
 # S3_BUCKET = config.get('S3', 'Bucket')
 
+
+AWS_ACCESS_KEY = os.environ.get('AccessKey')
+AWS_SECRET_ACCESS_KEY = os.environ.get('SecretKey')
+S3_BUCKET = os.environ.get('Bucket')
+
 def s3_upload(uploaded_file, id):
     s3conn = boto.connect_s3(AWS_ACCESS_KEY,AWS_SECRET_ACCESS_KEY)
     bucket = s3conn.get_bucket(S3_BUCKET)

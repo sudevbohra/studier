@@ -172,7 +172,7 @@ if ($('#location').length) {
       position: pos,
       map: map,
       draggable:true,
-      icon:"https://s3-us-west-2.amazonaws.com/quotist-bucket/pin_darkblue.png",
+      icon:"https://s3-us-west-2.amazonaws.com/quotist-bucket/pin_blue.png",
     animation: google.maps.Animation.BOUNCE,
     });
       map.setCenter(pos);
@@ -230,7 +230,7 @@ else {
                 if (items[i].fields['private']) {
                     var icon = "https://s3-us-west-2.amazonaws.com/quotist-bucket/pin_red.png"
                 } else {
-                    var icon = "https://s3-us-west-2.amazonaws.com/quotist-bucket/pin_blue.png"
+                    var icon = "https://s3-us-west-2.amazonaws.com/quotist-bucket/pin_darkblue.png"
                 }
 
                 if (!items[i].fields['active']) {
@@ -301,6 +301,8 @@ function fixInfoWindow() {
         }
             
     });
+    $('#studying-course').focus();
+    $('#studying-course').focus();
   }
 
   
