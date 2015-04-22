@@ -36,10 +36,9 @@ def get_default_context(request):
     context = {}
     context['notifications'] = student.notifications
     context['classes'] = student.classes.all()
+    context['user_id'] = request.user.id
+    context['student'] = student
     context['studygroups'] = student.groups.all()
-    print "TRUUUUUUU"
-    print student.groups.all()
-    # for sg in student.studygroups
     if(len(student.notifications.all()) > 0):
         context['notif_count'] = len(student.notifications.all())
     return context
@@ -194,7 +193,7 @@ def register(request):
 
 @login_required
 def profile(request, id):
-    context=get_default_context(request)
+    context = get_default_context(request)
     user = get_object_or_404(User, id=id)
     context['full_name'] = user.get_full_name()
     student = Student.objects.get(user=request.user)
