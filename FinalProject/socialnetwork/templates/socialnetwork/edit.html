@@ -6,6 +6,13 @@
 <div class="modal-dialog" style="margin-top: 100px;">
 <div class="modal-content" style="background-color: rgba(243, 156, 18, 0.8);width: 100%;margin-right: auto;margin-left: auto;">
 	<form method="post" enctype="multipart/form-data" action="{% url 'edit' %}" class="form-signin">
+        {% if form.picture.errors %}
+            <ol>
+            {% for error in form.picture.errors %}
+                <li><strong>{{ error|escape }}</strong></li>
+            {% endfor %}
+            </ol>
+        {% endif %}
         <table style="margin-right:auto;
           margin-left:auto; ">
         <div class="modal-body">
