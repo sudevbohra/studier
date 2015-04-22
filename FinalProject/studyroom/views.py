@@ -391,7 +391,7 @@ def send_invites(request):
 	# Notify each invited student
 	for stu_id in invite_list:
 		student = Student.objects.get(id=stu_id)
-		notif_text = request.user.get_full_name() + " has invited you to " + studygroup.name + ". Click to join study room!"
+		notif_text = request.user.get_full_name() + " has invited you to " + studygroup.name
 		notif_link = '/socialnetwork/add_person_studygroup/' + studygroup_id
 		notify(request, stu_id, notif_text, "", yes_link=notif_link, no_link="")
 
