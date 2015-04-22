@@ -48,7 +48,6 @@ class Classroom(models.Model):
 	name = models.CharField(blank=True, max_length=40)
 	students = models.ManyToManyField(Student, related_name='classes', symmetrical='True')
 	documents = models.ManyToManyField(Documents)
-
 	def __unicode__(self):
 		return self.name
 
@@ -60,6 +59,7 @@ class StudyGroup(models.Model):
 	end_time = models.DateTimeField(auto_now_add=True)
 	active = models.BooleanField(default=True)
 	course = models.CharField(max_length = 10)
+	classroom = models.ForeignKey(Classroom, related_name='classroom')
 	location_name = models.CharField(max_length=255, blank=True, null=True)
 	location_latitude = models.DecimalField(blank=True, null= True, default=40.4430939,max_digits=30,decimal_places=20)
 	location_longitude  = models.DecimalField(blank=True, null= True, default=-79.942309,max_digits=30,decimal_places=20)

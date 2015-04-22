@@ -86,7 +86,7 @@ def map_studygroups(request, studygroup_id):
     # # Sets up list of just the logged-in user's (request.user's) items
     user_id = request.user.id
     student = Student.objects.get(user=request.user)
-    context = get_default_context()
+    context = get_default_context(request)
     context['studygroup_id'] = studygroup_id
     # # For now we'll use 15437
     # current_class = "15437"
@@ -116,6 +116,7 @@ def add_studygroup(request):
 	studygroup = StudyGroup(name=studygroupform.cleaned_data['name'],
 							owner=student,
 							active=True,
+							classroom=studygroupform.cleaned_data['course'],
 							course=studygroupform.cleaned_data['course'].name,
 							location_name=studygroupform.cleaned_data['location_name'],
 							private=studygroupform.cleaned_data['private'])
@@ -258,6 +259,7 @@ def show_post_studygroup(request, id):
 	context['comment_form'] = CommentForm()
 	context['students'] = current_post.studygroup.members
 	context['studygroups'] = student.groups.all()
+	context['class_students'] = current_studygroup.classroom.students.all()
 	print current_studygroup.id
 	if current_post.attachment_url:
 		context['attachment_url'] = current_post.attachment_url
@@ -311,5 +313,26 @@ def add_person_studygroup(request, id):
     studygroup.save()
     return change_studygroup(request, studygroup.id)
 
+import traceback
 
-
+@login_required
+@transaction.atomic
+def send_invites(request):
+	queryDict = request.POST
+	myDict = dict(queryDict.iterlists())
+	print myDict
+	invite_list = list(set(myDict['invites[]']))
+	studygroup_id = myDict['studygroup_id'][0]
+	print studygroup_id
+	print invite_list
+	print invite_list[0]
+	studygroup = StudyGroup.objects.get(id=studygroup_id)
+	# Notify each invited student
+	for stu_id in invite_list:
+		student = Student.objects.get(id=stu_id)
+		notif_text = request.user.get_full_name() + " has invited you to " + studygroup.name + ". Click to join study room!"
+		notif_link = 'socialnetwork/add_person_studygroup/' + studygroup_id
+		notify(request, stu_id, notif_text, notif_link)
+ 	
+ 	return HttpResponse()
+	

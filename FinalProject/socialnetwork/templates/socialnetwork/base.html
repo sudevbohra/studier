@@ -77,6 +77,33 @@
     </div>
   </div>
 </div>
+
+
+<div class="modal fade" id="inviteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Invite Students</h4>
+      </div>
+      <div class="modal-body">
+        <ul class="media-list">
+          {% for student in class_students %}
+          <div style="width: 200px;height: 80px;border-radius: 5%;">
+              <img src="{{ student.picture_url }}" class="profile-image" name="aboutme" width="100%" style="width: 170px;height: 70px;" onclick="InviteStudent({{student.id}});">
+              {{student.user.first_name}}
+          </div>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" id="send-invites">Send Invites!</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 <body style="background: url(http://subtlepatterns.com/patterns/gplaypattern.png);">
 
     {% block navbar %}
@@ -124,6 +151,9 @@
             {% if current_studygroup %}
               {% if in_studygroup %}
                 <li> <a href="{% url 'remove_person_studygroup' current_studygroup.id %}">Leave Studygroup</a></li>
+                <!-- Button that allows owner to invite -->
+                <li data-toggle="modal" data-toggle="modal" data-target="#inviteModal"><a href="#">
+                Invite</li>
               {% else %}
                 <li> <a href="{% url 'add_person_studygroup' current_studygroup.id %}">Add Studygroup</a></li>
               {% endif %}
@@ -188,8 +218,6 @@ document.getElementById("clear-notifications").onclick =
 //     $("#wrapper").toggleClass("toggled");
 // });
 
-
-
 var addClassHTML="";
 addClassHTML += "<div class=\"form-group\">";
 addClassHTML += "    <input name=\"search\" id=\"search\"\/>";
@@ -201,6 +229,22 @@ $("#add-class").click(function(e) {
     $('#class').show(500);
 });
 
+var invites = [];
+function InviteStudent(student) {
+  invites[invites.length] = student;
+  console.log(invites)
+}
+
+document.getElementById("send-invites").onclick = 
+  function() {
+    var csrftoken = document.getElementsByName("csrfmiddlewaretoken")[0].defaultValue;
+    $.ajax({
+        url: "{% url 'send_invites' %}",
+        type:'post',
+        dataType : "json",
+        data: {csrfmiddlewaretoken: csrftoken, invites: invites, studygroup_id: {{current_studygroup.id}}},
+    });
+  }
 
 {% block in_scripts %}
 {% endblock %}

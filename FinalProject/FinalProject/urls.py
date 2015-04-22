@@ -35,6 +35,7 @@ urlpatterns = patterns('',
     url(r'^studyroom/add_post_studygroup/(?P<id>\d+)$', 'studyroom.views.add_post_studygroup', name='add_post_studygroup'),
     url(r'^studyroom/show_post_studygroup/(?P<id>\d+)$', 'studyroom.views.show_post_studygroup', name='show_post_studygroup'),
     url(r'^studyroom/addPostUpvoteStudygroup/(?P<id>\d+)/(?P<upvote>\-?\d+)$', 'studyroom.views.upvotePostStudygroup', name='addPostUpvoteStudyGroup'),
+    url(r'^studyroom/send_invites$', 'studyroom.views.send_invites', name='send_invites'),
     # url(r'^socialnetwork/edit/$', 'socialnetwork.views.edit', name='edit'),
     # url(r'^socialnetwork/profile/(?P<user>\w+)$', 'socialnetwork.views.profile', name='profile'),
 )
