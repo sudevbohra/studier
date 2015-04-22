@@ -31,6 +31,7 @@ import datetime
 from dateutil.tz import *
 from django.utils import timezone
 from django.http import Http404
+from django.db.models import F
 import traceback
 
 def get_default_context(request):
@@ -61,7 +62,6 @@ def show_modal(request, error=None):
 @login_required
 @transaction.atomic
 def upvotePostStudygroup(request, id, upvote):
-
     post = Post.objects.get(id=id)
     print post.upvoters.all()
     student = Student.objects.get(user=request.user)
@@ -285,7 +285,11 @@ def show_post_studygroup(request, id):
 	context['comment_form'] = CommentForm()
 	context['students'] = current_post.studygroup.members
 	context['studygroups'] = student.groups.all()
-	context['class_students'] = current_studygroup.classroom.students.all()
+	exclude_pks = []
+	for stu in current_studygroup.members.all():
+		exclude_pks.append(stu.pk)
+	context['class_students'] = current_studygroup.classroom.students.exclude(pk__in=exclude_pks)
+	# context['class_students'] = current_studygroup.classroom.students.all()
 	print current_studygroup.id
 	if current_post.attachment_url:
 		context['attachment_url'] = current_post.attachment_url
