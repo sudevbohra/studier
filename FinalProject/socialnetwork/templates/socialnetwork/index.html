@@ -64,8 +64,8 @@
                                 {% for stu in students.all %}
                                     <td>
                                         <a href="{% url 'profile' stu.id %}">
-                                            <div style="width: 200px;height: 80px;border-radius: 5%;">
-                                                <img src="{{ stu.picture_url }}" class="profile-image" name="aboutme" width="100%" style="width: 170px;height: 70px;">
+                                            <div style="width: 180px;height: 80px;border-radius: 5%;">
+                                                <img src="{{ stu.picture_url }}" class="profile-image" name="aboutme" width="100%" style="width: 150px;height: 70px;">
                                             </div>
                                         </a>
                                     </td>
@@ -73,7 +73,7 @@
                             </tr>
                             <tr>
                                 {% for stu in students.all %}
-                                    <td><center>{{ stu.user.first_name }}</center></td>
+                                    <td>{{ stu.user.first_name }} {{ stu.user.last_name}}</td>
                                 {% endfor %}
                             </tr>
                         
