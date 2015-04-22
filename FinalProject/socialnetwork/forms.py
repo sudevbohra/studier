@@ -76,15 +76,13 @@ class RegistrationForm(forms.Form):
         if not password:
             raise forms.ValidationError("Please enter a password")
         if len(password) < 8:
-            raise forms.ValidationError("Must use longer password")
+            raise forms.ValidationError("Must use longer password. Password length must be at least 8")
         return password
 
     def clean_password2(self):
         password = self.cleaned_data.get('password2')
         if not password:
             raise forms.ValidationError("Please enter to confirm password")
-        if len(password) < 8:
-            raise forms.ValidationError("Must use longer password")
         return password
 
 class EditForm(forms.ModelForm):

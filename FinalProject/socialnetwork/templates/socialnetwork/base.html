@@ -164,7 +164,7 @@
                     <li data-toggle="modal" data-toggle="modal" data-target="#inviteModal"><a href="#">
                     Invite Students</a></li>
                     <li><a href="{% url 'map_studygroups' current_studygroup.id %}">Change Location</a></li>
-                    <li onclick="ConfirmDelete({{current_studygroup.id}})"><a href="#">Delete Studygroup</a></li>
+                    <li onclick="ConfirmDelete({{current_studygroup.id}})"><a href="#" id="delete_studygroup">Delete Studygroup</a></li>
                     {% elif is_member %}
                     <li><a href="{% url 'remove_person_studygroup' current_studygroup.id %}">Leave Studygroup</a></li>
                     {% elif current_studygroup.private %}
@@ -268,19 +268,20 @@ function InviteStudent(student) {
 }
 
 function ConfirmDelete(group_id) {
-  if(confirm('Deleting this studyroom would remove its data forever. Are you sure you want to proceed?')) {
+  if(confirm('Deleting this studyroom would remove its data forever. Are you sure you want to proceed? Click the button again to delete')) {
     var csrftoken = document.getElementsByName("csrfmiddlewaretoken")[0].defaultValue;
     console.log(typeof(group_id))
     console.log(group_id)
 
     var url_string = "/socialnetwork/remove_person_studygroup/" + group_id.toString()
     console.log(url_string)
-    $.ajax({
-        url: url_string,
-        type:'post',
-        dataType : "json",
-        data: {csrfmiddlewaretoken: csrftoken},
-    });
+    document.getElementById("delete_studygroup").href=url_string
+    // $.ajax({
+    //     url: url_string,
+    //     type:'post',
+    //     dataType : "json",
+    //     data: {csrfmiddlewaretoken: csrftoken},
+    // });
   }
 }
 

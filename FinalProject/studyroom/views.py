@@ -362,6 +362,7 @@ def remove_person_studygroup(request, id):
     studygroup.members.remove(student)
     studygroup.save()
     if student == studygroup.owner:
+
     	print "OWNER IS DELETING"
     	studygroup.delete()
     
