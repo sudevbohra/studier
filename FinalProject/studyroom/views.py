@@ -109,6 +109,8 @@ def add_studygroup(request):
 	studygroupform = StudyGroupForm(request.POST, user=student)
 	
 	if not studygroupform.is_valid():
+		print "WOOOOOOW"
+		print studygroupform.errors
 		return home(request, "You need to provide a name, course, location, start time and end time!")
 	try:
 		course = Classroom.objects.get(name=studygroupform.cleaned_data["course"])

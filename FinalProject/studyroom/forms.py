@@ -9,7 +9,7 @@ class StudyGroupForm(forms.ModelForm):
 	class Meta:
 		model = StudyGroup
 		name = models.CharField(blank=True, max_length=40)
-		exclude = ['location_latitude', 'location_longitude', 'owner', 'members', 'active', 'course']
+		exclude = ['location_latitude', 'location_longitude', 'owner', 'members', 'active', 'course', 'classroom']
 
 	def __init__(self, *args, **kwargs):
 		if 'user' in kwargs:
