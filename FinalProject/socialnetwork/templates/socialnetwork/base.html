@@ -46,7 +46,37 @@
 {% block head %}
 {% endblock %}
 </head>
-
+<!-- Create modal for notifications -->
+<div class="modal fade" id="notificationsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Notifications</h4>
+      </div>
+      <div class="modal-body">
+        <ul class="media-list">
+          {% if notifications %}
+          {% for notif in notifications.all %}
+          <a href={{notif.link}}>
+              <li class="media">
+                <div class="media-left">
+                    <img class="media-object" src={{notif.picture_url}}>
+                </div>
+                <div class="media-body">
+                  <h4 class="media-heading">{{notif.text}}</h4>
+                </div>
+              </li>
+          </a>
+          {% endfor %}
+          {% endif %}
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 <body style="background: url(http://subtlepatterns.com/patterns/gplaypattern.png);">
 
     {% block navbar %}
@@ -134,37 +164,7 @@
     <!-- /#wrapper -->
 {% block top %}
 {% endblock %}
-<!-- Create modal for notifications -->
-<div class="modal fade" id="notificationsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title" id="myModalLabel">Notifications</h4>
-      </div>
-      <div class="modal-body">
-        <ul class="media-list">
-          {% if notifications %}
-          {% for notif in notifications.all %}
-          <a href={{notif.link}}>
-              <li class="media">
-                <div class="media-left">
-                    <img class="media-object" src={{notif.picture_url}}>
-                </div>
-                <div class="media-body">
-                  <h4 class="media-heading">{{notif.text}}</h4>
-                </div>
-              </li>
-          </a>
-          {% endfor %}
-          {% endif %}
-        </ul>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
+
 
 {% block scripts %}
 {% endblock %}
