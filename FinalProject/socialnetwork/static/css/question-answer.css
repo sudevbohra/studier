@@ -35,7 +35,8 @@ img {
 .timeline-centered {
     position: relative;
     margin-bottom: 30px;
-    max-width: 70%;
+    margin-left:100px;
+    max-width: 80%;
 }
 
     .timeline-centered:before, .timeline-centered:after {

@@ -179,12 +179,13 @@ def set_map_studygroup_default(request):
 			if Classroom.objects.filter(name = course).count() != 0:
 				print "AFTER IF"
 				student  = Student.objects.get(user_id =request.POST['id'])
-
+				classroom = Classroom.objects.get(name=course)
 				studygroup = StudyGroup(name=  default_studygroup(student),
 									owner= student,
 									active=True,
+									classroom = classroom,
 									course=request.POST['course'],
-									location_name= "Check Pin",private=False )
+									location_name= "Check Pin",private=False, )
 				studygroup.location_latitude = request.POST['lat']
 				studygroup.location_longitude = request.POST['lng']
 				studygroup.save()

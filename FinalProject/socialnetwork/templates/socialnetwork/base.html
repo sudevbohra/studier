@@ -60,11 +60,17 @@
           <a href={{notif.link}}>
               <li class="media">
                 <div class="media-left">
-                    <img class="media-object" src={{notif.picture_url}}>
+                    <img src="{{ notif.picture_url }}" class="profile-image" name="aboutme" width="100%" style="width: 50px;height: 50px;">
                 </div>
                 <div class="media-body">
                   <h4 class="media-heading">{{notif.text}}</h4>
                 </div>
+                {% if notif.yes_link %}
+                <div class="media-right" style='float:right;'>
+                    <a href="{{notif.yes_link}}" class="btn btn-info btn-sm">Accept</a>
+                    <a href="{{notif.no_link}}" class="btn btn-danger btn-sm">Dismiss</a>
+                </div>
+                {% endif %}
               </li>
           </a>
           {% endfor %}
