@@ -76,9 +76,10 @@ def upvotePostStudygroup(request, id, upvote):
 @login_required
 def map_studygroups(request, studygroup_id):
     # # Sets up list of just the logged-in user's (request.user's) items
+
     user_id = request.user.id
     student = Student.objects.get(user=request.user)
-    context = {}
+    context = get_default_context(request)
     context["user_id"] = user_id
     context["student"] = student
     context["classes"] = student.classes.all()

@@ -58,9 +58,9 @@
                             <tr>
                                 {% for stu in students.all %}
                                     <td>
-                                        <a href="{% url 'profile' stu.id %}">
-                                            <div style="width: 200px;height: 80px;border-radius: 5%;">
-                                                <img src="{{ stu.picture_url }}" class="profile-image" name="aboutme" width="100%" style="width: 170px;height: 70px;">
+                                        <center><a href="{% url 'profile' stu.id %}">
+                                            <div style="width: 80px;height: 80px;border-radius: 5%;">
+                                                <img src="{{ stu.picture_url }}" class="profile-image" name="aboutme" width="100%" style="width: 70px;height: 70px;"></center>
                                             </div>
                                         </a>
                                     </td>
@@ -68,7 +68,7 @@
                             </tr>
                             <tr>
                                 {% for stu in students.all %}
-                                    <td>{{ stu.user.first_name }}</td>
+                                    <td><center>{{ stu.user.first_name }}</center></td>
                                 {% endfor %}
                             </tr>
                         </table>
@@ -136,7 +136,7 @@
 
                             <div class="timeline-label">
                                 <h2><a href="#">{{comment.student.user.first_name}} {{comment.student.user.last_name}}</a> <span>{{comment.date}}</span></h2>
-                                <p>{{comment.text}}</p>
+                                <div style="color:black;">{{comment.text}}</div>
                                 {% if comment.attachment_url %}
                                     <a href="{{comment.attachment_url}}">{{ comment.attachment_name}} </a>
                                 {% endif %}
