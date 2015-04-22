@@ -239,17 +239,6 @@ function InviteStudent(student) {
   console.log(invites)
 }
 
-document.getElementById("send-invites").onclick = 
-  function() {
-    var csrftoken = document.getElementsByName("csrfmiddlewaretoken")[0].defaultValue;
-    $.ajax({
-        url: "{% url 'send_invites' %}",
-        type:'post',
-        dataType : "json",
-        data: {csrfmiddlewaretoken: csrftoken, invites: invites, studygroup_id: {{current_studygroup.id}}},
-    });
-  }
-
 {% block in_scripts %}
 {% endblock %}
 </script>
