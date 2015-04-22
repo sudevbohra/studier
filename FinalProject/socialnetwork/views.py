@@ -425,6 +425,9 @@ def notify(request, id, notif_text, notif_link):
 def clear_notifications(request):
     print "TRUUUU"
     student = Student.objects.get(user=request.user)
-    student.notifications.all().delete()
+    notifications = student.notifications.order_by('-time')[:5]
+    for notification in student.notifications.all():
+        if notification not in notifications:
+            notification.delete()
         
     return HttpResponse()
