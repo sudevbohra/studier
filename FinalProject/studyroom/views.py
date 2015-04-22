@@ -393,7 +393,7 @@ def send_invites(request):
 		student = Student.objects.get(id=stu_id)
 		notif_text = request.user.get_full_name() + " has invited you to " + studygroup.name
 		notif_link = '/socialnetwork/add_person_studygroup/' + studygroup_id
-		notify(request, stu_id, notif_text, "", yes_link=notif_link, no_link="")
+		notify(request, stu_id, notif_text, "", yes_link=notif_link, no_link="#")
 
  	
  	return HttpResponse()
@@ -412,5 +412,6 @@ def request_to_be_added(request, id):
 	user = request.user
 	notif_link = "/studyroom/add_to_studygroup/" + str(id) + "/" + str(user.id)
 	notif_text = user.first_name + " " + user.last_name + " wants to join your studygroup " + studygroup.name + ". Click the link to accept!"
-	notify(request, studygroup.owner.id, notif_text, "", yes_link=notif_link, no_link="")
+
+	notify(request, studygroup.owner.id, notif_text, "", yes_link=notif_link, no_link="#")
 	return home(request)

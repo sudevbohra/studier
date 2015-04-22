@@ -57,24 +57,26 @@
         <ul class="media-list">
           {% if notifications %}
           {% for notif in notifications.all %}
-          <a href={{notif.link}}>
-              <li class="media">
-                <div class="media-left">
-                    <img src="{{ notif.picture_url }}" class="profile-image" name="aboutme" width="100%" style="width: 50px;height: 50px;">
-                </div>
-                <div class="media-body">
-                  <h4 class="media-heading">{{notif.text}}</h4>
-                </div>
-                {% if notif.yes_link %}
-                <div class="media-right" style='float:right;'>
-                    <a href="{{notif.yes_link}}" class="btn btn-info btn-sm">Accept</a>
-                    {% if notif.no_link %}
-                      <a href="{{notif.no_link}}" class="btn btn-danger btn-sm">Dismiss</a>
-                    {% endif %}
-                </div>
-                {% endif %}
-              </li>
-          </a>
+          <div id="notif_{{notif.id}}"
+            <a href={{notif.link}}>
+                <li class="media">
+                  <div class="media-left">
+                      <img src="{{ notif.picture_url }}" class="profile-image" name="aboutme" width="100%" style="width: 50px;height: 50px;">
+                  </div>
+                  <div class="media-body">
+                    <h4 class="media-heading">{{notif.text}}</h4>
+                  </div>
+                  {% if notif.yes_link %}
+                  <div class="media-right" style='float:right;'>
+                      <a href="{{notif.yes_link}}" class="btn btn-info btn-sm">Accept</a>
+                      {% if notif.no_link %}
+                        <a href="#" class="btn btn-danger btn-sm" onclick="RemoveNotification({{notif.id}})">Dismiss</a>
+                      {% endif %}
+                  </div>
+                  {% endif %}
+                </li>
+            </a>
+          </div>
           {% endfor %}
           {% endif %}
         </ul>
@@ -238,6 +240,14 @@ document.getElementById("clear-notifications").onclick =
 //     e.preventDefault();
 //     $("#wrapper").toggleClass("toggled");
 // });
+
+function RemoveNotification(notif_id) {
+  console.log("IN FUNC SUCCESS")
+  console.log("notif_" + notif_id.toString())
+  var notifTag=document.getElementById('notif_' + notif_id.toString())
+  notifTag.style.display='none';
+  $("notif_" + notif_id.toString()).remove();
+}
 
 var addClassHTML="";
 addClassHTML += "<div class=\"form-group\">";
