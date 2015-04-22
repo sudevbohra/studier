@@ -73,7 +73,7 @@ class StudyGroup(models.Model):
 	location_name = models.CharField(max_length=255, blank=True, null=True)
 	location_latitude = models.DecimalField(blank=True, null= True, default=40.4430939,max_digits=30,decimal_places=20)
 	location_longitude  = models.DecimalField(blank=True, null= True, default=-79.942309,max_digits=30,decimal_places=20)
-	private = models.BooleanField(default=True)
+	private = models.BooleanField(default=False)
 	def __unicode__(self):
 		return 'StudyGroup(id=' + str(self.id) + ", owner=" + str(self.owner) + ')'
 		

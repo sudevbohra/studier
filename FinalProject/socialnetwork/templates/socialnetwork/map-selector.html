@@ -37,7 +37,7 @@
 </div>
 
 <div id="map-canvas"></div>
-<a href="#" style="position: fixed; bottom: 30px; right: 272px;" class="btn btn-default btn-sm  "><span class="glyphicon glyphicon-question-sign" id = "undecided-location" aria-hidden="true"></span> Undecided Location</a>
+<!-- <a href="#" hidden = "true" style="position: fixed; bottom: 30px; right: 272px;" class="btn btn-default btn-sm  "><span class="glyphicon glyphicon-question-sign" id = "undecided-location" aria-hidden="true"></span> Undecided Location</a> -->
  <a href="#" id = "finish-study-group" style="position: fixed; bottom: 30px; right: 70px;" class="btn btn-warning btn-sm  "><span class="glyphicon glyphicon-check"  aria-hidden="true"></span> Finish Creating Study Group</a>
  
 <a href="#" style="position: fixed; bottom: 30px; right: 30px;" class="btn btn-info btn-sm  " id = "location"><span class="glyphicon glyphicon-record"  aria-hidden="true"></span></a>
@@ -123,7 +123,7 @@
         url: "{% url 'set_map_studygroup' %}",
         type:'post',
         dataType : "json",
-        data: {csrfmiddlewaretoken: csrftoken, lat:pos.k, lng:pos.D, id:{{studygroup_id}}, user:{{user_id}}},
+        data: {csrfmiddlewaretoken: csrftoken, lat:pos.k, lng:pos.D, id:{{studygroup_id}}, user:{{user_id}} },
         success: function( items ) {
             
             console.log('success');

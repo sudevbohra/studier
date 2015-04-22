@@ -171,6 +171,7 @@ if ($('#location').length) {
       position: pos,
       map: map,
       draggable:true,
+      icon:"https://s3-us-west-2.amazonaws.com/quotist-bucket/pin_darkblue.png",
     animation: google.maps.Animation.BOUNCE,
     });
       map.setCenter(pos);
@@ -225,14 +226,19 @@ else {
                     content: "<a style='text-decoration:none;' href ='/studyroom/change_studygroup/" + items[i].pk + "' ><b style = 'color:black;'><div class='info_title' style='font-size:20px;'>" + items[i].fields['name'] + "</div>" + items[i].fields['course'] + "</b>" +"<p style = 'color:black;'>" + "</p>" + "<p style = 'color:black;'>" + 'Owned by ' + items[i].fields['owner'] + "</p></a>", noSuppress:true
 
                 });
+                if (items[i].fields['private']) {
+                    var icon = "https://s3-us-west-2.amazonaws.com/quotist-bucket/pin_red.png"
+                } else {
+                    var icon = "https://s3-us-west-2.amazonaws.com/quotist-bucket/pin_blue.png"
+                }
 
                 var marker = new google.maps.Marker({
-                  position: new google.maps.LatLng(items[i].fields['location_latitude'],items[i].fields['location_longitude']),
-                  map: map,
-                  //icon:'http://cdn-img.easyicon.net/png/40/4058.png',
-                  title: items[i].fields['name'],
-                  infowindow: infowindow
-                });
+                    position: new google.maps.LatLng(items[i].fields['location_latitude'],items[i].fields['location_longitude']),
+                    map: map,
+                    icon:icon,
+                    title: items[i].fields['name'],
+                    infowindow: infowindow
+                  });
                 data.open = null;
                 google.maps.event.addListener(marker, 'click', function() {
                   if (data.open != null) {
