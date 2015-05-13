@@ -291,7 +291,7 @@ function fixInfoWindow() {
         url: "{% url 'set_map_studygroup_default' %}",
         type:'post',
         dataType : "json",
-        data: {csrfmiddlewaretoken: csrftoken, course:course,lat:pos.k, lng:pos.D, id:"{{user_id}}" },
+        data: {csrfmiddlewaretoken: csrftoken, course:course,lat:pos.A, lng:pos.F, id:"{{user_id}}" },
         success: function( items ) {
             
             console.log('success');

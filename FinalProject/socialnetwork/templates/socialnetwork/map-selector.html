@@ -119,11 +119,12 @@
   document.getElementById("finish-study-group").onclick = function() {
     var pos = data.markerSelect.getPosition();
     var csrftoken = document.getElementsByName("csrfmiddlewaretoken")[0].defaultValue;
+    console.log(pos);
     $.ajax({
         url: "{% url 'set_map_studygroup' %}",
         type:'post',
         dataType : "json",
-        data: {csrfmiddlewaretoken: csrftoken, lat:pos.k, lng:pos.D, id:{{studygroup_id}}, user:{{user_id}} },
+        data: {csrfmiddlewaretoken: csrftoken, lat:pos.A, lng:pos.F, id:{{studygroup_id}}, user:{{user_id}} },
         success: function( items ) {
             
             console.log('success');
