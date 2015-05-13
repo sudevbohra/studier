@@ -46,6 +46,26 @@
 {% block head %}
 {% endblock %}
 </head>
+
+<div class="modal fade" id="welcomeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Welcome to Studier!</h4>
+      </div>
+      <div class="modal-body">
+        Get started by adding a class. Click the '+' button on the top right and add a 5 digit class.
+        <br>
+        <img src="/socialnetwork/addClass.png">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <!-- Create modal for notifications -->
 <div class="modal fade" id="notificationsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -226,6 +246,12 @@
 
 <!-- Menu Toggle Script -->
 <script>
+{% if not classes %}
+$(document).ready(function () {
+        $('#welcomeModal').modal('show');
+});
+{% endif %}
+
 document.getElementById("clear-notifications").onclick = 
   function() {
     var csrftoken = document.getElementsByName("csrfmiddlewaretoken")[0].defaultValue;
@@ -293,6 +319,8 @@ function ConfirmDelete(group_id) {
     // });
   }
 }
+
+
 
 {% block in_scripts %}
 {% endblock %}
