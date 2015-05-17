@@ -131,7 +131,7 @@
 
                     <div class="timeline-label">
                         <h2><a href="#">{{current_post.student.user.first_name}} {{current_post.student.user.last_name}}</a> <span>{{current_post.date}}</span></h2>
-                        <div style="color:black;"> {{current_post.text|linebreaksbr}} </div>
+                        <div style="color:black;"> {% autoescape off %}{{current_post.text|linebreaksbr}}{% endautoescape %} </div>
                         {% if attachment_url %}
                             <a href="{{attachment_url}}">{{ attachment_name}} </a>
                         {% endif %}
@@ -160,7 +160,7 @@
 
                             <div class="timeline-label">
                                 <h2><a href="#">{{comment.student.user.first_name}} {{comment.student.user.last_name}}</a> <span>{{comment.date}}</span></h2>
-                                <div style="color:black;">{{comment.text}}</div>
+                                <div style="color:black;">{% autoescape off %}{{comment.text|linebreaksbr}}{% endautoescape %}</div>
                                 {% if comment.attachment_url %}
                                     <a href="{{comment.attachment_url}}">{{ comment.attachment_name}} </a>
                                 {% endif %}

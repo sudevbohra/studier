@@ -2,8 +2,10 @@ from django import forms
 
 from django.contrib.auth.models import User
 from models import *
+import bleach
 
 MAX_UPLOAD_SIZE = 2500000
+LATEX_TAG = "$$"
 
 def get_schools():
     schools = open('colleges.txt', 'r')
@@ -132,7 +134,8 @@ class PostForm(forms.Form):
         cleaned_data = super(PostForm, self).clean()
         # We must return the cleaned data we got from our parent.
         return cleaned_data
-
+    def clean_text(self):
+        return bleach.linkify(self.cleaned_data['text'])
     def clean_attachment(self):
         attachment = self.cleaned_data['attachment']
         if not attachment:
@@ -152,6 +155,23 @@ class CommentForm(forms.Form):
     def clean(self):
         cleaned_data = super(CommentForm, self).clean()
         return cleaned_data
+    def clean_text(self):
+        text = bleach.linkify(self.cleaned_data['text'])
+        backup_text = text
+        switch = True
+        tagStart = " {% math %}"
+        tagEnd = "{% endmath %} "
+        while LATEX_TAG in text:
+            if switch:
+                text = text.replace(LATEX_TAG, tagStart,1)
+            else:
+                text = text.replace(LATEX_TAG, tagEnd,1)
+            switch = not switch
+
+        if switch:
+            return text
+        else:
+            return backup_text
 
     def clean_attachment(self):
         attachment = self.cleaned_data['attachment']

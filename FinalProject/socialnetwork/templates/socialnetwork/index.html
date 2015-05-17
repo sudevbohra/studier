@@ -1,5 +1,6 @@
 {% extends "socialnetwork/base.html" %}
 {% load addcss %}
+{% load mathlatex %}
 {% block top %}
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -130,7 +131,10 @@
 
                     <div class="timeline-label">
                         <h2><a href="{% url 'profile' current_post.student.id %}">{{current_post.student.user.first_name}} {{current_post.student.user.last_name}}</a> <span>{{current_post.date}}</span></h2>
-                        <div style="color:black;"> {{current_post.text|linebreaksbr}} </div>
+                        <div style="color:black;"> {% autoescape off %}{{current_post.text|linebreaksbr}}{% endautoescape %} </div>
+                        {% math %}
+                            E = mc^2
+                        {% endmath %}
                         {% if attachment_url %}
                             <a href="{{attachment_url}}">{{ attachment_name}} </a>
                         {% endif %}

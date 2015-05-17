@@ -136,7 +136,7 @@ def add_studygroup(request):
 		title = "Private Studyroom Welcome Post"
 	else:
 		title = "Studyroom Welcome Post"
-	instructions = "\n Owner: {1} \nStart Time: {2} \nEnd Time: {3} \n\nWelcome to {0}. \n This is a studyroom for {4}. Join to view all posts. ".format(studygroup.name, studygroup.owner.user.first_name + " " + studygroup.owner.user.last_name,\
+	instructions = " <b>Creator:</b> {1} \n <b>Start:</b> {2} \n <b>End:</b> {3} \n\nWelcome to {0}. \n This is a studyroom for the class {4}. To view all posts click on 'Tools' button above and join this group. ".format(studygroup.name, studygroup.owner.user.first_name + " " + studygroup.owner.user.last_name,\
 		request.POST['startTime'], request.POST['endTime'], studygroupform.cleaned_data['course'])
 	post = Post(text=instructions, title=title)
 	
